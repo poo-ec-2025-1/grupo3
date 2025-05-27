@@ -1,7 +1,7 @@
 | Campo               | Descrição                                                                 |
 |--------------------|---------------------------------------------------------------------------|
 | **Nome**           | marcarHorario                                                             |
-| **Ator Principal** | Estudante                                                                  |
+| **Ator Principal** | Cliente                                                                   |
 | **Descrição**      | O estudante escolhe um horário para lavar suas roupas e reserva.           |
 | **Pré-condições**  | O horário precisa estar livre.                                             |
 | **Pós-condições**  | O horário fica reservado e indisponível.                                   |
