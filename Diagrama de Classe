@@ -1,0 +1,66 @@
+@startuml
+class Usuario {
+    ~ nome: String
+    ~ matricula: int
+    ~ numTelefone: String
+    ~ agenda: Agenda
+    + Usuario(nome: String, matricula: int, numTelefone: String)
+    + calcPeso(nCamiseta: int, nCalca: int, nRoupaIntima: int, nShort: int): double
+    + alterarCadastro(nome: String)
+    + alterarCadastro(nome: String, matricula: int)
+    + alterarCadastro(nome: String, matricula: int, numTelefone: String)
+    + toString(): String
+}
+
+class Agenda {
+    # diasDaSemana: static double[]
+    # horariosDisponiveis: static double[]
+    # nomeAgenda: String
+    # horariosMarcadosDoUsuario: double[]
+    # tempo: double
+    + Agenda(): Agenda
+    + Agenda(nome: String): Agenda
+    - selecionarDia(dia: int): boolean
+    ~ marcarHorario(dia: int): boolean
+    ~ setNomeAgenda(nome: String)
+}
+
+class MaquinaDeLavar {
+    ~ id: int
+    ~ modelo: String
+    ~ descricao: String
+    ~ emUso: boolean
+    ~ MaquinaDeLavar()
+    ~ MaquinaDeLavar(id: int, modelo: String, descricao: String)
+    + ligarAparelho()
+    + desligarAparelho()
+    + toString(): String
+}
+
+class Secadora {
+    ~ Secadora(id: int, modelo: String, descricao: String)
+    + ligarAparelho()
+    + desligarAparelho()
+}
+
+class Caixa {
+    ~ precoTotal: double
+    ~ desconto: double
+    ~ valorKgRoupa: static double = 1.5
+    + Caixa(desconto: double)
+    + valorTotal(usuario: Usuario, nCamiseta: int, nCalca: int, nRoupaIntima: int, nShort: int): double
+    + simularPreco(usuario: Usuario, nCamiseta: int, nCalca: int, nRoupaIntima: int, nShort: int): static double
+}
+
+class Programa {
+    + main(args: String[]): void
+}
+
+Usuario "1" *-- "1" Agenda : Composição
+MaquinaDeLavar <|-- Secadora : Herança
+Usuario -- Caixa : Usa >
+Caixa ..> Usuario : Dependência (calcPeso)
+Programa ..> Usuario : Cria
+Programa ..> Caixa : Cria
+Programa ..> Agenda : Interage
+@enduml
