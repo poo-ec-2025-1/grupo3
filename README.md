@@ -16,7 +16,7 @@ Repositório do grupo 3
 
 ### motivação
 
-### Seção 2 - Plano
+## Seção 2 - Plano
 
 ### objetivo geral 
 
