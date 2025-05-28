@@ -10,32 +10,32 @@ Repositório do grupo 3
 
 ## Seção 1 - Introdução
 
-### justificativa
+### Justificativa
 
-### descrição do problema
+### Descrição do problema
 
-### motivação
+### Motivação
 
 ## Seção 2 - Plano
 
-### objetivo geral 
+### Objetivo geral 
 
-### objetivos específicos
+### Objetivos específicos
 
 ## Seção 3 - Divisão de tarefas:
 
-### tarefas (issues)
+### Tarefas (issues)
 
-### atribuição de tarefa
+### Atribuição de tarefa
 
-### responsabilidades 
+### Responsabilidades 
 
-### prazos
+### Prazos
 
 ## Seção 4 - Modelagem inicial: 
 
-### diagrama de classes 
+### Diagrama de classes 
 
-### diagramas de sequência
+### Diagramas de sequência
 
-### casos de uso
+### Casos de uso
