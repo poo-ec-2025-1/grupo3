@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" styleClass="painel-cinza" stylesheets="@login-estilos.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Pane layoutX="125.0" layoutY="60.0" prefHeight="280.0" prefWidth="350.0" styleClass="painel-branco">
+         <children>
+            <Label layoutX="136.0" layoutY="20.0" text="Login">
+               <font>
+                  <Font name="System Bold" size="30.0" />
+               </font>
+            </Label>
+            <Line endX="130.0" layoutX="160.0" layoutY="65.0" startX="-100.0" />
+            <Label layoutX="53.0" layoutY="77.0" text="Matrícula:">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Label>
+            <TextField layoutX="135.0" layoutY="75.0" prefHeight="30.0" prefWidth="140.0" styleClass="caixa-de-texto" stylesheets="@meuEstilo.css">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </TextField>
+            <Button layoutX="120.0" layoutY="175.0" mnemonicParsing="false" prefHeight="10.0" prefWidth="110.0" styleClass="botoes" text="Logar">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+            <Label layoutX="75.0" layoutY="117.0" text="Senha: ">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Label>
+            <Line endX="175.0" layoutX="175.0" layoutY="223.0" startX="-175.0" />
+            <Label layoutX="20.0" layoutY="235.0" text="Ainda não possui cadastro?" textAlignment="CENTER">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Label>
+            <Button layoutX="220.0" layoutY="235.0" mnemonicParsing="false" prefHeight="10.0" prefWidth="110.0" styleClass="botoes" text="Registre-se">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+            <PasswordField layoutX="135.0" layoutY="115.0" prefHeight="30.0" prefWidth="140.0" styleClass="caixa-de-texto" />
+            <CheckBox layoutX="195.0" layoutY="150.0" mnemonicParsing="false" text="Exibir senha">
+               <font>
+                  <Font size="11.0" />
+               </font>
+            </CheckBox>
+         </children>
+      </Pane>
+   </children>
+</Pane>

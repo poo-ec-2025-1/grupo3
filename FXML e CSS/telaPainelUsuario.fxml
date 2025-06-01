@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" styleClass="painel-cinza" stylesheets="@login-estilos.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label layoutX="70.0" layoutY="30.0" styleClass="caixa-de-texto03" text="Painel do Usuário">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Label>
+      <Button alignment="CENTER" layoutX="420.0" layoutY="200.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="120.0" styleClass="botoes" text="Minhas reservas" />
+      <Button alignment="CENTER" layoutX="420.0" layoutY="160.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="120.0" styleClass="botoes" text="Adicionar saldo" />
+      <Button alignment="CENTER" layoutX="150.0" layoutY="290.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="120.0" styleClass="botoes" text="Alterar cadastro" />
+      <Button alignment="CENTER" layoutX="150.0" layoutY="330.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="120.0" styleClass="botoes" text="Encerrar sessão" />
+      <Label layoutX="70.0" layoutY="120.0" prefHeight="30.0" prefWidth="280.0" styleClass="caixa-de-texto02" text="Pessoa Exemplo">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="70.0" layoutY="90.0" styleClass="caixa-de-texto03" text="Nome:">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <Label layoutX="70.0" layoutY="150.0" styleClass="caixa-de-texto03" text="Email:">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <Label layoutX="70.0" layoutY="180.0" prefHeight="30.0" prefWidth="280.0" styleClass="caixa-de-texto02" text="emailpessoaexemplo@gmail.com">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="70.0" layoutY="210.0" styleClass="caixa-de-texto03" text="Núm. de telefone:">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <Label layoutX="70.0" layoutY="240.0" prefHeight="30.0" prefWidth="280.0" styleClass="caixa-de-texto02" text="00000000000">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="430.0" layoutY="90.0" styleClass="caixa-de-texto03" text="Saldo:">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <Label layoutX="430.0" layoutY="120.0" prefHeight="30.0" prefWidth="100.0" styleClass="caixa-de-texto02" text="R$:">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+   </children>
+</Pane>
