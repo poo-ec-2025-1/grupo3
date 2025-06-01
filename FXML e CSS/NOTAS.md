@@ -1,5 +1,6 @@
 # NOTAS DE ATUALIZAÇÃO
-  Neste, irei descrever de forma breve cada uma das atualizações com relação à interface gráfica do nosso programa. Cada
+  Neste, irei descrever de forma breve cada uma das atualizações com relação à interface gráfica do nosso programa. Cada um dos arquivos .FXML está com seu respectivo código, os quais fazem uso direto dos arquivos
+  .css - responsáveis pela estilização da interface.
 
 ## 01/06/2025
   A princípio, o esboço inicial da interface gráfica do projeto está demonstrado pelos três arquivos .png presentes na pasta 'Imagens'. Cada uma delas descreve uma janela diferente, com as quais o usuário vai 
