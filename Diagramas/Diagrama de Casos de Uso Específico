@@ -1,0 +1,58 @@
+@startuml
+
+actor Usuario
+
+rectangle "Painel de login" {
+	usecase "Fazer login" as UC1
+	usecase "Fazer cadastro" as UC2
+}
+
+rectangle "Painel do usuario" {
+	usecase "Minhas reservas" as UC3
+	usecase "Adicionar saldo" as UC4
+	usecase "Alterar cadastro" as UC5
+	usecase "Finalizar sessao" as UC6
+}
+
+rectangle "Alterar cadastro" {
+	usecase "Alterar login" as UC13
+	usecase "Alterar email" as UC14
+	usecase "Alterar senha" as UC15
+}
+
+rectangle "Adicionar saldo" {
+	usecase "Alterar valor" as UC16
+	usecase "Alterar forma de pagamento" as UC17
+}
+
+rectangle "Minhas reservas" {
+	usecase "Fazer reserva" as UC7
+	usecase "Mostrar reservas" as UC8
+}
+
+rectangle "Fazer Reserva" {
+	usecase "Mostrar valor total" as UC9
+	usecase "Selecionar aparelho" as UC10
+	usecase "Selecionar data" as UC11
+}
+
+rectangle "Mostrar Reservas" {
+	usecase "Alterar reserva" as UC18
+	usecase "Cancelar reserva" as UC12
+}
+
+"Painel de login" --> "Painel do usuario"
+UC5 --> "Alterar cadastro"
+UC3 --> "Minhas reservas"
+UC7 --> "Fazer Reserva"
+UC8 --> "Mostrar Reservas"
+UC4 --> "Adicionar saldo"
+
+Usuario --> UC1
+Usuario --> UC2
+Usuario --> UC3
+Usuario --> UC4
+Usuario --> UC5
+Usuario --> UC6
+
+@enduml
