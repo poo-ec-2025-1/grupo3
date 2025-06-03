@@ -146,7 +146,24 @@ Programa ..> Agenda : Interage
 @enduml
 ````
 ### Diagramas de sequência
+````
+@startuml
+actor Usuario
+participant Maquina
+participant Caixa
 
+Usuario -> Sistema : login(nome, telefone)
+Sistema --> Usuario : confirmação de login
+
+Usuario -> Sistema : nRoupas
+Sistema --> Caixa : calcPeso()
+Caixa --> Usuario : valorTotal()
+Sistema --> Maquina  : Modelo de Máquina
+Sistema --> Usuario : Modelo de Máquina 
+Maquina -> Sistema : iniciarLavagem()
+Sistema --> Usuario : "Lavagem finalizada!"
+@enduml
+````
 ### Casos de uso
 
 
