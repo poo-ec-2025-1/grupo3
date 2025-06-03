@@ -1,4 +1,7 @@
 # NOTAS DE ATUALIZAÇÃO
+
+  Aluno: Daniel Vieira Gomes de Faria
+
   Neste, irei descrever de forma breve cada uma das atualizações com relação à interface gráfica do nosso programa. Cada um dos arquivos .FXML está com seu respectivo código, os quais fazem uso direto dos arquivos
   .css - responsáveis pela estilização da interface.
 
