@@ -77,6 +77,8 @@ Cada tarefa foi associada a um prazo específico, definido em conjunto para gara
 
 ### Diagrama de classes 
 
+![Diagrama de Classe Inicial - Miguel](Imagens/Diagrama_Classe_Miguel.png)
+
 ```java
 @startuml
 class Usuario {
@@ -146,6 +148,8 @@ Programa ..> Agenda : Interage
 @enduml
 ````
 ### Diagramas de sequência
+
+![Diagrama de Sequência Inicial - João](Imagens/Diagrama_Sequência_João.png)
 ````
 @startuml
 actor Usuario
@@ -200,6 +204,8 @@ Sistema --> Usuario : "Lavagem finalizada!"
 
 
 ### Casos de Uso Específico
+
+![Diagrama de Casos de Uso Específicos - Daniel](Imagens/Diagrama_Casos_Uso_Específico_Daniel.png)
 
 ````java
 @startuml
