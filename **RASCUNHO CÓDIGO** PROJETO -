@@ -199,24 +199,27 @@ public class Caixa {
 
 Sugestão de Miguel: que tal adicionar isso daqui? (Tenho que testar melhor ainda, mas pode ser interessante...)
 
-public class MaquinaLavar
+public abstract class MaquinaLavar
 {
     /**
      * Os atributos estáticos da classe fará parte do banco de dados
      */
     static int qtdMaquina = 0;
     static MaquinaLavar maquinasOfertadas[] = new MaquinaLavar[100];
-    static double[] tempoDisponivelTotal = new double[7];
+    static double[] tempoOfertadoMaquinaS = new double[7];
     
-    protected double tempoDisponivelDaMaquina[] = Agenda.tempoDeFuncionamentoSemana;
+    protected String idMaquina;
+    protected int pesoMax;
+    protected char tipoMaquina;
+    protected double tempoOfertadoDaMaquina[] = Agenda.tempoDeFuncionamentoSemana;
     
     MaquinaLavar()
     {
         maquinasOfertadas[qtdMaquina] = this;
         qtdMaquina++;
-        for (int i = 0; i < tempoDisponivelTotal.length; i++)
+        for (int i = 0; i < tempoOfertadoMaquinaS.length; i++)
         {
-            tempoDisponivelTotal[i] += Agenda.tempoDeFuncionamentoSemana[i];
+            tempoOfertadoMaquinaS[i] += Agenda.tempoDeFuncionamentoSemana[i];
         }
     }
 }
@@ -226,31 +229,36 @@ public class MaquinaLavar
 public class MaquinaPesada extends MaquinaLavar
 {
     static int qtdMaquina = 0;
-    static double[] tempoDisponivelTotal = new double[7];
+    static double[] tempoOfertadoTotal = new double[7];
     
-    public MaquinaPesada()
+    public MaquinaPesada(String idMaquina)
     {
+        this.idMaquina = idMaquina;
+        pesoMax = 15;
+        tipoMaquina = 'p';
         qtdMaquina++;
-        for (int i = 0; i < tempoDisponivelTotal.length; i++)
+        for (int i = 0; i < tempoOfertadoTotal.length; i++)
         {
-            tempoDisponivelTotal[i] += Agenda.tempoDeFuncionamentoSemana[i];
+            tempoOfertadoTotal[i] += Agenda.tempoDeFuncionamentoSemana[i];
         }
     }
 }
 
 
-
 public class MaquinaPequena extends MaquinaLavar
 {
     static int qtdMaquina = 0;
-    static double[] tempoDisponivelTotal = new double[7];
+    static double[] tempoOfertadoMaquinaS = new double[7];
     
-    public MaquinaPequena()
+    public MaquinaPequena(String idMaquina)
     {
+        this.idMaquina = idMaquina;
+        pesoMax = 5;
+        tipoMaquina = 'l';
         qtdMaquina++;
-        for (int i = 0; i < tempoDisponivelTotal.length; i++)
+        for (int i = 0; i < tempoOfertadoMaquinaS.length; i++)
         {
-            tempoDisponivelTotal[i] += Agenda.tempoDeFuncionamentoSemana[i];
+            tempoOfertadoMaquinaS[i] += Agenda.tempoDeFuncionamentoSemana[i];
         }
     }
 }
@@ -260,17 +268,21 @@ public class MaquinaPequena extends MaquinaLavar
 public class MaquinaMedia extends MaquinaLavar
 {
     static int qtdMaquina = 0;
-    static double[] tempoDisponivelTotal = new double[7];
+    static double[] tempoOfertadoMaquinaS = new double[7];
     
-    public MaquinaMedia()
+    public MaquinaMedia(String idMaquina)
     {
+        this.idMaquina = idMaquina;
+        pesoMax = 8;
+        tipoMaquina = 'm';
         qtdMaquina++;
-        for (int i = 0; i < tempoDisponivelTotal.length; i++)
+        for (int i = 0; i < tempoOfertadoMaquinaS.length; i++)
         {
-            tempoDisponivelTotal[i] += Agenda.tempoDeFuncionamentoSemana[i];
+            tempoOfertadoMaquinaS[i] += Agenda.tempoDeFuncionamentoSemana[i];
         }
     }
 }
+
 
 
 
