@@ -1,0 +1,13 @@
+  | Campo                  | Descrição                                                                                        |
+  |--------------------    |--------------------------------------------------------------                                    |
+  | **Nome**               | cobrar                                                                                           |
+  | **Ator Principal**     |  Caixa                                                                                            |
+  | **Descrição**          |Após o estudante usar as máquinas de lavar roupa, ele realiza o pagamento.                        |
+  | **Pré-condições**      | O estudante precisa ter passado pelo processo de agendamento, lavagem e estar no momento da cobrança. |
+  | **Pós-condições**      | A matrícula é registrada no sistema.    |
+  | **Fluxo Principal**    |                                         |
+  | 1.O estudante agenda um horário para lavar as roupas.                                     |
+  | 2. O estudante lava suas roupas.                                                          |
+  | 3. O sistema verifica qual tipo de máquina o estudante utilizou.                          |
+  | 4. O sistema cobra o respectivo valor da máquina ao estudante.                            |
+  | **Alternativas**    | nda                                                                 |
