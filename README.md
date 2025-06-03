@@ -58,17 +58,17 @@ O projeto foi dividido em tarefas menores para facilitar o desenvolvimento e gar
 A distribuição das tarefas foi realizada conforme as habilidades e interesses de cada membro do grupo, promovendo o engajamento e o desenvolvimento individual.
 
 ### Responsabilidades 
-Líder: coordenação do grupo, acompanhamento do progresso, integração dos módulos e revisão final
+Eduardo: coordenação do grupo, acompanhamento do progresso, integração dos módulos e revisão final
 
-Membro 1: levantamento de requisitos e documentação inicial
+Eduardo: levantamento de requisitos, documentação geral, testes e validação
 
-Membro 2: modelagem das classes e banco de dados
+José: modelagem das classes e banco de dados
 
-Membro 3: implementação das funcionalidades principais
+Miguel: implementação das funcionalidades principais
 
-Membro 4: desenvolvimento da interface do usuário
+Daniel: desenvolvimento da interface do usuário
 
-Membro 5: testes, validação e documentação final
+João: desenvolvimento da interface do usuário
 
 ### Prazos
 Cada tarefa foi associada a um prazo específico, definido em conjunto para garantir o cumprimento do cronograma geral do projeto. O acompanhamento dos prazos foi realizado por meio de reuniões semanais e atualizações regulares das tarefas, seguindo boas práticas de organização e divisão do trabalho em projetos de programação.
