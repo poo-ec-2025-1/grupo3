@@ -1,21 +1,24 @@
-public class MaquinaLavar
+public abstract class MaquinaLavar
 {
     /**
      * Os atributos estáticos da classe fará parte do banco de dados
      */
     static int qtdMaquina = 0;
     static MaquinaLavar maquinasOfertadas[] = new MaquinaLavar[100];
-    static double[] tempoDisponivelTotal = new double[7];
+    static double[] tempoOfertadoMaquinaS = new double[7];
     
-    protected double tempoDisponivelDaMaquina[] = Agenda.tempoDeFuncionamentoSemana;
+    protected String idMaquina;
+    protected int pesoMax;
+    protected char tipoMaquina;
+    protected double tempoOfertadoDaMaquina[] = Agenda.tempoDeFuncionamentoSemana;
     
     MaquinaLavar()
     {
         maquinasOfertadas[qtdMaquina] = this;
         qtdMaquina++;
-        for (int i = 0; i < tempoDisponivelTotal.length; i++)
+        for (int i = 0; i < tempoOfertadoMaquinaS.length; i++)
         {
-            tempoDisponivelTotal[i] += Agenda.tempoDeFuncionamentoSemana[i];
+            tempoOfertadoMaquinaS[i] += Agenda.tempoDeFuncionamentoSemana[i];
         }
     }
 }

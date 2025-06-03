@@ -24,13 +24,43 @@ public class Agenda
             matriculaDoUsuario = matricula;
         }
         
-        boolean selecionarDia()
+        double[] definirOfertaDasMaquinas(char tipoMaquina)
+        {
+                double tempos[] = new double[7];
+                switch(tipoMaquina)
+                {
+                    case 'l':
+                    case 'L':
+                        tempos = MaquinaPequena.tempoOfertadoMaquinaS;
+                        break;
+                        
+                    case 'm':
+                    case 'M':
+                        tempos = MaquinaMedia.tempoOfertadoMaquinaS;
+                        break;
+                        
+                    case 'p':
+                    case 'P':
+                    case 'g':
+                    case 'G':
+                        tempos = MaquinaPesada.tempoOfertadoMaquinaS;
+                        break;
+                        
+                    case 't':
+                    case 'T':
+                        tempos = MaquinaLavar.tempoOfertadoMaquinaS;
+                        break;
+                }
+                return tempos;
+        }
+            
+        boolean selecionarDia(char tipoMaquina)
         {
             if (dia < tempoDeFuncionamentoSemana.length && tempoDeFuncionamentoSemana[dia] >= 0)
             {
                 if(tempoDeFuncionamentoSemana[dia] != 0)
                 {
-                    if(tempoOfertadoAgenda[dia] != 0)
+                    if(definirOfertaDasMaquinas(tipoMaquina)[dia] != 0)
                     {
                         return true;                
                     }
@@ -53,23 +83,27 @@ public class Agenda
             return false;
         }
         
-        boolean indisponibilizarTempo()     //Talvez mude esse nome...
+        boolean indisponibilizarTempo(char tipoMaquina)     //Talvez mude esse nome...
         {
-            if( this.selecionarDia() )
+            if( selecionarDia(tipoMaquina) )
             {
-                    if(tempoTotal <= tempoOfertadoAgenda[this.dia])
-                    /**
-                     * É impossível indisponibilzar algo já indisponível
-                     */
+                for(int i = 0/* i = 100*/; i < MaquinaLavar.maquinasOfertadas.length && MaquinaLavar.maquinasOfertadas[i] != null; i++)
+                {
+                    if(MaquinaLavar.maquinasOfertadas[i].tipoMaquina == tipoMaquina)
                     {
-                        tempoOfertadoAgenda[this.dia] -= this.tempoTotal;
-                        System.out.println("Horário marcado para o dia " + dia + " :)");
-                        return true;
+                        if(tempoTotal <= MaquinaLavar.maquinasOfertadas[i].tempoOfertadoDaMaquina[this.dia])
+                        /**
+                         * É impossível indisponibilzar algo já indisponível
+                         */
+                        {
+                            MaquinaLavar.maquinasOfertadas[i].tempoOfertadoDaMaquina[this.dia] -= this.tempoTotal;
+                            idMaquina = MaquinaLavar.maquinasOfertadas[i].idMaquina;
+                            System.out.println("Horário marcado para o dia " + dia + " :)");
+                            return true;
+                        }
                     }
-                    else
-                    {
-                        System.out.println("O dia " + dia + " requerido não tem essa disponibilidade de tempo em específico...");
-                    }
+                } 
+                System.out.println("O dia " + dia + " requerido não tem essa disponibilidade de tempo em específico...");
             }
             return false;
         }
@@ -91,7 +125,21 @@ public class Agenda
     public boolean marcarHorario(int dia, double inicioDoHorario, double fimDoHorario, int matricula, double pesoRoupa)
     {
         HorarioMarcado novo = new HorarioMarcado(dia, inicioDoHorario, fimDoHorario, matricula);
-        if (novo.indisponibilizarTempo())
+        char tipo = ' ';
+        if (pesoRoupa < 5)
+        {
+            tipo = 'l';
+        }
+        else if(pesoRoupa < 8)
+        {
+            tipo = 'm';
+        }
+        else if(pesoRoupa < 15)
+        {
+            tipo = 'p';
+        }
+        
+        if (novo.indisponibilizarTempo(tipo))
         {
             
             for (int i = 0; i < horariosMarcados[dia].length; i++)

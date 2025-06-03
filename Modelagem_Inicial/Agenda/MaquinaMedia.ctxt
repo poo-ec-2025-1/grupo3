@@ -1,5 +1,5 @@
 #BlueJ class context
 comment0.target=MaquinaMedia
-comment1.params=
-comment1.target=MaquinaMedia()
+comment1.params=idMaquina
+comment1.target=MaquinaMedia(java.lang.String)
 numComments=2

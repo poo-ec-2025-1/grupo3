@@ -10,6 +10,7 @@ public class Intervalo
     protected double inicio = 0;
     protected double fim = 0;
     protected double tempoTotal = 0;
+    protected String idMaquina;
 
     /**
      * Construtor para objetos da classe Intervalo
@@ -25,5 +26,11 @@ public class Intervalo
                 this.fim = fim;
                 tempoTotal = fim - inicio;
         }
+    }
+    
+    public Intervalo(String idMaquina, double inicio, double fim)
+    {
+        this(inicio, fim);
+        this.idMaquina = idMaquina;
     }
 }

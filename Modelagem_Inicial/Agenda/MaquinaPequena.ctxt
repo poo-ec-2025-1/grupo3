@@ -1,5 +1,7 @@
 #BlueJ class context
 comment0.target=MaquinaPequena
-comment1.params=
-comment1.target=MaquinaPequena()
-numComments=2
+comment1.params=idMaquina
+comment1.target=MaquinaPequena(java.lang.String)
+comment2.params=
+comment2.target=MaquinaPequena()
+numComments=3

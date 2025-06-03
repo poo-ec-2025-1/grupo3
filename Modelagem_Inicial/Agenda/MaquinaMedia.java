@@ -1,15 +1,17 @@
 public class MaquinaMedia extends MaquinaLavar
 {
     static int qtdMaquina = 0;
-    static double[] tempoDisponivelTotal = new double[7];
+    static double[] tempoOfertadoMaquinaS = new double[7];
     
-    public MaquinaMedia()
+    public MaquinaMedia(String idMaquina)
     {
+        this.idMaquina = idMaquina;
+        pesoMax = 8;
+        tipoMaquina = 'm';
         qtdMaquina++;
-        for (int i = 0; i < tempoDisponivelTotal.length; i++)
+        for (int i = 0; i < tempoOfertadoMaquinaS.length; i++)
         {
-            tempoDisponivelTotal[i] += Agenda.tempoDeFuncionamentoSemana[i];
+            tempoOfertadoMaquinaS[i] += Agenda.tempoDeFuncionamentoSemana[i];
         }
     }
-
 }
