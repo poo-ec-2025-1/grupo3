@@ -80,3 +80,35 @@ Cada tarefa foi associada a um prazo específico, definido em conjunto para gara
 ### Diagramas de sequência
 
 ### Casos de uso
+
+
+| Campo               | Descrição                                                                 |
+|--------------------|---------------------------------------------------------------------------|
+| **Nome**           | Realizar Matrícula                                                        |
+| **Ator Principal** | Estudante                                                                  |
+| **Descrição**      | O estudante escolhe uma disciplina de sua grade e realiza a matrícula.    |
+| **Pré-condições**  | O estudante deve estar logado.                                             |
+| **Pós-condições**  | A matrícula é registrada no sistema.                                       |
+| **Fluxo Principal**|                                                                           |
+| 1. O sistema apresenta disciplinas disponíveis.                                                 |
+| 2. O estudante seleciona uma disciplina.                                                        |
+| 3. O sistema verifica vagas.                                                                    |
+| 4. O sistema registra a matrícula e confirma.                                                   |
+| **Alternativas**   | 3a. Se não houver vagas, o sistema informa e cancela a operação.           |
+
+
+
+
+  | Campo                  | Descrição                                                                                        |
+  |--------------------    |--------------------------------------------------------------                                    |
+  | **Nome**               | cobrar                                                                                           |
+  | **Ator Principal**     |  Caixa                                                                                            |
+  | **Descrição**          |Após o estudante usar as máquinas de lavar roupa, ele realiza o pagamento.                        |
+  | **Pré-condições**      | O estudante precisa ter passado pelo processo de agendamento, lavagem e estar no momento da cobrança. |
+  | **Pós-condições**      | A matrícula é registrada no sistema.    |
+  | **Fluxo Principal**    |                                         |
+  | 1.O estudante agenda um horário para lavar as roupas.                                     |
+  | 2. O estudante lava suas roupas.                                                          |
+  | 3. O sistema verifica qual tipo de máquina o estudante utilizou.                          |
+  | 4. O sistema cobra o respectivo valor da máquina ao estudante.                            |
+  | **Alternativas**    | nda                                                                 |
