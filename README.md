@@ -81,70 +81,87 @@ Cada tarefa foi associada a um prazo específico, definido em conjunto para gara
 
 ```java
 @startuml
-class Usuario {
-    ~ nome: String
-    ~ matricula: int
-    ~ numTelefone: String
-    ~ agenda: Agenda
-    + Usuario(nome: String, matricula: int, numTelefone: String)
-    + calcPeso(nCamiseta: int, nCalca: int, nRoupaIntima: int, nShort: int): double
-    + alterarCadastro(nome: String)
-    + alterarCadastro(nome: String, matricula: int)
-    + alterarCadastro(nome: String, matricula: int, numTelefone: String)
-    + toString(): String
+class User {
+    ~ matricula: int    
+    + setMatricula(matricula: int)    
 }
 
 class Agenda {
-    # diasDaSemana: static double[]
-    # horariosDisponiveis: static double[]
+    # tempoDeFuncionamentoSemana: static double[]
+    # HorarioMarcado: static []
     # nomeAgenda: String
-    # horariosMarcadosDoUsuario: double[]
-    # tempo: double
-    + Agenda(): Agenda
-    + Agenda(nome: String): Agenda
-    - selecionarDia(dia: int): boolean
-    ~ marcarHorario(dia: int): boolean
+    # tempoOfertadoAgenda: double[]
+    # tempoPadrao: double
+    + Agenda(){} : Construtor de agenda
+    + Agenda(nome: String): setNomeAgenda(nome)    
+    ~ marcarHorario(int dia, double inicioDoHorario, double fimDoHorario, int matricula, double pesoRoupa) : boolean
     ~ setNomeAgenda(nome: String)
 }
 
-class MaquinaDeLavar {
-    ~ id: int
-    ~ modelo: String
-    ~ descricao: String
-    ~ emUso: boolean
-    ~ MaquinaDeLavar()
-    ~ MaquinaDeLavar(id: int, modelo: String, descricao: String)
-    + ligarAparelho()
-    + desligarAparelho()
-    + toString(): String
+abstract class MaquinaLavar {
+    ~ pesoMax: int  
+    ~ MaquinaDeLavar(int pesoMax)
+    + lavar()
+    + getPreco()
+    + MaquinaLavar criarMaquina(int pesoRoupa)    
 }
 
-class Secadora {
-    ~ Secadora(id: int, modelo: String, descricao: String)
-    + ligarAparelho()
-    + desligarAparelho()
+class MaquinaPequena{
+    ~ MaquinaPequena()
+    + lavar()
+    + getPreco()
 }
 
-class Caixa {
-    ~ precoTotal: double
-    ~ desconto: double
-    ~ valorKgRoupa: static double = 1.5
-    + Caixa(desconto: double)
-    + valorTotal(usuario: Usuario, nCamiseta: int, nCalca: int, nRoupaIntima: int, nShort: int): double
-    + simularPreco(usuario: Usuario, nCamiseta: int, nCalca: int, nRoupaIntima: int, nShort: int): static double
+class MaquinaMedia{
+     ~ MaquinaMedia()
+    + lavar()
+    + getPreco()
 }
 
-class Programa {
-    + main(args: String[]): void
+class MaquinaGrande{
+    ~ MaquinaGrande()
+    + lavar()
+    + getPreco()
 }
 
-Usuario "1" *-- "1" Agenda : Composição
-MaquinaDeLavar <|-- Secadora : Herança
-Usuario -- Caixa : Usa >
-Caixa ..> Usuario : Dependência (calcPeso)
-Programa ..> Usuario : Cria
-Programa ..> Caixa : Cria
-Programa ..> Agenda : Interage
+class Caixa {    
+    + Cobrar(MaquinaLavar maquina, int matricula)    
+}
+
+class Sistema {
+    ~ import java.util.Scanner;
+    + public static void main(String[] args)
+}
+
+class Intervalo {
+    # inicio : double
+    # fim : double
+    # tempoTotal : double
+    # idMaquina : double
+    + Intervalo() {}
+    + Intervalo(double inicio, double fim)
+    + Intervalo(String idMaquina, double inicio, double fim)
+}
+
+class HorarioMarcado extends Intervalo {
+    #int matriculaDoUsuario
+    #int dia
+    #String idMaquina
+    +HorarioMarcado(int dia, double inicioDoHorario, double fimDoHorario, int matricula)
+    +double[] definirTempoMaquinaS(char tipoMaquina)
+    +boolean selecionarDia(char tipoMaquina)
+    +boolean indisponibilizarTempo(char tipoMaquina)
+}
+Agenda ..> User : Dependencia
+MaquinaLavar <|-- MaquinaPequena : Herança
+MaquinaLavar <|-- MaquinaMedia : Herança
+MaquinaLavar <|-- MaquinaGrande : Herança
+User -- Caixa : Usa >
+Caixa ..> User : Dependência (int matricula)
+Sistema..> User : Cria
+Sistema..> Caixa : Cria
+Sistema..> Agenda : Interage
+Sistema..> MaquinaLavar : Cria
 @enduml
 ````
 ### Diagramas de sequência
