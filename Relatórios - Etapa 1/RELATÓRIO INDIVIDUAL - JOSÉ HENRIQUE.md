@@ -1,3 +1,5 @@
+## 
+
 Aqui farei o meu relatório individual
 
 1.⁠ ⁠Atribuição de cargo e tarefas: o que foi atribuído a priori; responsabilidades; o que foi exercido na prática; etc;
