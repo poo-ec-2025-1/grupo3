@@ -7,5 +7,5 @@
 
 3. Minha contribuição, além de minhas resposabilidades foram ir além da própria Agenda e dar uma sugestão para o que poderia ser o banco de dados. Isso pode ser visto nesses commits: @3b92581 e @96a5b47
 
-4. Refinei minha habilidade em programção orientada a obejetos, aprendendo novos conceitos portanto. Contudo, percebo que ainda não compreendo muita coisa, principalmente no quesito banco de dados,
+4. Refinei minha habilidade em programção orientada a objetos, aprendendo novos conceitos portanto. Contudo, percebo que ainda não compreendo muita coisa, principalmente no quesito banco de dados,
    além de ser um pouco desorganizado. Por fim, gostei da experiência, e procuro refinar minhas ideias.
