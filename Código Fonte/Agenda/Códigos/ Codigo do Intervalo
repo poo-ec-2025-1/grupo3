@@ -1,12 +1,13 @@
 /**
- * Escreva uma descrição da classe Intervalo aqui.
+ * Servirá como uma unidade de tempo. 
+ * De maneira que possibilite uma lógica para agrupar os "HoráriosMarcados" em grandes "Intervalos" no banco de dados futuramente.
  * 
- * @author (seu nome) 
- * @version (um número da versão ou uma data)
+ * @author Miguel Moreira 
  */
 public class Intervalo
 {
-    // variáveis de instância - substitua o exemplo abaixo pelo seu próprio
+    // variáveis de instância
+    //protected int dia;  Talvez não seja necessário
     protected double inicio = 0;
     protected double fim = 0;
     protected double tempoTotal = 0;
