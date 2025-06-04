@@ -24,13 +24,15 @@ Obviamente temos muita coisa para fazer e melhorar no projeto, mas acredito que 
 
 3.⁠ ⁠⁠Contribuição além do atribuído: como ajudei a equipe; quais commits a mais, posts e documentos mais relevantes; como ajudei outros a resolverem seus problemas; etc.
 
--Nessa seção minha única contribuição foi ter dado minha visão geral, minhas ideias para dar os primeiros passos no projeto e acredito eu ter ajudado a organizar e dar um ponto de partida no projeto, isso não está documentado pois isso foi feito em uma 
+- Nessa seção minha única contribuição foi ter dado minha visão geral, minhas ideias para dar os primeiros passos no projeto e acredito eu ter ajudado a organizar e dar um ponto de partida no projeto, isso não está documentado pois isso foi feito em uma 
 reunião presencial lá na faculdade
 
 
 4.⁠ ⁠⁠Considerações gerais: o que aprendi; quais trabalhos futuros ficaram pendentes; conclusões; etc.
 
--Aprendi a fazer diagramas de caso de uso, diagramas de classe, pude utilizar os conceitos de Java que aprendemos durante as aulas para fazer o código fonte, melhorei meu raciocínio e
-estou aprendendo a trabalhar em grupo e estou gostando, coisa que geralmente eu evito e não gosto de fazer.
-Minha conclusão é que falta muito a ser feito, mas o projeto promete ser interessante e produtivo para todos. Além disso estou tendo contato pela primeira vez com o GitHub
-que é um aplicativo importante no mundo da computação e que com certeza fará parte na minha carreira profissional
+- Aprendi a fazer diagramas de caso de uso, diagramas de classe, pude utilizar os conceitos de Java que aprendemos durante as aulas para 
+ fazer o código fonte, melhorei meu raciocínio e
+ estou aprendendo a trabalhar em grupo e estou gostando, coisa que geralmente eu evito e não gosto de fazer.
+ Minha conclusão é que falta muito a ser feito, mas o projeto promete ser interessante e produtivo para todos. Além disso estou tendo 
+ contato pela primeira vez com o GitHub
+ que é um aplicativo importante no mundo da computação e que com certeza fará parte na minha carreira profissional
