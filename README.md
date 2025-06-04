@@ -205,7 +205,7 @@ Sistema --> Usuario : "Lavagem finalizada!"
 
 ### Casos de Uso Específico
 
-![Diagrama de Casos de Uso Específicos - Daniel](Imagens/Diagrama_Casos_Uso_Específico_Daniel.png)
+![Diagrama de Casos de Uso Específicos - Daniel](Imagens/Diagrama_Casos_Uso_Especifico_Daniel_Atualizado.png)
 
 ````java
 @startuml
