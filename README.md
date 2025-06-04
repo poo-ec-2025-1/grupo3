@@ -77,7 +77,7 @@ Cada tarefa foi associada a um prazo específico, definido em conjunto para gara
 
 ### Diagrama de classes 
 
-![Diagrama de Classe Inicial - Miguel](Imagens/Diagrama_Classe_Miguel.png)
+![Diagrama de Classe Inicial - João](Imagens/Diagrama_Classes_João.png)
 
 ```java
 @startuml
