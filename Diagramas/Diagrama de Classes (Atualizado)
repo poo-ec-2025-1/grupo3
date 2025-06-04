@@ -1,0 +1,83 @@
+@startuml
+class User {
+    ~ matricula: int    
+    + setMatricula(matricula: int)    
+}
+
+class Agenda {
+    # tempoDeFuncionamentoSemana: static double[]
+    # HorarioMarcado: static []
+    # nomeAgenda: String
+    # tempoOfertadoAgenda: double[]
+    # tempoPadrao: double
+    + Agenda(){} : Construtor de agenda
+    + Agenda(nome: String): setNomeAgenda(nome)    
+    ~ marcarHorario(int dia, double inicioDoHorario, double fimDoHorario, int matricula, double pesoRoupa) : boolean
+    ~ setNomeAgenda(nome: String)
+}
+
+abstract class MaquinaLavar {
+    ~ pesoMax: int  
+    ~ MaquinaDeLavar(int pesoMax)
+    + lavar()
+    + getPreco()
+    + MaquinaLavar criarMaquina(int pesoRoupa)    
+}
+
+class MaquinaPequena{
+    ~ MaquinaPequena()
+    + lavar()
+    + getPreco()
+}
+
+class MaquinaMedia{
+     ~ MaquinaMedia()
+    + lavar()
+    + getPreco()
+}
+
+class MaquinaGrande{
+    ~ MaquinaGrande()
+    + lavar()
+    + getPreco()
+}
+
+class Caixa {    
+    + Cobrar(MaquinaLavar maquina, int matricula)    
+}
+
+class Sistema {
+    ~ import java.util.Scanner;
+    + public static void main(String[] args)
+}
+
+class Intervalo {
+    # inicio : double
+    # fim : double
+    # tempoTotal : double
+    # idMaquina : double
+    + Intervalo() {}
+    + Intervalo(double inicio, double fim)
+    + Intervalo(String idMaquina, double inicio, double fim)
+}
+
+class HorarioMarcado extends Intervalo {
+    #int matriculaDoUsuario
+    #int dia
+    #String idMaquina
+    +HorarioMarcado(int dia, double inicioDoHorario, double fimDoHorario, int matricula)
+    +double[] definirTempoMaquinaS(char tipoMaquina)
+    +boolean selecionarDia(char tipoMaquina)
+    +boolean indisponibilizarTempo(char tipoMaquina)
+}
+Agenda ..> User : Dependencia
+MaquinaLavar <|-- MaquinaPequena : Herança
+MaquinaLavar <|-- MaquinaMedia : Herança
+MaquinaLavar <|-- MaquinaGrande : Herança
+User -- Caixa : Usa >
+Caixa ..> User : Dependência (int matricula)
+Sistema..> User : Cria
+Sistema..> Caixa : Cria
+Sistema..> Agenda : Interage
+Sistema..> MaquinaLavar : Cria
+@enduml
