@@ -105,10 +105,11 @@ public abstract class Usuario {
    	 
 	}
     
-	Usuario(int matricula, String senha) {
-    	this.matricula = matricula;
-    	this.senha = senha;
-	}
+	Usuario(String nomeCompleto, int matricula, String senha) {
+        this.nomeCompleto = nomeCompleto;
+        this.matricula = matricula;
+        this.senha = senha;
+    	}
    
 	public String mostrarDados() {
     	return "Nome: "+this.getNomeCompleto()+"\nMatricula: "+this.getMatricula();
@@ -146,9 +147,9 @@ public abstract class Usuario {
 |
 
 public class Administrador extends Usuario implements Autenticavel {
-	Administrador(int matricula, String senha) {
-    	super(matricula, senha);
-	}
+	Administrador(String nomeCompleto, int matricula, String senha) {
+    	super(nomeCompleto, matricula, senha);
+    	}
     
 	public boolean login(int matricula, String senha) {
     	if(this.getMatricula() == matricula && this.getSenha() == senha) {
@@ -166,9 +167,9 @@ public class Administrador extends Usuario implements Autenticavel {
 |
 
 public class Cliente extends Usuario implements Autenticavel{
-	Cliente(int matricula, String senha) {
-    	super(matricula, senha);
-	}
+	Cliente(String nomeCompleto, int matricula, String senha) {
+        super(nomeCompleto, matricula, senha);
+    	}
     
 	public boolean login(int matricula, String senha) {
     	if(this.getMatricula() == matricula && this.getSenha() == senha) {
