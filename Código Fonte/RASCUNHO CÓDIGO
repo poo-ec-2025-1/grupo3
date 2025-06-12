@@ -34,9 +34,6 @@ public class Sistema {
    desta forma esta classe fica assim. Será analisada e desenvolvida mais adiante 
    */
 
-
-
-
 |
 |
 |
@@ -44,26 +41,182 @@ public class Sistema {
 |
 |
 
+import com.j256.ormlite.table.DatabaseTable;
+import com.j256.ormlite.field.DatabaseField;
 
+@DatabaseTable(tableName = "usuario")
 
-
-public class User{
-    /* 
-      a ideia nesta classe usuário é ser um banco de dados
-      com a matrícula e senha de cada estudante
-      assim, o sistema puxa os dados, verifica e utiliza para proceder nas operações
-    */
-   private int matricula;
+public abstract class Usuario {
+	@DatabaseField
+	private String nomeCompleto;
+    
+	@DatabaseField
+	private int matricula;
+    
+	@DatabaseField
+	private String senha;
    
-   public void setMatricula(int matricula){
-       this.matricula = matricula;
-   }
+	Usuario() {
+   	 
+	}
+    
+	Usuario(int matricula, String senha) {
+    	this.matricula = matricula;
+    	this.senha = senha;
+	}
    
-   /*
-    como ainda não consigo criar esse banco de dados, esta classe no momento se limitará a isto
-    */
-} 
+	public String mostrarDados() {
+    	return "Nome: "+this.getNomeCompleto()+"\nMatricula: "+this.getMatricula();
+	}
+    
+	public void setNomeCompleto(String nome) {
+    	this.nomeCompleto = nome;
+	}
+    
+	public String getNomeCompleto() {
+    	return this.nomeCompleto;
+	}
+    
+	public void setMatricula(int matricula){
+    	this.matricula = matricula;
+	}
+   
+	public int getMatricula() {
+    	return this.matricula;
+	}
+   
+	public void setSenha(String senha) {
+    	this.senha = senha;
+	}
+    
+	public String getSenha() {
+    	return this.senha;
+	}
+}
 
+|
+|
+|
+|
+|
+
+public class Administrador extends Usuario implements Autenticavel {
+	Administrador(int matricula, String senha) {
+    	super(matricula, senha);
+	}
+    
+	public boolean login(int matricula, String senha) {
+    	if(this.getMatricula() == matricula && this.getSenha() == senha) {
+        	return true;
+    	} else {
+        	return false;
+    	}
+	}
+}
+
+|
+|
+|
+|
+|
+
+public class Cliente extends Usuario implements Autenticavel{
+	Cliente(int matricula, String senha) {
+    	super(matricula, senha);
+	}
+    
+	public boolean login(int matricula, String senha) {
+    	if(this.getMatricula() == matricula && this.getSenha() == senha) {
+        	return true;
+    	} else {
+        	return false;
+    	}
+	}
+}
+
+|
+|
+|
+|
+|
+
+public interface Autenticavel {
+	public boolean login(int matricula, String senha);
+}
+
+|
+|
+|
+|
+|
+
+public class UsuarioRepository
+{
+	private static Database database;
+	private static Dao<Usuario, Integer> dao;
+	private List<Usuario> loadedUsuarios;
+	private Usuario loadedUsuario;
+    
+	public UsuarioRepository(Database database) {
+    	UsuarioRepository.setDatabase(database);
+    	loadedUsuarios = new ArrayList<Usuario>();
+	}
+    
+	public static void setDatabase(Database database) {
+    	UsuarioRepository.database = database;
+    	try {
+        	dao = DaoManager.createDao(database.getConnection(), Usuario.class);
+        	TableUtils.createTableIfNotExists(database.getConnection(), Usuario.class);
+    	}
+    	catch(SQLException e) {
+        	System.out.println(e);
+    	}       	 
+	}
+    
+	public Usuario create(Usuario usuario) {
+    	int nrows = 0;
+    	try {
+        	nrows = dao.create(usuario);
+        	if ( nrows == 0 )
+            	throw new SQLException("Error: object not saved");
+        	this.loadedUsuario = usuario;
+        	loadedUsuarios.add(usuario);
+    	} catch (SQLException e) {
+        	System.out.println(e);
+    	}
+    	return usuario;
+	}    
+
+	public void update(Usuario usuario) {
+  	// TODO
+	}
+
+	public void delete(Usuario usuario) {
+  	// TODO
+	}
+    
+	public Usuario loadFromId(int id) {
+    	try {
+        	this.loadedUsuario = dao.queryForId(id);
+        	if (this.loadedUsuario != null)
+            	this.loadedUsuarios.add(this.loadedUsuario);
+    	} catch (SQLException e) {
+        	System.out.println(e);
+    	}
+    	return this.loadedUsuario;
+	}    
+    
+	public List<Usuario> loadAll() {
+    	try {
+        	this.loadedUsuarios =  dao.queryForAll();
+        	if (this.loadedUsuarios.size() != 0)
+            	this.loadedUsuario = this.loadedUsuarios.get(0);
+    	} catch (SQLException e) {
+        	System.out.println(e);
+    	}
+    	return this.loadedUsuarios;
+	}
+}
 
 |
 |
