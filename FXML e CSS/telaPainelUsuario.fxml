@@ -5,19 +5,18 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" styleClass="painel-cinza" stylesheets="@login-estilos.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<Pane fx:id="painelUsuarioPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" styleClass="painel-cinza" stylesheets="@login-estilos.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Label layoutX="70.0" layoutY="30.0" styleClass="caixa-de-texto03" text="Painel do Usuário">
          <font>
             <Font size="24.0" />
          </font>
       </Label>
-      <Button alignment="CENTER" layoutX="420.0" layoutY="200.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="120.0" styleClass="botoes" text="Minhas reservas" />
-      <Button alignment="CENTER" layoutX="420.0" layoutY="160.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="120.0" styleClass="botoes" text="Adicionar saldo" />
-      <Button alignment="CENTER" layoutX="150.0" layoutY="290.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="120.0" styleClass="botoes" text="Alterar cadastro" />
-      <Button alignment="CENTER" layoutX="150.0" layoutY="330.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="120.0" styleClass="botoes" text="Encerrar sessão" />
-      <Label layoutX="70.0" layoutY="120.0" prefHeight="30.0" prefWidth="280.0" styleClass="caixa-de-texto02" text="Pessoa Exemplo">
+      <Button fx:id="minhasReservasButton" alignment="CENTER" layoutX="420.0" layoutY="200.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="120.0" styleClass="botoes" text="Minhas reservas" />
+      <Button fx:id="adicionarSaldoButton" alignment="CENTER" layoutX="420.0" layoutY="160.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="120.0" styleClass="botoes" text="Adicionar saldo" />
+      <Button fx:id="alterarCadastroButton" alignment="CENTER" layoutX="150.0" layoutY="290.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="120.0" styleClass="botoes" text="Alterar cadastro" />
+      <Button fx:id="encerrarSessaoButton" alignment="CENTER" layoutX="150.0" layoutY="330.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="120.0" styleClass="botoes" text="Encerrar sessão" />
+      <Label fx:id="nomeLabel" layoutX="70.0" layoutY="120.0" prefHeight="30.0" prefWidth="280.0" styleClass="caixa-de-texto02" text="Pessoa Exemplo">
          <font>
             <Font size="14.0" />
          </font>
@@ -32,17 +31,17 @@
             <Font size="16.0" />
          </font>
       </Label>
-      <Label layoutX="70.0" layoutY="180.0" prefHeight="30.0" prefWidth="280.0" styleClass="caixa-de-texto02" text="emailpessoaexemplo@gmail.com">
+      <Label fx:id="emailLabel" layoutX="70.0" layoutY="180.0" prefHeight="30.0" prefWidth="280.0" styleClass="caixa-de-texto02" text="*ainda não foi implementado* ">
          <font>
             <Font size="14.0" />
          </font>
       </Label>
-      <Label layoutX="70.0" layoutY="210.0" styleClass="caixa-de-texto03" text="Núm. de telefone:">
+      <Label layoutX="70.0" layoutY="210.0" styleClass="caixa-de-texto03" text="Matrícula:">
          <font>
             <Font size="16.0" />
          </font>
       </Label>
-      <Label layoutX="70.0" layoutY="240.0" prefHeight="30.0" prefWidth="280.0" styleClass="caixa-de-texto02" text="00000000000">
+      <Label fx:id="matriculaLabel" layoutX="70.0" layoutY="240.0" prefHeight="30.0" prefWidth="280.0" styleClass="caixa-de-texto02" text="00000000000">
          <font>
             <Font size="14.0" />
          </font>
@@ -52,7 +51,7 @@
             <Font size="16.0" />
          </font>
       </Label>
-      <Label layoutX="430.0" layoutY="120.0" prefHeight="30.0" prefWidth="100.0" styleClass="caixa-de-texto02" text="R$:">
+      <Label fx:id="saldoLabel" layoutX="430.0" layoutY="120.0" prefHeight="30.0" prefWidth="100.0" styleClass="caixa-de-texto02" text="R$:">
          <font>
             <Font size="14.0" />
          </font>
