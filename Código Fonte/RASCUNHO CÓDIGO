@@ -101,6 +101,12 @@ public abstract class Usuario {
 	@DatabaseField
 	private String senha;
    
+	/* Esse atributo ainda não foi implementado; no futuro ele será responsável por
+	* armazenar o email de contato do Usuario. 
+	* @DatabaseField
+        * private String email;
+        */
+	
 	Usuario() {
    	 
 	}
