@@ -202,8 +202,14 @@ public interface Autenticavel {
 |
 |
 
-public class UsuarioRepository
-{
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.table.TableUtils;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class UsuarioRepository {
 	private static Database database;
 	private static Dao<Usuario, Integer> dao;
 	private List<Usuario> loadedUsuarios;
@@ -249,22 +255,22 @@ public class UsuarioRepository
     
 	public Usuario loadFromId(int id) {
     	try {
-        	this.loadedUsuario = dao.queryForId(id);
-        	if (this.loadedUsuario != null)
-            	this.loadedUsuarios.add(this.loadedUsuario);
+            this.loadedUsuario = dao.queryForId(id);
+            if (this.loadedUsuario != null)
+            this.loadedUsuarios.add(this.loadedUsuario);
     	} catch (SQLException e) {
-        	System.out.println(e);
+            System.out.println(e);
     	}
     	return this.loadedUsuario;
 	}    
     
 	public List<Usuario> loadAll() {
     	try {
-        	this.loadedUsuarios =  dao.queryForAll();
-        	if (this.loadedUsuarios.size() != 0)
-            	this.loadedUsuario = this.loadedUsuarios.get(0);
+            this.loadedUsuarios =  dao.queryForAll();
+            if (this.loadedUsuarios.size() != 0)
+            this.loadedUsuario = this.loadedUsuarios.get(0);
     	} catch (SQLException e) {
-        	System.out.println(e);
+            System.out.println(e);
     	}
     	return this.loadedUsuarios;
 	}
