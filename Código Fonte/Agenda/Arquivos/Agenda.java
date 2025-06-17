@@ -2,7 +2,6 @@ public class Agenda
 /**
  * A Agenda funcionará com sua instaciacao.
  * Ou seja, para o sistema funcionar ele precisará de um objeto Agenda (ainda será implementado).
- * Poderá ter outras agendas. Uma "agenda VIP" por exemplo (ainda será implementado).
  * Ademais, em resumo, serve para marcar horários com método "marcarHorário".
  * 
  * @author Miguel Moreira 
@@ -10,7 +9,7 @@ public class Agenda
 {
     // Atributos de classe
     static final double tempoDeFuncionamentoSemana[] = {8.0, 8.0, 8.0, 8.0, 8.0, 8.0, 8.0};
-    static HorarioMarcado horariosMarcados[][] = new HorarioMarcado[7][999];     //Simulacao de banco de dados 
+    static HorarioIntervalo horariosMarcados[][] = new HorarioIntervalo[7][999];     //Simulacao de banco de dados 
     
     // Atributos
     String nomeAgenda;
@@ -19,112 +18,160 @@ public class Agenda
     final double tempoPadrao = 1.0;
     
     //Classes
-    class HorarioMarcado extends Intervalo
+    class HorarioIntervalo extends Intervalo
     {
         /**
-         * Parecido ao Intervalo, o HorarioMarcado funcionará como uma unidade de tempo, porém não poderão ser agrupadas.
-         * Atencao: o nome não é "Horario" e sim "HorarioMarcado" por causa dos métodos que possibilitam sua reserva.
-         * Obs.: necessita de um "banco de dados" que, por sua vez, é melhor implementado dentro da "MaquinaLavar" e suas subclasses.
+         * Parecido ao Intervalo, o HorarioIntervalo funcionará como uma unidade de tempo, porém não poderão ser agrupadas.
+         * Atencao: o nome não é "Horario" e sim "HorarioIntervalo" por causa de um pacote no "Java" com um nome parecido com aquele primeiro.
+         * Obs.: necessita de um "banco de dados" que, por sua vez, está, por enquanto implementado dentro da "MaquinaLavar" e suas subclasses.
          * 
          * @author Miguel Moreira 
          */
+        
         int matriculaDoUsuario;
-        int dia;
-        String idMaquina;
         
-        HorarioMarcado(int dia, double inicioDoHorario, double fimDoHorario, int matricula)
+        HorarioIntervalo(int dia, double inicioDoHorario, double fimDoHorario, int matricula)
         {
-            super(inicioDoHorario, fimDoHorario);
-            this.dia = dia;
+            super(dia, inicioDoHorario, fimDoHorario);
             matriculaDoUsuario = matricula;
-        }
-        
-        public static double[] definirTempoMaquinaS(char tipoMaquina)
-        {
-                switch(tipoMaquina)
-                {
-                    case 'l':
-                    case 'L':
-                        return MaquinaPequena.tempoOfertadoMaquinaS;
-                        
-                    case 'm':
-                    case 'M':
-                        return MaquinaMedia.tempoOfertadoMaquinaS;
-                        
-                    case 'p':
-                    case 'P':
-                    case 'g':
-                    case 'G':
-                        return MaquinaPesada.tempoOfertadoMaquinaS;  
-                        
-                    default:
-                        return MaquinaLavar.tempoOfertadoMaquinaS;
-                }
         }
             
         boolean selecionarDia(char tipoMaquina)
         {
             /**
-             * Verifica se o dia está disponível para uma instanciacao do "HorarioMarcado"
+             * Verifica se o dia está disponível para uma instanciacao do "HorarioIntervalo"
              */
             if (dia < tempoDeFuncionamentoSemana.length && tempoDeFuncionamentoSemana[dia] >= 0)
             {
-                if(tempoDeFuncionamentoSemana[dia] != 0)
+                double[] tempo = new double[7];
+                int tipo;
+                switch(tipoMaquina)
                 {
-                    if(definirTempoMaquinaS(tipoMaquina)[dia] != 0)
+                    case 'l':
+                    case 'L':
+                        tempo = MaquinaPequena.tempoOfertadoMaquinaS;
+                        tipo = MaquinaPequena.qtdMaquina;
+                        break;
+                            
+                    case 'm':
+                    case 'M':
+                        tempo = MaquinaMedia.tempoOfertadoMaquinaS;
+                        tipo = MaquinaMedia.qtdMaquina;
+                        break;
+                            
+                    case 'p':
+                    case 'P':
+                    case 'g':
+                    case 'G':
+                        tempo = MaquinaPesada.tempoOfertadoMaquinaS;
+                        tipo = MaquinaPesada.qtdMaquina;
+                        break;
+                            
+                    default:
+                        tempo = MaquinaLavar.tempoOfertadoMaquinaS;
+                        tipo = MaquinaLavar.qtdMaquina;
+                }
+                
+                if(tempoDeFuncionamentoSemana[dia] != 0 && tipo != 0)
+                {   
+                    if(tempo[dia] != 0)
                     {
                         return true;                
                     }
                     else
                     {
-                        System.out.println("O dia " + dia  + " selecionado está cheio...");
+                        System.out.println("O dia " + this.dia  + " selecionado está cheio...");
                     }
                     
                 }
                 else
                 {
-                    System.out.println("O dia " + dia  + " selecionado está indisponível...");
+                    System.out.println("O dia " + this.dia  + " selecionado está indisponível...");
                 }
                 
             }
             else
             {
-                System.out.println("Não é possível selecionar esse dia " + dia + "...");
+                System.out.println("Não é possível selecionar esse dia " + this.dia + "...");
             }
             return false;
         }
         
-        private boolean indisponibilizarTempo(char tipoMaquina)     //Talvez mude esse nome...
+        String verificarMaquinaDisponivel(char tipoMaquina, String nome)
          /**
-          * Tenta reservar (“indisponibilizar”) o tempoTotal calculado na classe "Intervalo" para um "HorarioMarcado".
+          * Verifica se há uma máquina disponível para uma instanciacao do "HorarioIntervalo".
           * Resumo da lógica: é impossível indisponibilzar algo já indisponível.
           */
         {
             if (!selecionarDia(tipoMaquina)) {
-                return false; // Mensagens já são impressas dentro de selecionarDia
+                return ""; // Mensagens já são impressas dentro de selecionarDia
             }
             
-            if (tempoTotal > Agenda.tempoDeFuncionamentoSemana[dia]) {
+            if (intervaloDeTempo > Agenda.tempoDeFuncionamentoSemana[dia]) {
                 System.out.println("Intervalo de tempo escolhido vai além do horário de funcionamento da lavanderia.");
-                return false;
+                return "";
             }
         
             for (int i = 0; i < MaquinaLavar.maquinasOfertadas.length && MaquinaLavar.maquinasOfertadas[i] != null; i++) {
                 MaquinaLavar maquina = MaquinaLavar.maquinasOfertadas[i];
         
-                if (maquina.tipoMaquina == tipoMaquina) {
-                    if (tempoTotal <= maquina.tempoOfertadoDaMaquina[this.dia]) {
-                        // Indisponibiliza o tempo
-                        maquina.tempoOfertadoDaMaquina[this.dia] -= tempoTotal;
-                        idMaquina = maquina.idMaquina;
-        
-                        System.out.println("Horário marcado para o dia " + dia + " :)");
-                        return true;
+                if (maquina.tipoMaquina == tipoMaquina && maquina.idMaquina != nome) {
+                    if (intervaloDeTempo <= maquina.tempoOfertadoDaMaquina[this.dia]) {
+                        return maquina.idMaquina;
                     }
                 }
             }
         
             System.out.println("O dia " + dia + " requerido não tem essa disponibilidade de tempo em específico...");
+            return "";
+        }
+        
+        private String verificarMaquinaDisponivel(char tipoMaquina)
+        {
+            return verificarMaquinaDisponivel(tipoMaquina, "");
+        }
+        
+        public boolean marcarHorario(double pesoRoupa)
+        {
+            char tipo = ' ';
+            if (pesoRoupa <= 5)
+            {
+                tipo = 'l';
+            }
+            else if(pesoRoupa <= 8)
+            {
+                tipo = 'm';
+            }
+            else if(pesoRoupa <= 15)
+            {
+                tipo = 'p';
+            }
+            
+            String nome = verificarMaquinaDisponivel(tipo);
+            if (!nome.isEmpty())
+            {
+                for (int i = 0; i < MaquinaLavar.maquinasOfertadas.length; i++)
+                {
+                    MaquinaLavar maquina = MaquinaLavar.maquinasOfertadas[i];
+                    if (maquina.idMaquina.equals(nome))
+                    {
+                        maquina.descontarTempo(this.dia, this.intervaloDeTempo);
+                        this.idMaquina = nome;
+                        System.out.println("Horário marcado para o dia " + dia + " :)");
+                        break;
+                    }
+                }
+                
+                for (int i = 0; i < horariosMarcados[dia].length; i++)
+                {
+                    
+                    if (horariosMarcados[dia][i] == null)
+                    {
+                        horariosMarcados[dia][i] = this;
+                        return true;
+                    }
+                }
+            }
             return false;
         }
     }
@@ -147,46 +194,17 @@ public class Agenda
          /**
           * Se conseguir reservar tempo, armazena a marcação em horáriosMarcados.
           */
-        HorarioMarcado novo = new HorarioMarcado(dia, inicioDoHorario, fimDoHorario, matricula);
-        char tipo = ' ';
-        if (pesoRoupa < 5)
+        HorarioIntervalo novo = new HorarioIntervalo(dia, inicioDoHorario, fimDoHorario, matricula);
+        if (novo.marcarHorario(pesoRoupa))
         {
-            tipo = 'l';
+            return true;        //Facilitando a leitura...
         }
-        else if(pesoRoupa < 8)
+        else
         {
-            tipo = 'm';
+            return false;
         }
-        else if(pesoRoupa < 15)
-        {
-            tipo = 'p';
-        }
-        
-        if (novo.indisponibilizarTempo(tipo))
-        {
-            
-            for (int i = 0; i < horariosMarcados[dia].length; i++)
-            {
-                
-                if (horariosMarcados[dia][i] == null)
-                {
-                    horariosMarcados[dia][i] = novo;
-                    return true;
-                }
-            }
-        }
-        return false;
     }
     
-    public boolean marcarHorario(int dia, double inicioDoHorario, double fimDoHorario, int matricula, MaquinaLavar tipoDaMaquina)
-    {
-        return false;
-    }
-    
-    public boolean marcarHorario(int dia, double inicioDoHorario, double fimDoHorario, int matricula, char tipoDaMaquina)
-    {
-        return false;
-    }
     
     /*public ?UmObjeto? gerarCalendario()
     {
@@ -196,5 +214,22 @@ public class Agenda
     void setNomeAgenda(String nome)
     {
         nomeAgenda =  nome;
+    }
+    
+    void teste()
+    {
+        HorarioIntervalo teste1 = new HorarioIntervalo(0, 0, 1, 123);
+        System.out.println(teste1.selecionarDia('m'));
+        MaquinaPequena pp = new MaquinaPequena("jjj");
+        System.out.println(teste1.selecionarDia('m'));
+        System.out.println(teste1.selecionarDia('l'));
+        
+        HorarioIntervalo teste2 = new HorarioIntervalo(0, 0, 10, 123);
+        System.out.println(teste2.verificarMaquinaDisponivel('l'));
+        System.out.println(teste1.verificarMaquinaDisponivel('l'));
+        
+        teste1.marcarHorario(1);
+        HorarioIntervalo teste3 = new HorarioIntervalo(0, 0, 8, 123);
+        System.out.println(teste3.verificarMaquinaDisponivel('l'));
     }
 }

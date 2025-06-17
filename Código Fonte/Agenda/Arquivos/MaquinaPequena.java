@@ -15,6 +15,17 @@ public class MaquinaPequena extends MaquinaLavar
         }
     }
     
+    @Override
+    void descontarTempo(int dia, double tempoReservado)
+    /*
+     * Do menos ao mais geral
+     */
+    {
+        this.tempoOfertadoDaMaquina[dia] -= tempoReservado;
+        MaquinaPequena.tempoOfertadoMaquinaS[dia] -= tempoReservado;
+        MaquinaLavar.tempoOfertadoMaquinaS[dia] -= tempoReservado;
+    }
+    
     MaquinaPequena()    //Usado no "Teste"
     {
         this("migué");
@@ -22,5 +33,4 @@ public class MaquinaPequena extends MaquinaLavar
         tempoOfertadoDaMaquina = teste;
         tempoOfertadoMaquinaS = teste;
     }
-
 }

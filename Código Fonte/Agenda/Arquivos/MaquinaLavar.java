@@ -2,6 +2,9 @@ public abstract class MaquinaLavar
 {
     /**
      * Os atributos estáticos da classe simula um banco de dados
+     * Obs.: passageiro uma vez que haverá cenário nos quais a máquina estará quebrada,
+     *       ou caso ocorra um cadastro errado da máquina, criando um objeto que não reflita a realidade.
+     *       Diversos casos no qual demonstram o defeito da máquina mecher no banco de dados. 
      */
     static int qtdMaquina = 0;
     static MaquinaLavar maquinasOfertadas[] = new MaquinaLavar[100];
@@ -10,7 +13,7 @@ public abstract class MaquinaLavar
     protected String idMaquina;
     protected int pesoMax;
     protected char tipoMaquina;
-    protected double tempoOfertadoDaMaquina[] = Agenda.tempoDeFuncionamentoSemana;
+    protected double tempoOfertadoDaMaquina[] = Agenda.tempoDeFuncionamentoSemana.clone();
     
     MaquinaLavar()
     {
@@ -21,4 +24,6 @@ public abstract class MaquinaLavar
             tempoOfertadoMaquinaS[i] += Agenda.tempoDeFuncionamentoSemana[i];
         }
     }
+    
+    abstract void descontarTempo(int dia, double tempoReservado);
 }

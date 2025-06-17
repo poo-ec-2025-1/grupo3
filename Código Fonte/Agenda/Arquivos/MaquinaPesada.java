@@ -14,4 +14,15 @@ public class MaquinaPesada extends MaquinaLavar
             tempoOfertadoMaquinaS[i] += Agenda.tempoDeFuncionamentoSemana[i];
         }
     }
+    
+    @Override
+    void descontarTempo(int dia, double tempoReservado)
+    /*
+     * Do menos ao mais geral
+     */
+    {
+        this.tempoOfertadoDaMaquina[dia] -= tempoReservado;
+        MaquinaPesada.tempoOfertadoMaquinaS[dia] -= tempoReservado;
+        MaquinaLavar.tempoOfertadoMaquinaS[dia] -= tempoReservado;
+    }
 }
