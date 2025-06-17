@@ -7,10 +7,10 @@
 public class Intervalo
 {
     // variáveis de instância
-    //protected int dia;  Talvez não seja necessário
+    protected int dia;
     protected double inicio = 0;
     protected double fim = 0;
-    protected double tempoTotal = 0;
+    protected double intervaloDeTempo = 0;
     protected String idMaquina;
 
     /**
@@ -18,20 +18,22 @@ public class Intervalo
      */
     protected Intervalo(){}
     
-    public Intervalo(double inicio, double fim)
+    public Intervalo(int dia, double inicio, double fim)
     {
+        
         // inicializa variáveis de instância
         boolean teste = (inicio < fim);
         if (teste)  {
+                this.dia = dia;
                 this.inicio = inicio;
                 this.fim = fim;
-                tempoTotal = fim - inicio;
+                intervaloDeTempo = fim - inicio;
         }
     }
     
-    public Intervalo(String idMaquina, double inicio, double fim)
+    public Intervalo(String idMaquina, int dia,double inicio, double fim)
     {
-        this(inicio, fim);
+        this(dia, inicio, fim);
         this.idMaquina = idMaquina;
     }
 }
