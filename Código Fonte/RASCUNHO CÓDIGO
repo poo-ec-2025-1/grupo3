@@ -282,123 +282,309 @@ public class UsuarioRepository {
 |
 |
 
+import com.j256.ormlite.table.DatabaseTable;
+import com.j256.ormlite.field.DatabaseField;
 
+public abstract class Aparelho {
+    @DatabaseField
+    private int id;
+    
+    @DatabaseField
+    private String modelo;
+    
+    @DatabaseField
+    private String descricao;
+    
+    @DatabaseField
+    private boolean agendavel;
+    
+    @DatabaseField
+    private boolean disponivel;
+    
+    Aparelho() {
+        this.id = 0;
+        this.modelo = "N/A";
+        this.descricao = "N/A";
+        this.agendavel = false;
+        this.disponivel = false;
+    }
+    
+    Aparelho(int id, String modelo, String descricao, boolean agendavel) {
+        this.id = id;
+        this.modelo = modelo;
+        this.descricao = descricao;
+        this.agendavel = agendavel;
+        this.disponivel = false;
+    }
+    
+    public void setId(int id) {
+        this.id = id;
+    }
+    
+    public int getId() {
+        return this.id;
+    }
+    
+    public void setModelo(String modelo) {
+        this.modelo = modelo;   
+    }
+    
+    public String getModelo() {
+        return this.modelo;
+    }
+    
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;   
+    }
+    
+    public String getDescricao() {
+        return this.descricao;
+    }
+    
+    public void setAgendavel(boolean agendavel) {
+        this.agendavel = agendavel;   
+    }
+    
+    public boolean getAgendavel() {
+        return this.agendavel;
+    }
+    
+    public void setDisponivel(boolean disponivel) {
+        this.disponivel = disponivel;   
+    }
+    
+    public boolean getDisponivel() {
+        return this.disponivel;
+    }
+}
 
-public abstract class MaquinaLavar {
-    public int pesoMax;
+|
+|
+|
+|
+|
+|
 
-    public MaquinaLavar(int pesoMax) {
-        this.pesoMax = pesoMax;
+public class MaquinaDeLavar extends Aparelho implements Reservavel {
+    private int capacidadeKg;
+    private boolean reservado;
+    private double custo;
+
+    public MaquinaDeLavar(int id, String modelo, String descricao, boolean agendavel, int capacidadeKg) {
+        super(id, modelo, descricao, agendavel);
+        this.capacidadeKg = capacidadeKg;
+        this.reservado = false;
     }
 
-    public abstract void lavar();
-    
-    public abstract double getPreco();
-
-    // Método estático para criar a máquina correta
-    public static MaquinaLavar criarMaquina(int pesoRoupa) {
-        if (pesoRoupa <= 5) {
-            return new MaquinaPequena();
-        } else if (pesoRoupa > 5 && pesoRoupa < 10) {
-            return new MaquinaMedia();
+    @Override
+    public boolean reservar() {
+        if (getAgendavel() && getDisponivel() && !this.reservado) {
+            this.reservado = true;
+            setDisponivel(false);
+            System.out.println("Máquina de lavar " + getModelo() + " (ID: " + getId() + ") reservada com sucesso.");
+            return true;
         } else {
-            return new MaquinaPesada();
+            System.out.println("Máquina de lavar " + getModelo() + " (ID: " + getId() + ") não pode ser reservada. Estado atual: Agendável=" + getAgendavel() + ", Disponível=" + getDisponivel() + ", Reservado=" + this.reservado);
+            return false;
         }
     }
-}
 
-
-|
-|
-|
-|
-|
-|
-
-
-public class MaquinaPequena extends MaquinaLavar {
-
-    public MaquinaPequena() {
-        super(5);
+    @Override
+    public void liberar() {
+        if (this.reservado) {
+            this.reservado = false;
+            this.setDisponivel(true);
+            System.out.println("Máquina de lavar " + getModelo() + " (ID: " + getId() + ") liberada.");
+        } else {
+            System.out.println("Máquina de lavar " + getModelo() + " (ID: " + getId() + ") não estava reservada.");
+        }
     }
 
     @Override
-    public void lavar() {
-        System.out.println("Lavando com máquina PEQUENA de até " + pesoMax + "kg.");
+    public boolean estaReservado() {
+        return this.reservado;
+    }
+
+    public int getCapacidadeKg() {
+        return capacidadeKg;
+    }
+
+    public void setCapacidadeKg(int capacidadeKg) {
+        this.capacidadeKg = capacidadeKg;
     }
     
-    @Override
-    public double getPreco() {
-        return 3.00;
-    }
-}
-
-
-
-
-|
-|
-|
-|
-|
-
-
-
-public class MaquinaMedia extends MaquinaLavar {
-
-    public MaquinaMedia() {
-        super(8);
-    }
-
-    @Override
-    public void lavar() {
-        System.out.println("Lavando com máquina MÉDIA de até " + pesoMax + "kg.");
+    public void setCusto(double custo) {
+        this.custo = custo;
     }
     
-     @Override
-    public double getPreco() {
-        return 6.00;
+    public double getCusto() {
+        return this.custo;
     }
 }
 
-
-
-|
 |
 |
 |
 |
 |
 
+public class Secadora extends Aparelho implements Reservavel {
+    private int capacidadeKg;
+    private boolean reservado;
+    private double custo;
 
-
-public class MaquinaPesada extends MaquinaLavar {
-
-    public MaquinaPesada() {
-        super(15);
+    public Secadora(int id, String modelo, String descricao, boolean agendavel, double custo) {
+        super(id, modelo, descricao, agendavel);
+        this.reservado = false;
     }
 
     @Override
-    public void lavar() {
-        System.out.println("Lavando com máquina PESADA de até " + pesoMax + "kg.");
+    public boolean reservar() {
+        if (getAgendavel() && getDisponivel() && !this.reservado) {
+            this.reservado = true;
+            setDisponivel(false);
+            System.out.println("Secadora " + getModelo() + " (ID: " + getId() + ") reservada com sucesso.");
+            return true;
+        } else {
+            System.out.println("Secadora " + getModelo() + " (ID: " + getId() + ") não pode ser reservada. Estado atual: Agendável=" + getAgendavel() + ", Disponível=" + getDisponivel() + ", Reservado=" + this.reservado);
+            return false;
+        }
+    }
+
+    @Override
+    public void liberar() {
+        if (this.reservado) {
+            this.reservado = false;
+            setDisponivel(true);
+            System.out.println("Secadora " + getModelo() + " (ID: " + getId() + ") liberada.");
+        } else {
+            System.out.println("Secadora " + getModelo() + " (ID: " + getId() + ") não estava reservada.");
+        }
+    }
+
+    @Override
+    public boolean estaReservado() {
+        return this.reservado;
     }
     
-     @Override
-    public double getPreco() {
-        return 9.00;
+    public int getCapacidadeKg() {
+        return capacidadeKg;
+    }
+
+    public void setCapacidadeKg(int capacidadeKg) {
+        this.capacidadeKg = capacidadeKg;
+    }
+    
+    public void setCusto(double custo) {
+        this.custo = custo;
+    }
+    
+    public double getCusto() {
+        return this.custo;
+    }
+}
+
+|
+|
+|
+|
+|
+|
+
+public interface Reservavel {
+    public boolean reservar();
+    
+    public void liberar();
+    
+    public boolean estaReservado();
+}
+
+|
+|
+|
+|
+|
+
+import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.dao.Dao;
+import java.sql.SQLException;
+import com.j256.ormlite.table.TableUtils;
+import java.util.List;
+import java.util.ArrayList;
+
+public class AparelhoRepository {
+    private static Database database;
+    private static Dao<Aparelho, Integer> dao;
+    private List<Aparelho> loadedAparelhos;
+    private Aparelho loadedAparelho;
+    
+    public AparelhoRepository(Database database) {
+        AparelhoRepository.setDatabase(database);
+        loadedAparelhos = new ArrayList<Aparelho>();
+    }
+    
+    public static void setDatabase(Database database) {
+        AparelhoRepository.database = database;
+        try {
+            dao = DaoManager.createDao(database.getConnection(), Aparelho.class);
+            TableUtils.createTableIfNotExists(database.getConnection(), Aparelho.class);
+        }
+        catch(SQLException e) {
+            System.out.println(e);
+        }            
+    }
+    
+    public Aparelho create(Aparelho aparelho) {
+        int nrows = 0;
+        try {
+            nrows = dao.create(aparelho);
+            if ( nrows == 0 )
+                throw new SQLException("Error: object not saved");
+            this.loadedAparelho = aparelho;
+            loadedAparelhos.add(aparelho);
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return aparelho;
+    }    
+
+    public void update(Aparelho aparelho) {
+      // TODO
+    }
+
+    public void delete(Aparelho aparelho) {
+      // TODO
+    }
+    
+    public Aparelho loadFromId(int id) {
+        try {
+            this.loadedAparelho = dao.queryForId(id);
+            if (this.loadedAparelho != null)
+                this.loadedAparelhos.add(this.loadedAparelho);
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return this.loadedAparelho;
+    }    
+    
+    public List<Aparelho> loadAll() {
+        try {
+            this.loadedAparelhos =  dao.queryForAll();
+            if (this.loadedAparelhos.size() != 0)
+                this.loadedAparelho = this.loadedAparelhos.get(0);
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return this.loadedAparelhos;
     }
 }
 
 
-
-
 |
 |
 |
 |
 |
-|
-
 
 public class Caixa {
 
