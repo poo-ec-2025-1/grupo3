@@ -1,0 +1,267 @@
+import java.time.LocalDate;
+import java.time.LocalTime;
+import com.j256.ormlite.table.DatabaseTable;
+import com.j256.ormlite.field.DatabaseField;
+
+public class Reserva {
+    @DatabaseField
+    private Long id;
+    
+    @DatabaseField
+    private LocalDate dataReserva;
+    
+    @DatabaseField
+    private LocalTime horaInicio;
+    
+    @DatabaseField
+    private LocalTime horaFim;
+    
+    @DatabaseField
+    private Aparelho aparelho;
+    
+    @DatabaseField
+    private String status;
+    
+    Reserva() {
+        
+    }
+    
+    public Reserva(LocalDate dataReserva, LocalTime horaInicio, LocalTime horaFim, Aparelho aparelho) {
+        this.dataReserva = dataReserva;
+        this.horaInicio = horaInicio;
+        this.horaFim = horaFim;
+        this.aparelho = aparelho;
+        this.status = "PENDENTE";
+    }
+
+//Start GetterSetterExtension Source Code
+    
+    /**SET Method propertie id*/
+    public void setId(long id) {
+        this.id = id;
+    }
+    
+    /**GET Method propertie id*/
+    public Long getId() {
+        return this.id;
+    }
+    
+    /**SET Method propertie dataReserva*/
+    public void setDataReserva(LocalDate dataReserva) {
+        this.dataReserva = dataReserva;
+    }
+    
+    /**GET Method propertie dataReserva*/
+    public LocalDate getDataReserva() {
+        return this.dataReserva;
+    }
+    
+    /**SET Method propertie horaInicio*/
+    public void setHoraInicio(LocalTime horaInicio) {
+        this.horaInicio = horaInicio;
+    }
+    
+    /**GET Method propertie horaInicio*/
+    public LocalTime getHoraInicio() {
+        return this.horaInicio;
+    }
+    
+    /**SET Method propertie horaFim*/
+    public void setHoraFim(LocalTime horaFim) {
+        this.horaFim = horaFim;
+    }
+    
+    /**GET Method propertie horaFim*/
+    public LocalTime getHoraFim() {
+        return this.horaFim;
+    }
+    
+    /**SET Method propertie aparelho*/
+    public void setAparelho(Aparelho aparelho) {
+        this.aparelho = aparelho;
+    }
+    
+    /**GET Method propertie aparelho*/
+    public Aparelho getAparelho() {
+        return this.aparelho;
+    }
+    
+    /**SET Method propertie status*/
+    public void setStatus(String status) {
+        this.status = status;
+    }
+    
+    /**GET Method propertie status*/
+    public String getStatus() {
+        return this.status;
+    }
+    
+//End GetterSetterExtension Source Code
+    
+}
+
+|
+|
+|
+|
+|
+
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+
+public class IntervaloHorario {
+
+    private final LocalTime horaInicio;
+    private final LocalTime horaFim;
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
+
+    public IntervaloHorario(LocalTime horaInicio, LocalTime horaFim) {
+        this.horaInicio = horaInicio;
+        this.horaFim = horaFim;
+    }
+
+    public LocalTime getHoraInicio() {
+        return horaInicio;
+    }
+
+    public LocalTime getHoraFim() {
+        return horaFim;
+    }
+
+    
+    //usar toString para colocar no combobox do javafx
+    @Override
+    public String toString() {
+        return horaInicio.format(FORMATTER) + " - " + horaFim.format(FORMATTER);
+    }
+}
+
+|
+|
+|
+|
+|
+
+import java.time.LocalTime;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Collections;
+
+// classe final para evitar que ela seja modificada
+public final class HorariosFixos {
+    private static final List<IntervaloHorario> intervalosPadrao;
+
+    // o código vai rodar so uma vez quando a classe for instanciada
+    // os horarios sao adicionados dessa forma para manter a formatacao correta
+    static {
+        List<IntervaloHorario> intervalos = new ArrayList<>();
+        
+        intervalos.add(new IntervaloHorario(LocalTime.of(0, 0), LocalTime.of(2, 0)));
+        intervalos.add(new IntervaloHorario(LocalTime.of(2, 0), LocalTime.of(4, 0)));
+        intervalos.add(new IntervaloHorario(LocalTime.of(4, 0), LocalTime.of(6, 0)));
+        intervalos.add(new IntervaloHorario(LocalTime.of(6, 0), LocalTime.of(8, 0)));
+        intervalos.add(new IntervaloHorario(LocalTime.of(8, 0), LocalTime.of(10, 0)));
+        intervalos.add(new IntervaloHorario(LocalTime.of(10, 0), LocalTime.of(12, 0)));
+        intervalos.add(new IntervaloHorario(LocalTime.of(12, 0), LocalTime.of(14, 0)));
+        intervalos.add(new IntervaloHorario(LocalTime.of(14, 0), LocalTime.of(16, 0)));
+        intervalos.add(new IntervaloHorario(LocalTime.of(16, 0), LocalTime.of(18, 0)));
+        intervalos.add(new IntervaloHorario(LocalTime.of(18, 0), LocalTime.of(20, 0)));
+        intervalos.add(new IntervaloHorario(LocalTime.of(20, 0), LocalTime.of(22, 0)));
+        intervalos.add(new IntervaloHorario(LocalTime.of(22, 0), LocalTime.of(0, 0)));
+        
+        // comando para evitar que a lista seja modificada
+        intervalosPadrao = Collections.unmodifiableList(intervalos);
+    }
+
+    public static List<IntervaloHorario> getIntervalos() {
+        return intervalosPadrao;
+    }
+}
+
+|
+|
+|
+|
+|
+
+import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.dao.Dao;
+import java.sql.SQLException;
+import com.j256.ormlite.table.TableUtils;
+import java.util.List;
+import java.util.ArrayList;
+
+public class ReservaRepository {
+    private static Database database;
+    private static Dao<Reserva, Integer> dao;
+    private List<Reserva> loadedReservas;
+    private Reserva loadedReserva;
+    
+    public ReservaRepository(Database database) {
+        ReservaRepository.setDatabase(database);
+        loadedReservas = new ArrayList<Reserva>();
+    }
+    
+    public static void setDatabase(Database database) {
+        ReservaRepository.database = database;
+        try {
+            dao = DaoManager.createDao(database.getConnection(), Reserva.class);
+            TableUtils.createTableIfNotExists(database.getConnection(), Reserva.class);
+        }
+        catch(SQLException e) {
+            System.out.println(e);
+        }            
+    }
+    
+    public Reserva create(Reserva reserva) {
+        int nrows = 0;
+        try {
+            nrows = dao.create(reserva);
+            if ( nrows == 0 )
+                throw new SQLException("Error: object not saved");
+            this.loadedReserva = reserva;
+            loadedReservas.add(reserva);
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return reserva;
+    }    
+
+    public void update(Reserva reserva) {
+      try {
+            dao.update(reserva);
+        } catch (SQLException e) {
+            System.err.println("Erro ao atualizar a reserva: " + e.getMessage());
+        }
+    }
+
+    public void delete(Reserva reserva) {
+      try {
+          dao.delete(reserva);
+      } catch(SQLException e) {
+          System.err.println("Erro ao deletar a reserva: " + e.getMessage());
+      }
+    }
+    
+    public Reserva loadFromId(int id) {
+        try {
+            this.loadedReserva = dao.queryForId(id);
+            if (this.loadedReserva != null)
+                this.loadedReservas.add(this.loadedReserva);
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return this.loadedReserva;
+    }    
+    
+    public List<Reserva> loadAll() {
+        try {
+            this.loadedReservas =  dao.queryForAll();
+            if (this.loadedReservas.size() != 0)
+                this.loadedReserva = this.loadedReservas.get(0);
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return this.loadedReservas;
+    }
+}
