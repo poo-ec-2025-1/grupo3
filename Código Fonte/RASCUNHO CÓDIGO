@@ -1,46 +1,3 @@
-
-
-/*
- esta classe sistema será o que conecta todos os processos e os realiza
- */
-import java.util.Scanner;
-
-public class Sistema {
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-
-        System.out.println("Digite sua matrícula: ");
-        int matricula = scanner.nextInt();
-
-        System.out.println("Pese sua roupa, veja o valor e digite aqui: ");
-        int peso = scanner.nextInt();
-
-        // Criar a máquina certa para o peso informado
-        MaquinaLavar maquina = MaquinaLavar.criarMaquina(peso);
-
-        // Chamar o método lavar
-        maquina.lavar();
-
-        System.out.println("Matrícula: " + matricula + " - Processo de lavagem concluído.");
-
-        Caixa.cobrar(maquina, matricula);
-
-        scanner.close();
-    }
-}
-
-  /*
-   esta classe depende diretamente das demais, as quais ainda estão em desenvolvimento
-   desta forma esta classe fica assim. Será analisada e desenvolvida mais adiante 
-   */
-
-|
-|
-|
-|
-|
-|
-
 import java.sql.*;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
 
@@ -49,34 +6,34 @@ public class Database {
    private JdbcConnectionSource connection = null;
    
    public Database(String databaseName) {
-   	this.databaseName = databaseName;
+       this.databaseName = databaseName;
    }    
    
    public JdbcConnectionSource getConnection() throws SQLException {
-  	if ( databaseName == null ) {
-      	throw new SQLException("database name is null");
-  	}
-  	if ( connection == null ) {
-      	try {
-          	connection = new JdbcConnectionSource("jdbc:sqlite:"+databaseName);        	 
-        	} catch ( Exception e ) {
-            	System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-            	System.exit(0);
-        	}
-        	System.out.println("Opened database successfully");
-  	}
-  	return connection;
+      if ( databaseName == null ) {
+            throw new SQLException("database name is null");
+      }
+      if ( connection == null ) {
+            try {
+              connection = new JdbcConnectionSource("jdbc:sqlite:"+databaseName);             
+            } catch ( Exception e ) {
+                    System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+                    System.exit(0);
+            }
+            System.out.println("Opened database successfully");
+      }
+      return connection;
    }
    
    public void close() {
-   	if ( connection != null ) {
-       	try {
-           	connection.close();
-           	this.connection = null;
-       	} catch (java.lang.Exception e) {
-           	System.err.println(e);
-       	}
-   	}
+       if ( connection != null ) {
+           try {
+               connection.close();
+               this.connection = null;
+           } catch (java.lang.Exception e) {
+                System.err.println(e);
+           }
+       }
    }
 }
 
@@ -86,64 +43,124 @@ public class Database {
 |
 |
 
+import java.util.Date;
+import java.text.SimpleDateFormat;
 import com.j256.ormlite.table.DatabaseTable;
 import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.field.DataType;
 
 @DatabaseTable(tableName = "usuario")
 
 public abstract class Usuario {
-	@DatabaseField
-	private String nomeCompleto;
+    @DatabaseField(generatedId = true)
+    private int id;
     
-	@DatabaseField
-	private int matricula;
+    @DatabaseField(dataType=DataType.STRING)
+    private String nomeCompleto;
     
-	@DatabaseField
-	private String senha;
-   
-	/* Esse atributo ainda não foi implementado; no futuro ele será responsável por
-	* armazenar o email de contato do Usuario. 
-	* @DatabaseField
-        * private String email;
-        */
-	
-	Usuario() {
-   	 
-	}
+    @DatabaseField(dataType=DataType.INTEGER)
+    private int matricula;
     
-	Usuario(String nomeCompleto, int matricula, String senha) {
+    @DatabaseField(dataType=DataType.STRING)
+    private String senha;
+    
+    @DatabaseField(dataType=DataType.DOUBLE)
+    private double saldo;
+    
+    /* Esse atributo ainda não foi implementado; no futuro ele seria responsável por
+    * armazenar o email de contato do Usuario. 
+    * @DatabaseField
+    * private String email;
+    */
+    
+    Usuario() {
+        this.nomeCompleto = "N/A";
+        this.matricula = 0;
+        this.senha = "N/A";
+        this.saldo = 0.0;
+    }
+    
+    Usuario(String nomeCompleto, int matricula, String senha) {
         this.nomeCompleto = nomeCompleto;
         this.matricula = matricula;
         this.senha = senha;
-    	}
+        this.saldo = 0.0;
+    }
    
-	public String mostrarDados() {
-    	return "Nome: "+this.getNomeCompleto()+"\nMatricula: "+this.getMatricula();
-	}
+    public boolean login(int matricula, String senha) {
+        if(this.getMatricula() == matricula && this.getSenha() == senha) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     
-	public void setNomeCompleto(String nome) {
-    	this.nomeCompleto = nome;
-	}
+    public String mostrarDados() {
+        return "Nome: "+this.getNomeCompleto()+"\nMatricula: "+this.getMatricula();
+    }
     
-	public String getNomeCompleto() {
-    	return this.nomeCompleto;
-	}
+    public void depositar(double valor) {
+        if(saldo <= 0) {
+            throw new IllegalArgumentException("O valor a ser depositado deve ser positivo.");
+        }
+        this.saldo += valor;
+    }
     
-	public void setMatricula(int matricula){
-    	this.matricula = matricula;
-	}
+    public void debitar(double valor) {
+        if(valor > this.saldo) {
+            throw new IllegalStateException("Saldo insuficiente.");
+        }
+        this.saldo -= valor;
+    }
+    
+//Start GetterSetterExtension Source Code
+    
+    /**SET Method Propertie id*/
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    /**GET Method Propertie id*/
+    public int getId() {
+        return this.id;
+    }
+
+    /**SET Method Propertie nomeCompleto*/
+    public void setNomeCompleto(String nome) {
+        this.nomeCompleto = nome;
+    }
+    
+    /**GET Method Propertie nomeCompleto*/
+    public String getNomeCompleto() {
+        return this.nomeCompleto;
+    }
+    
+    /**SET Method Propertie matricula*/
+    public void setMatricula(int matricula){
+        this.matricula = matricula;
+    }
    
-	public int getMatricula() {
-    	return this.matricula;
-	}
+    /**GET Method Propertie matricula*/
+    public int getMatricula() {
+        return this.matricula;
+    }
    
-	public void setSenha(String senha) {
-    	this.senha = senha;
-	}
+    /**SET Method Propertie senha*/
+    public void setSenha(String senha) {
+        this.senha = senha;
+    }
     
-	public String getSenha() {
-    	return this.senha;
-	}
+    /**GET Method Propertie senha*/
+    public String getSenha() {
+        return this.senha;
+    }
+    
+    /**GET Method Propertie saldo*/
+    public double getSaldo() {
+        return this.saldo;
+    }
+    
+//End GetterSetterExtension Source Code
 }
 
 |
@@ -153,17 +170,18 @@ public abstract class Usuario {
 |
 
 public class Administrador extends Usuario implements Autenticavel {
-	Administrador(String nomeCompleto, int matricula, String senha) {
-    	super(nomeCompleto, matricula, senha);
-    	}
+    Administrador(String nomeCompleto, int matricula, String senha) {
+        super(nomeCompleto, matricula, senha);
+    }
     
-	public boolean login(int matricula, String senha) {
-    	if(this.getMatricula() == matricula && this.getSenha() == senha) {
-        	return true;
-    	} else {
-        	return false;
-    	}
-	}
+    @Override
+    public boolean login(int matricula, String senha) {
+        if(this.getMatricula() == matricula && this.getSenha() == senha) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
 
 |
@@ -173,17 +191,18 @@ public class Administrador extends Usuario implements Autenticavel {
 |
 
 public class Cliente extends Usuario implements Autenticavel{
-	Cliente(String nomeCompleto, int matricula, String senha) {
+    Cliente(String nomeCompleto, int matricula, String senha) {
         super(nomeCompleto, matricula, senha);
-    	}
+    }
     
-	public boolean login(int matricula, String senha) {
-    	if(this.getMatricula() == matricula && this.getSenha() == senha) {
-        	return true;
-    	} else {
-        	return false;
-    	}
-	}
+    @Override
+    public boolean login(int matricula, String senha) {
+        if(this.getMatricula() == matricula && this.getSenha() == senha) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
 
 |
@@ -193,7 +212,7 @@ public class Cliente extends Usuario implements Autenticavel{
 |
 
 public interface Autenticavel {
-	public boolean login(int matricula, String senha);
+    public boolean login(int matricula, String senha);
 }
 
 |
@@ -202,78 +221,107 @@ public interface Autenticavel {
 |
 |
 
-import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
-import com.j256.ormlite.table.TableUtils;
+import com.j256.ormlite.dao.Dao;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import com.j256.ormlite.table.TableUtils;
 import java.util.List;
+import java.util.ArrayList;
 
 public class UsuarioRepository {
-	private static Database database;
-	private static Dao<Usuario, Integer> dao;
-	private List<Usuario> loadedUsuarios;
-	private Usuario loadedUsuario;
+    private static Database database;
+    private static Dao<Usuario, Integer> dao;
+    private List<Usuario> loadedUsuarios;
+    private Usuario loadedUsuario;
     
-	public UsuarioRepository(Database database) {
-    	UsuarioRepository.setDatabase(database);
-    	loadedUsuarios = new ArrayList<Usuario>();
-	}
+    public UsuarioRepository(Database database) {
+        UsuarioRepository.setDatabase(database);
+        loadedUsuarios = new ArrayList<Usuario>();
+    }
     
-	public static void setDatabase(Database database) {
-    	UsuarioRepository.database = database;
-    	try {
-        	dao = DaoManager.createDao(database.getConnection(), Usuario.class);
-        	TableUtils.createTableIfNotExists(database.getConnection(), Usuario.class);
-    	}
-    	catch(SQLException e) {
-        	System.out.println(e);
-    	}       	 
-	}
+    public static void setDatabase(Database database) {
+        UsuarioRepository.database = database;
+        try {
+            dao = DaoManager.createDao(database.getConnection(), Usuario.class);
+            TableUtils.createTableIfNotExists(database.getConnection(), Usuario.class);
+        }
+        catch(SQLException e) {
+            System.out.println(e);
+        }            
+    }
     
-	public Usuario create(Usuario usuario) {
-    	int nrows = 0;
-    	try {
-        	nrows = dao.create(usuario);
-        	if ( nrows == 0 )
-            	throw new SQLException("Error: object not saved");
-        	this.loadedUsuario = usuario;
-        	loadedUsuarios.add(usuario);
-    	} catch (SQLException e) {
-        	System.out.println(e);
-    	}
-    	return usuario;
-	}    
+    public Usuario create(Usuario usuario) {
+        int nrows = 0;
+        try {
+            nrows = dao.create(usuario);
+            if ( nrows == 0 )
+                throw new SQLException("Error: object not saved");
+            this.loadedUsuario = usuario;
+            loadedUsuarios.add(usuario);
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return usuario;
+    }    
 
-	public void update(Usuario usuario) {
-  	// TODO
-	}
+    public void update(Usuario usuario) throws SQLException {
+      try {
+            dao.update(usuario);
+        } catch (SQLException e) {
+            System.err.println("Erro ao atualizar o usuário: " + e.getMessage());
+            throw new SQLException();
+        }
+    }
 
-	public void delete(Usuario usuario) {
-  	// TODO
-	}
+    public void delete(Usuario usuario) {
+      try {
+            dao.delete(usuario);
+        } catch (SQLException e) {
+            System.err.println("Erro ao deletar o usuário: " + e.getMessage());
+        }
+    }
     
-	public Usuario loadFromId(int id) {
-    	try {
+    public void deletePorId(int id) {
+        try {
+            dao.deleteById(id);
+        } catch(SQLException e) {
+            System.err.println("Erro ao deletar o usuário: " +e.getMessage());
+        }
+    }
+    
+    public Usuario findFromId(int id) {
+        try {
+            this.loadedUsuario = dao.queryForId(id);
+            if(id == 0) {
+                System.out.println("ID inválido.");
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return this.loadedUsuario;
+    }
+    
+    public Usuario loadFromId(int id) {
+        try {
             this.loadedUsuario = dao.queryForId(id);
             if (this.loadedUsuario != null)
-            this.loadedUsuarios.add(this.loadedUsuario);
-    	} catch (SQLException e) {
+                this.loadedUsuarios.add(this.loadedUsuario);
+        } catch (SQLException e) {
             System.out.println(e);
-    	}
-    	return this.loadedUsuario;
-	}    
+        }
+        return this.loadedUsuario;
+    }    
     
-	public List<Usuario> loadAll() {
-    	try {
+    public List<Usuario> loadAll() {
+        try {
             this.loadedUsuarios =  dao.queryForAll();
             if (this.loadedUsuarios.size() != 0)
-            this.loadedUsuario = this.loadedUsuarios.get(0);
-    	} catch (SQLException e) {
+                this.loadedUsuario = this.loadedUsuarios.get(0);
+        } catch (SQLException e) {
             System.out.println(e);
-    	}
-    	return this.loadedUsuarios;
-	}
+        }
+        return this.loadedUsuarios;
+    }
 }
 
 |
@@ -296,66 +344,145 @@ public abstract class Aparelho {
     private String descricao;
     
     @DatabaseField
+    private int capacidadeKg;
+    
+    @DatabaseField
     private boolean agendavel;
     
     @DatabaseField
     private boolean disponivel;
     
+    @DatabaseField
+    private boolean reservado;
+    
+    @DatabaseField
+    private double custo;
+    
     Aparelho() {
         this.id = 0;
         this.modelo = "N/A";
         this.descricao = "N/A";
+        this.capacidadeKg = 0;
         this.agendavel = false;
         this.disponivel = false;
+        this.custo = 0.0;
     }
     
-    Aparelho(int id, String modelo, String descricao, boolean agendavel) {
+    Aparelho(int id, String modelo, String descricao, int capacidadeKg, boolean agendavel, double custo) {
         this.id = id;
         this.modelo = modelo;
         this.descricao = descricao;
+        this.capacidadeKg = capacidadeKg;
         this.agendavel = agendavel;
         this.disponivel = false;
+        this.custo = 0.0;
     }
     
+    public boolean reservar() {
+        if (getAgendavel() && getDisponivel() && !getReservado()) {
+            setReservado(true);
+            setDisponivel(false);
+            System.out.println("Aparelho " + getModelo() + " (ID: " + getId() + ") reservada com sucesso.");
+            return true;
+        } else {
+            System.out.println("Aparelho " + getModelo() + " (ID: " + getId() + ") não pode ser reservada. Estado atual: Agendável=" + getAgendavel() + ", Disponível=" + getDisponivel() + ", Reservado=" + getReservado());
+            return false;
+        }
+    }
+
+    public void liberar() {
+        if (getReservado() == true) {
+            setReservado(false);
+            setDisponivel(true);
+            System.out.println("Aparelho " + getModelo() + " (ID: " + getId() + ") liberada.");
+        } else {
+            System.out.println("Aparelho " + getModelo() + " (ID: " + getId() + ") não estava reservada.");
+        }
+    }
+    
+//Start GetterSetterExtension Source Code
+ 
+    /**SET Method Propertie id*/
     public void setId(int id) {
         this.id = id;
     }
     
+    /**GET Method Propertie id*/
     public int getId() {
         return this.id;
     }
     
+    /**SET Method Propertie modelo*/
     public void setModelo(String modelo) {
         this.modelo = modelo;   
     }
     
+    /**GET Method Propertie modelo*/
     public String getModelo() {
         return this.modelo;
     }
     
+    /**SET Method Propertie descricao*/
     public void setDescricao(String descricao) {
         this.descricao = descricao;   
     }
     
+    /**GET Method Propertie descricao*/
     public String getDescricao() {
         return this.descricao;
     }
     
+    /**SET Method Propertie capacidadeKg*/
+    public void setCapacidadeKg(int capacidadeKg) {
+        this.capacidadeKg = capacidadeKg;
+    }
+    
+    /**GET Method Propertie capacidadeKg*/
+    public int getCapacidadeKg() {
+        return capacidadeKg;
+    }
+    
+    /**SET Method Propertie agendavel*/
     public void setAgendavel(boolean agendavel) {
         this.agendavel = agendavel;   
     }
     
+    /**GET Method Propertie agendavel*/
     public boolean getAgendavel() {
         return this.agendavel;
     }
     
+    /**SET Method Propertie disponivel*/
     public void setDisponivel(boolean disponivel) {
         this.disponivel = disponivel;   
     }
     
+    /**GET Method Propertie disponivel*/
     public boolean getDisponivel() {
         return this.disponivel;
     }
+    
+    /**SET Method Propertie reservado*/
+    public void setReservado(boolean reservado) {
+        this.reservado = reservado;
+    }
+    
+    /**GET Method Propertie reservado*/
+    public boolean getReservado() {
+        return this.reservado;
+    }
+    
+    /**SET Method Propertie custo*/
+    public void setCusto(double custo) {
+        this.custo = custo;
+    }
+    
+    /**GET Method Propertie custo*/
+    public double getCusto() {
+        return this.custo;
+    }
+    
+//End GetterSetterExtension Source Code
 }
 
 |
@@ -366,59 +493,33 @@ public abstract class Aparelho {
 |
 
 public class MaquinaDeLavar extends Aparelho implements Reservavel {
-    private int capacidadeKg;
-    private boolean reservado;
-    private double custo;
+    public MaquinaDeLavar(int id, String modelo, String descricao, int capacidadeKg, boolean agendavel, double custo) {
+        super(id, modelo, descricao, capacidadeKg, agendavel, custo);
 
-    public MaquinaDeLavar(int id, String modelo, String descricao, boolean agendavel, int capacidadeKg) {
-        super(id, modelo, descricao, agendavel);
-        this.capacidadeKg = capacidadeKg;
-        this.reservado = false;
     }
 
     @Override
     public boolean reservar() {
-        if (getAgendavel() && getDisponivel() && !this.reservado) {
-            this.reservado = true;
+        if (getAgendavel() && getDisponivel() && !getReservado()) {
+            setReservado(true);
             setDisponivel(false);
-            System.out.println("Máquina de lavar " + getModelo() + " (ID: " + getId() + ") reservada com sucesso.");
+            System.out.println("Maquina " + getModelo() + " (ID: " + getId() + ") reservada com sucesso.");
             return true;
         } else {
-            System.out.println("Máquina de lavar " + getModelo() + " (ID: " + getId() + ") não pode ser reservada. Estado atual: Agendável=" + getAgendavel() + ", Disponível=" + getDisponivel() + ", Reservado=" + this.reservado);
+            System.out.println("Maquina " + getModelo() + " (ID: " + getId() + ") não pode ser reservada. Estado atual: Agendável=" + getAgendavel() + ", Disponível=" + getDisponivel() + ", Reservado=" + getReservado());
             return false;
         }
     }
 
     @Override
     public void liberar() {
-        if (this.reservado) {
-            this.reservado = false;
-            this.setDisponivel(true);
-            System.out.println("Máquina de lavar " + getModelo() + " (ID: " + getId() + ") liberada.");
+        if (getReservado() == true) {
+            setReservado(false);
+            setDisponivel(true);
+            System.out.println("Maquina " + getModelo() + " (ID: " + getId() + ") liberada.");
         } else {
-            System.out.println("Máquina de lavar " + getModelo() + " (ID: " + getId() + ") não estava reservada.");
+            System.out.println("Maquina " + getModelo() + " (ID: " + getId() + ") não estava reservada.");
         }
-    }
-
-    @Override
-    public boolean estaReservado() {
-        return this.reservado;
-    }
-
-    public int getCapacidadeKg() {
-        return capacidadeKg;
-    }
-
-    public void setCapacidadeKg(int capacidadeKg) {
-        this.capacidadeKg = capacidadeKg;
-    }
-    
-    public void setCusto(double custo) {
-        this.custo = custo;
-    }
-    
-    public double getCusto() {
-        return this.custo;
     }
 }
 
@@ -429,58 +530,33 @@ public class MaquinaDeLavar extends Aparelho implements Reservavel {
 |
 
 public class Secadora extends Aparelho implements Reservavel {
-    private int capacidadeKg;
-    private boolean reservado;
-    private double custo;
+    public Secadora(int id, String modelo, String descricao, int capacidadeKg, boolean agendavel, double custo) {
+        super(id, modelo, descricao, capacidadeKg, agendavel, custo);
 
-    public Secadora(int id, String modelo, String descricao, boolean agendavel, double custo) {
-        super(id, modelo, descricao, agendavel);
-        this.reservado = false;
     }
 
     @Override
     public boolean reservar() {
-        if (getAgendavel() && getDisponivel() && !this.reservado) {
-            this.reservado = true;
+        if (getAgendavel() && getDisponivel() && !getReservado()) {
+            setReservado(true);
             setDisponivel(false);
             System.out.println("Secadora " + getModelo() + " (ID: " + getId() + ") reservada com sucesso.");
             return true;
         } else {
-            System.out.println("Secadora " + getModelo() + " (ID: " + getId() + ") não pode ser reservada. Estado atual: Agendável=" + getAgendavel() + ", Disponível=" + getDisponivel() + ", Reservado=" + this.reservado);
+            System.out.println("Secadora " + getModelo() + " (ID: " + getId() + ") não pode ser reservada. Estado atual: Agendável=" + getAgendavel() + ", Disponível=" + getDisponivel() + ", Reservado=" + getReservado());
             return false;
         }
     }
 
     @Override
     public void liberar() {
-        if (this.reservado) {
-            this.reservado = false;
+        if (getReservado() == true) {
+            setReservado(false);
             setDisponivel(true);
             System.out.println("Secadora " + getModelo() + " (ID: " + getId() + ") liberada.");
         } else {
             System.out.println("Secadora " + getModelo() + " (ID: " + getId() + ") não estava reservada.");
         }
-    }
-
-    @Override
-    public boolean estaReservado() {
-        return this.reservado;
-    }
-    
-    public int getCapacidadeKg() {
-        return capacidadeKg;
-    }
-
-    public void setCapacidadeKg(int capacidadeKg) {
-        this.capacidadeKg = capacidadeKg;
-    }
-    
-    public void setCusto(double custo) {
-        this.custo = custo;
-    }
-    
-    public double getCusto() {
-        return this.custo;
     }
 }
 
@@ -495,8 +571,6 @@ public interface Reservavel {
     public boolean reservar();
     
     public void liberar();
-    
-    public boolean estaReservado();
 }
 
 |
@@ -549,11 +623,31 @@ public class AparelhoRepository {
     }    
 
     public void update(Aparelho aparelho) {
-      // TODO
+      try {
+            dao.update(aparelho);
+        } catch (SQLException e) {
+            System.err.println("Erro ao atualizar o aparelho: " + e.getMessage());
+        }
     }
 
     public void delete(Aparelho aparelho) {
-      // TODO
+      try {
+          dao.delete(aparelho);
+      } catch(SQLException e) {
+          System.err.println("Erro ao deletar o aparelho: " + e.getMessage());
+      }
+    }
+    
+    public Aparelho findFromId(int id) {
+        try {
+            this.loadedAparelho = dao.queryForId(id);
+            if(id == 0) {
+                System.out.println("ID inválido.");
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return this.loadedAparelho;
     }
     
     public Aparelho loadFromId(int id) {
@@ -579,22 +673,90 @@ public class AparelhoRepository {
     }
 }
 
+|
+|
+|
+|
+|
 
-|
-|
-|
-|
-|
+import java.sql.SQLException;
 
 public class Caixa {
-
-    public static void cobrar(MaquinaLavar maquina, int matricula) {
-        double valor = maquina.getPreco();
-        System.out.println("Matrícula: " + matricula);
-        System.out.println("Total a pagar: R$ " + String.format("%.2f", valor));
+    private final UsuarioRepository usuarioRepository;
+    private final AparelhoRepository aparelhoRepository;
+    private String mensagemDeAviso;
+    
+    public Caixa(UsuarioRepository usuarioRepository, AparelhoRepository aparelhoRepository) {
+        this.usuarioRepository = usuarioRepository;
+        this.aparelhoRepository = aparelhoRepository;
+    }
+    
+    public boolean adicionarSaldo(int usuarioId, double valor, MetodoDePagamento listaMetodos) {
+        try {
+            Usuario usuario = usuarioRepository.findFromId(usuarioId);
+            if(usuario == null) {
+                mensagemDeAviso = ("Erro: Usuário com ID: " +usuarioId+ " não encontrado.");
+                return false;
+            }
+            usuario.depositar(valor);
+            usuarioRepository.update(usuario);
+            mensagemDeAviso = ("Depósito feito com sucesso!");
+            return true;
+        } catch (SQLException e) {
+            System.err.println("Erro no depósito.");
+            return false;
+        }
+    }
+    
+    public boolean debitarSaldo(int usuarioId, int aparelhoId) {
+        try {
+            Usuario usuario = usuarioRepository.findFromId(usuarioId);
+            Aparelho aparelho = aparelhoRepository.findFromId(aparelhoId);
+            double valor = aparelho.getCusto();
+            if(usuario == null) {
+                mensagemDeAviso = ("Erro: Usuário com ID: " +usuarioId+ " não encontrado.");
+                return false;
+            }
+            if(usuario.getSaldo() >= valor) {
+                usuario.debitar(valor);
+                usuarioRepository.update(usuario);
+                mensagemDeAviso = ("Pagamento feito com sucesso!");
+                return true;
+            } else {
+                mensagemDeAviso = ("Saldo insuficiente.");
+                return false;
+            }
+        } catch (SQLException e) {
+            System.err.println("Erro no pagamento.");
+            return false;
+        }
     }
 }
 
+|
+|
+|
+|
+|
+
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Collections;
+
+public final class MetodoDePagamento {
+    private static final List<String> listaMetodos;
+    
+    static {
+        List<String> metodos = new ArrayList<>();
+        metodos.add("Cartão de Débito");
+        metodos.add("Cartão de Crédito");
+        metodos.add("Pix");
+        
+        listaMetodos = Collections.unmodifiableList(metodos);
+    }
+}
+
+***************************************************************************************************************
 
 Sugestão de Miguel: que tal adicionar isso daqui? (Tenho que testar melhor ainda, mas pode ser interessante...)
 
