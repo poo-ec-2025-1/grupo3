@@ -1,0 +1,330 @@
+Código adaptado e atualizado com base nas classes iniciais para que compilasse sem nenhum erro em conjunto no BlueJ
+(Espera-se atualizações posteriores para conexão com frontend e banco de dados)
+
+----------------------------------------------------------------
+
+public class MaquinaPequena extends MaquinaLavar {
+    public MaquinaPequena(String idMaquina) {
+        super(idMaquina, 5, 'l');
+    }
+
+    @Override
+    public void lavar() {
+        System.out.println("Lavando " + pesoMax + "kg na máquina pequena (ID: " + idMaquina + ")");
+    }
+  
+    @Override
+    public double getPreco() {
+        return 10.0;
+    }
+}
+
+----------------------------------------------------------------
+
+public class MaquinaMedia extends MaquinaLavar {
+    public MaquinaMedia(String idMaquina) {
+        super(idMaquina, 8, 'm');
+    }
+  
+    @Override
+    public void lavar() {
+        System.out.println("Lavando " + pesoMax + "kg na máquina média (ID: " + idMaquina + ")");
+    }
+
+    @Override
+    public double getPreco() {
+        return 15.0;
+    }
+}
+
+----------------------------------------------------------------
+
+public class MaquinaPesada extends MaquinaLavar {
+    public MaquinaPesada(String idMaquina) {
+        super(idMaquina, 15, 'p');
+    }
+  
+    @Override
+    public void lavar() {
+        System.out.println("Lavando " + pesoMax + "kg na máquina pesada (ID: " + idMaquina + ")");
+    }
+
+    @Override
+    public double getPreco() {
+        return 20.0;
+    }
+}
+
+----------------------------------------------------------------
+
+public class Intervalo {
+    /**
+     * Servirá como uma unidade de tempo.
+     * De maneira que possibilite uma lógica para agrupar os "HoráriosMarcados" em grandes "Intervalos" no banco de dados futuramente.
+     *
+     * @author Miguel de M. Moreira
+     */
+    protected double inicio;
+    protected double fim;
+    protected double tempoTotal;
+    protected String idMaquina;
+    protected Intervalo() {}
+    public Intervalo(double inicio, double fim) {
+        if (inicio >= 0 && fim >= 0 && inicio < fim) {
+            this.inicio = inicio;
+            this.fim = fim;
+            this.tempoTotal = fim - inicio;
+        } else {
+            throw new IllegalArgumentException("Intervalo inválido: início e fim devem ser não negativos, e início < fim.");
+        }
+    }
+    public Intervalo(String idMaquina, double inicio, double fim) {
+        this(inicio, fim);
+        this.idMaquina = idMaquina;
+    }
+}
+
+----------------------------------------------------------------
+
+public class Agenda {
+    static final double tempoDeFuncionamentoSemana[] = {8.0, 8.0, 8.0, 8.0, 8.0, 8.0, 8.0};
+    static HorarioMarcado horariosMarcados[][] = new HorarioMarcado[7][999];
+
+    String nomeAgenda;
+    protected double tempoOfertadoAgenda[] = {0.0, 1.0, 0.5, 2.0, 7.0, 8.0, 4.0};
+    final double tempoPadrao = 1.0;
+
+    class HorarioMarcado extends Intervalo {
+        int matriculaDoUsuario;
+        int dia;
+        String idMaquina;
+
+        HorarioMarcado(int dia, double inicioDoHorario, double fimDoHorario, int matricula) {
+            super(inicioDoHorario, fimDoHorario);
+            this.dia = dia;
+            this.matriculaDoUsuario = matricula;
+        }
+      
+        public double[] getTempoDisponivel(char tipoMaquina) {
+            return MaquinaLavar.tempoOfertadoMaquinaS;
+        }
+
+
+        boolean selecionarDia(char tipoMaquina) {
+            if (dia < 0 || dia >= tempoDeFuncionamentoSemana.length) {
+                System.out.println("Não é possível selecionar esse dia " + dia + "...");
+                return false;
+            }
+            if (tempoDeFuncionamentoSemana[dia] == 0) {
+                System.out.println("O dia " + dia + " selecionado está indisponível...");
+                return false;
+            }
+            double[] tempoDisponivel = getTempoDisponivel(tipoMaquina);
+            if (tempoDisponivel[dia] == 0) {
+                System.out.println("O dia " + dia + " selecionado está cheio para máquinas tipo " + tipoMaquina + "...");
+                return false;
+            }
+            return true;
+        }
+
+
+        private boolean indisponibilizarTempo(char tipoMaquina) {
+            if (!selecionarDia(tipoMaquina)) return false;
+            if (tempoTotal > tempoDeFuncionamentoSemana[dia]) {
+                System.out.println("Intervalo de tempo escolhido vai além do horário de funcionamento da lavanderia.");
+                return false;
+            }
+
+            for (int i = 0; i < MaquinaLavar.maquinasOfertadas.length && MaquinaLavar.maquinasOfertadas[i] != null; i++) {
+                MaquinaLavar maquina = MaquinaLavar.maquinasOfertadas[i];
+                if (maquina.getTipoMaquina() == tipoMaquina) {
+                    if (tempoTotal <= maquina.tempoOfertadoDaMaquina[dia]) {
+                        maquina.tempoOfertadoDaMaquina[dia] -= tempoTotal;
+                        idMaquina = maquina.getIdMaquina();
+                        MaquinaLavar.tempoOfertadoMaquinaS[dia] -= tempoTotal;
+                        System.out.println("Horário marcado para o dia " + dia + " na máquina " + idMaquina);
+                        return true;
+                    }
+                }
+            }
+
+
+            System.out.println("O dia " + dia + " não tem essa disponibilidade de tempo para máquinas tipo " + tipoMaquina);
+            return false;
+        }
+    }
+
+    public Agenda() {
+        this("AgendaPadrao");
+    }
+
+    public Agenda(String nome) {
+        setNomeAgenda(nome);
+    }
+
+    public boolean marcarHorario(int dia, double inicio, double fim, int matricula, double pesoRoupa) {
+        HorarioMarcado novo = new HorarioMarcado(dia, inicio, fim, matricula);
+        char tipo = ' ';
+        if (pesoRoupa <= 5) tipo = 'l';
+        else if (pesoRoupa <= 8) tipo = 'm';
+        else tipo = 'p';
+
+        if (novo.indisponibilizarTempo(tipo)) {
+            for (int i = 0; i < horariosMarcados[dia].length; i++) {
+                if (horariosMarcados[dia][i] == null) {
+                    horariosMarcados[dia][i] = novo;
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean marcarHorario(int dia, double inicio, double fim, int matricula, MaquinaLavar tipoDaMaquina) {
+        HorarioMarcado novo = new HorarioMarcado(dia, inicio, fim, matricula);
+        if (novo.indisponibilizarTempo(tipoDaMaquina.getTipoMaquina())) {
+            for (int i = 0; i < horariosMarcados[dia].length; i++) {
+                if (horariosMarcados[dia][i] == null) {
+                    horariosMarcados[dia][i] = novo;
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean marcarHorario(int dia, double inicio, double fim, int matricula, char tipoDaMaquina) {
+        HorarioMarcado novo = new HorarioMarcado(dia, inicio, fim, matricula);
+        if (novo.indisponibilizarTempo(tipoDaMaquina)) {
+            for (int i = 0; i < horariosMarcados[dia].length; i++) {
+                if (horariosMarcados[dia][i] == null) {
+                    horariosMarcados[dia][i] = novo;
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    void setNomeAgenda(String nome) {
+        this.nomeAgenda = nome;
+    }
+}
+
+----------------------------------------------------------------
+
+public abstract class MaquinaLavar {
+    /**
+     * Os atributos estáticos da classe fará parte do banco de dados
+     */
+    static int qtdMaquina = 0;
+    static MaquinaLavar maquinasOfertadas[] = new MaquinaLavar[100];
+    static double[] tempoOfertadoMaquinaS = new double[7];
+
+    protected String idMaquina;
+    protected int pesoMax;
+    protected char tipoMaquina;
+    protected double tempoOfertadoDaMaquina[] = Agenda.tempoDeFuncionamentoSemana.clone();
+
+    MaquinaLavar(String idMaquina, int pesoMax, char tipoMaquina) {
+        this.idMaquina = idMaquina;
+        this.pesoMax = pesoMax;
+        this.tipoMaquina = tipoMaquina;
+        if (qtdMaquina < maquinasOfertadas.length) {
+            maquinasOfertadas[qtdMaquina] = this;
+            qtdMaquina++;
+        }
+        for (int i = 0; i < tempoOfertadoMaquinaS.length; i++) {
+            tempoOfertadoMaquinaS[i] += Agenda.tempoDeFuncionamentoSemana[i];
+        }
+    }
+
+    public static MaquinaLavar criarMaquina(int peso) {
+        String id = "MAQ" + (qtdMaquina + 1);
+        if (peso <= 5) {
+            return new MaquinaPequena(id);
+        } else if (peso <= 8) {
+            return new MaquinaMedia(id);
+        } else {
+            return new MaquinaPesada(id);
+        }
+    }
+
+    public abstract void lavar();
+    public abstract double getPreco();
+    public String getIdMaquina() {
+        return idMaquina;
+    }
+  
+    public char getTipoMaquina() {
+        return tipoMaquina;
+    }
+
+    public int getPesoMax() {
+        return pesoMax;
+    }
+}
+
+----------------------------------------------------------------
+
+public class Caixa {
+    public static void cobrar(MaquinaLavar maquina, int matricula) {
+        double valor = maquina.getPreco();
+        
+        System.out.println("Matrícula: " + matricula);
+        
+        System.out.println("Total a pagar: R$ " + String.format("%.2f", valor));
+    }
+}
+
+----------------------------------------------------------------
+
+public class User {
+    /*
+     * A ideia nesta classe usuário é ser um banco de dados
+     * com a matrícula e senha de cada estudante
+     * assim, o sistema puxa os dados, verifica e utiliza para proceder nas operações
+     */
+    private int matricula;
+    public void setMatricula(int matricula) {
+        this.matricula = matricula;
+    }
+    public int getMatricula() {
+        return matricula;
+    }
+}
+
+----------------------------------------------------------------
+
+import java.util.Scanner;
+
+public class Sistema {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Digite sua matrícula: ");
+        int matricula = scanner.nextInt();
+        
+        System.out.println("Pese sua roupa, veja o peso e digite aqui (kg): ");
+        int peso = scanner.nextInt();
+      
+        User user = new User();
+        user.setMatricula(matricula);
+        Agenda agenda = new Agenda("SistemaAgenda");
+        MaquinaLavar maquina = MaquinaLavar.criarMaquina(peso);
+
+        boolean horarioMarcado = agenda.marcarHorario(0, 8.0, 9.0, matricula, peso);
+        if (!horarioMarcado) {
+            System.out.println("Falha ao marcar horário. Tente novamente.");
+            scanner.close();
+            return;
+        }
+
+        maquina.lavar();
+        System.out.println("Matrícula: " + matricula + " - Processo de lavagem concluído.");
+        Caixa.cobrar(maquina, matricula);
+        scanner.close();
+    }
+}
+
+----------------------------------------------------------------
