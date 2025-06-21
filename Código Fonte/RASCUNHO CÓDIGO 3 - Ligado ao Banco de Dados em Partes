@@ -1,0 +1,689 @@
+Atualizado com base nas classes do Daniel e mesclado com as últimas mudanças 
+no "Código Fonte/RASCUNHO CÓDIGO 2 - Corrigido para funcionar em conjunto"
+
+---------------------------------------------------------------- Autenticavel - Interface
+
+public interface Autenticavel {
+    public boolean login(int matricula, String senha);
+}
+
+---------------------------------------------------------------- Usuario - Classe
+
+import com.j256.ormlite.table.DatabaseTable;
+import com.j256.ormlite.field.DatabaseField;
+
+@DatabaseTable(tableName = "usuario")
+public abstract class Usuario implements Autenticavel {
+    @DatabaseField(generatedId = true)
+    private int id;
+
+    @DatabaseField
+    private String nomeCompleto;
+
+    @DatabaseField
+    private int matricula;
+
+    @DatabaseField
+    private String senha;
+
+    public Usuario() {
+    }
+
+    public Usuario(String nomeCompleto, int matricula, String senha) {
+        this.nomeCompleto = nomeCompleto;
+        this.matricula = matricula;
+        this.senha = senha;
+    }
+
+    public String getNomeCompleto() {
+        return nomeCompleto;
+    }
+
+    public int getMatricula() {
+        return matricula;
+    }
+
+    public String getSenha() {
+        return senha;
+    }
+
+    public String mostrarDados() {
+        return "Nome: " + nomeCompleto + "\nMatricula: " + matricula;
+    }
+
+    @Override
+    public boolean login(int matricula, String senha) {
+        return this.matricula == matricula && this.senha.equals(senha);
+    }
+}
+
+---------------------------------------------------------------- Cliente - Classe
+
+public class Cliente extends Usuario {
+    public Cliente() {
+        // Construtor sem argumentos necessário para ORMLite
+    }
+
+    public Cliente(String nomeCompleto, int matricula, String senha) {
+        super(nomeCompleto, matricula, senha);
+    }
+}
+
+---------------------------------------------------------------- Administrador - Classe
+
+public class Administrador extends Usuario {
+    public Administrador() {
+        // Construtor sem argumentos necessário para ORMLite
+    }
+
+    public Administrador(String nomeCompleto, int matricula, String senha) {
+        super(nomeCompleto, matricula, senha);
+    }
+}
+
+---------------------------------------------------------------- Reservavel -Interface
+
+public interface Reservavel {
+    public boolean reservar();
+    public void liberar();
+    public boolean estaReservado();
+}
+
+---------------------------------------------------------------- Aparelho - Classe
+
+import com.j256.ormlite.table.DatabaseTable;
+import com.j256.ormlite.field.DatabaseField;
+
+@DatabaseTable(tableName = "aparelho")
+public abstract class Aparelho implements Reservavel {
+    @DatabaseField(generatedId = true)
+    private int id;
+
+    @DatabaseField
+    private String modelo;
+
+    @DatabaseField
+    private String descricao;
+
+    @DatabaseField
+    private boolean agendavel;
+
+    @DatabaseField
+    private boolean disponivel;
+
+    public Aparelho() {
+    }
+
+    public Aparelho(int id, String modelo, String descricao, boolean agendavel) {
+        this.id = id;
+        this.modelo = modelo;
+        this.descricao = descricao;
+        this.agendavel = agendavel;
+        this.disponivel = true;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getModelo() {
+        return modelo;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public boolean getAgendavel() {
+        return agendavel;
+    }
+
+    public boolean getDisponivel() {
+        return disponivel;
+    }
+
+    public void setDisponivel(boolean disponivel) {
+        this.disponivel = disponivel;
+    }
+
+    @Override
+    public abstract boolean reservar();
+
+    @Override
+    public abstract void liberar();
+
+    @Override
+    public abstract boolean estaReservado();
+
+    public abstract double getCusto();
+
+    public abstract void setCusto(double custo);
+}
+
+---------------------------------------------------------------- Agenda - Classe
+
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
+
+public class Agenda {
+    private Map<Integer, LocalDateTime> reservas;
+
+    public Agenda() {
+        this.reservas = new HashMap<>();
+    }
+
+    public boolean reservar(Aparelho aparelho, LocalDateTime data) {
+        if (aparelho.getAgendavel() && aparelho.getDisponivel() && !estaReservado(aparelho.getId())) {
+            reservas.put(aparelho.getId(), data);
+            aparelho.setDisponivel(false);
+            System.out.println("Reserva realizada para " + aparelho.getModelo() + " (ID: " + aparelho.getId() + ") em " + data);
+            return true;
+        } else {
+            System.out.println("Falha na reserva para " + aparelho.getModelo() + " (ID: " + aparelho.getId() + "). Já reservado ou não agendável.");
+            return false;
+        }
+    }
+
+    public void liberar(Aparelho aparelho) {
+        if (estaReservado(aparelho.getId())) {
+            reservas.remove(aparelho.getId());
+            aparelho.setDisponivel(true);
+            System.out.println("Reserva liberada para " + aparelho.getModelo() + " (ID: " + aparelho.getId() + ").");
+        } else {
+            System.out.println("Nenhuma reserva para liberar em " + aparelho.getModelo() + " (ID: " + aparelho.getId() + ").");
+        }
+    }
+
+    public boolean estaReservado(int id) {
+        return reservas.containsKey(id);
+    }
+
+    public LocalDateTime getDataReserva(int id) {
+        return reservas.get(id);
+    }
+}
+
+---------------------------------------------------------------- Secadora - Classe
+
+import java.time.LocalDateTime;
+
+public class Secadora extends Aparelho {
+    private int capacidadeKg;
+    private boolean reservado;
+    private double custo;
+    private static Agenda agenda = new Agenda();
+
+    public Secadora() {
+        // Construtor sem argumentos necessário para ORMLite
+    }
+
+    public Secadora(int id, String modelo, String descricao, boolean agendavel, int capacidadeKg) {
+        super(id, modelo, descricao, agendavel);
+        this.capacidadeKg = capacidadeKg;
+        this.reservado = false;
+        this.custo = 8.0;
+    }
+
+    @Override
+    public boolean reservar() {
+        LocalDateTime agora = LocalDateTime.now();
+        if (getAgendavel() && getDisponivel() && !this.reservado && agenda.reservar(this, agora)) {
+            this.reservado = true;
+            setDisponivel(false);
+            System.out.println("Secadora " + getModelo() + " (ID: " + getId() + ") reservada com sucesso em " + agora);
+            return true;
+        } else {
+            System.out.println("Secadora " + getModelo() + " (ID: " + getId() + ") não pode ser reservada. Estado atual: Agendável=" + getAgendavel() + ", Disponível=" + getDisponivel() + ", Reservado=" + this.reservado);
+            return false;
+        }
+    }
+
+    @Override
+    public void liberar() {
+        if (this.reservado) {
+            this.reservado = false;
+            agenda.liberar(this);
+            setDisponivel(true);
+            System.out.println("Secadora " + getModelo() + " (ID: " + getId() + ") liberada.");
+        } else {
+            System.out.println("Secadora " + getModelo() + " (ID: " + getId() + ") não estava reservada.");
+        }
+    }
+
+    @Override
+    public boolean estaReservado() {
+        return this.reservado;
+    }
+
+    public int getCapacidadeKg() {
+        return capacidadeKg;
+    }
+
+    public void setCapacidadeKg(int capacidadeKg) {
+        this.capacidadeKg = capacidadeKg;
+    }
+
+    @Override
+    public double getCusto() {
+        return this.custo;
+    }
+
+    @Override
+    public void setCusto(double custo) {
+        this.custo = custo;
+    }
+
+    public void iniciarCicloSecagem() {
+        System.out.println("Ciclo de secagem iniciado para " + getModelo() + " (ID: " + getId() + ")");
+    }
+}
+
+---------------------------------------------------------------- MaquinaDeLavar - Classe
+
+import java.time.LocalDateTime;
+
+public class MaquinaDeLavar extends Aparelho {
+    private int capacidadeKg;
+    private boolean reservado;
+    private double custo;
+    private static Agenda agenda = new Agenda();
+
+    public MaquinaDeLavar() {
+        // Construtor sem argumentos necessário para ORMLite
+    }
+
+    public MaquinaDeLavar(int id, String modelo, String descricao, boolean agendavel, int capacidadeKg) {
+        super(id, modelo, descricao, agendavel);
+        this.capacidadeKg = capacidadeKg;
+        this.reservado = false;
+        this.custo = 12.0;
+    }
+
+    @Override
+    public boolean reservar() {
+        LocalDateTime agora = LocalDateTime.now();
+        if (getAgendavel() && getDisponivel() && !this.reservado && agenda.reservar(this, agora)) {
+            this.reservado = true;
+            setDisponivel(false);
+            System.out.println("Máquina de lavar " + getModelo() + " (ID: " + getId() + ") reservada com sucesso em " + agora);
+            return true;
+        } else {
+            System.out.println("Máquina de lavar " + getModelo() + " (ID: " + getId() + ") não pode ser reservada. Estado atual: Agendável=" + getAgendavel() + ", Disponível=" + getDisponivel() + ", Reservado=" + this.reservado);
+            return false;
+        }
+    }
+
+    @Override
+    public void liberar() {
+        if (this.reservado) {
+            this.reservado = false;
+            agenda.liberar(this);
+            setDisponivel(true);
+            System.out.println("Máquina de lavar " + getModelo() + " (ID: " + getId() + ") liberada.");
+        } else {
+            System.out.println("Máquina de lavar " + getModelo() + " (ID: " + getId() + ") não estava reservada.");
+        }
+    }
+
+    @Override
+    public boolean estaReservado() {
+        return this.reservado;
+    }
+
+    public int getCapacidadeKg() {
+        return capacidadeKg;
+    }
+
+    public void setCapacidadeKg(int capacidadeKg) {
+        this.capacidadeKg = capacidadeKg;
+    }
+
+    @Override
+    public double getCusto() {
+        return this.custo;
+    }
+
+    @Override
+    public void setCusto(double custo) {
+        this.custo = custo;
+    }
+
+    public void iniciarCicloLavagem() {
+        System.out.println("Ciclo de lavagem iniciado para " + getModelo() + " (ID: " + getId() + ")");
+    }
+}
+
+---------------------------------------------------------------- Database - Classe Conexão Banco de Dados
+
+import com.j256.ormlite.jdbc.JdbcConnectionSource;
+import com.j256.ormlite.support.ConnectionSource;
+import java.sql.SQLException;
+
+public class Database {
+    private ConnectionSource connection;
+
+    public Database(String databaseName) {
+        try {
+            String databaseUrl = "jdbc:sqlite:" + databaseName;
+            this.connection = new JdbcConnectionSource(databaseUrl);
+            System.out.println("Opened database successfully");
+        } catch (SQLException e) {
+            System.err.println("Error opening database: " + e.getMessage());
+            e.printStackTrace();
+            System.exit(0);
+        }
+    }
+
+    public ConnectionSource getConnection() {
+        return connection;
+    }
+
+    public void close() {
+        try {
+            connection.close();
+            System.out.println("Database connection closed.");
+        } catch (Exception e) {
+            System.err.println("Error closing database: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+}
+
+---------------------------------------------------------------- AparelhoRepository - Classe Repositório
+
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.support.ConnectionSource;
+import com.j256.ormlite.table.TableUtils;
+import java.sql.SQLException;
+import java.util.List;
+
+public class AparelhoRepository {
+    private Dao<Aparelho, Integer> aparelhoDao;
+
+    public AparelhoRepository(Database database) {
+        try {
+            ConnectionSource connection = database.getConnection();
+            aparelhoDao = DaoManager.createDao(connection, Aparelho.class);
+            TableUtils.createTableIfNotExists(connection, Aparelho.class);
+            TableUtils.createTableIfNotExists(connection, MaquinaDeLavar.class);
+            TableUtils.createTableIfNotExists(connection, Secadora.class);
+        } catch (SQLException e) {
+            System.err.println("Erro ao criar AparelhoRepository: " + e.getMessage());
+            e.printStackTrace();
+            System.exit(0);
+        }
+    }
+
+    public void create(Aparelho aparelho) {
+        try {
+            aparelhoDao.create(aparelho);
+        } catch (SQLException e) {
+            System.err.println("Erro ao criar aparelho: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public List<Aparelho> loadAll() {
+        try {
+            return aparelhoDao.queryForAll();
+        } catch (SQLException e) {
+            System.err.println("Erro ao carregar aparelhos: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+}
+
+---------------------------------------------------------------- UsuarioRepository - Classe Repositório
+
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.support.ConnectionSource;
+import com.j256.ormlite.table.TableUtils;
+import java.sql.SQLException;
+import java.util.List;
+
+public class UsuarioRepository {
+    private Dao<Usuario, Integer> usuarioDao;
+
+    public UsuarioRepository(Database database) {
+        try {
+            ConnectionSource connection = database.getConnection();
+            usuarioDao = DaoManager.createDao(connection, Usuario.class);
+            TableUtils.createTableIfNotExists(connection, Usuario.class);
+            TableUtils.createTableIfNotExists(connection, Cliente.class);
+            TableUtils.createTableIfNotExists(connection, Administrador.class);
+        } catch (SQLException e) {
+            System.err.println("Erro ao criar UsuarioRepository: " + e.getMessage());
+            e.printStackTrace();
+            System.exit(0);
+        }
+    }
+
+    public void create(Usuario usuario) {
+        try {
+            usuarioDao.create(usuario);
+        } catch (SQLException e) {
+            System.err.println("Erro ao criar usuário: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public List<Usuario> loadAll() {
+        try {
+            return usuarioDao.queryForAll();
+        } catch (SQLException e) {
+            System.err.println("Erro ao carregar usuários: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+}
+
+---------------------------------------------------------------- Caixa - Classe Transações 
+
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.support.ConnectionSource;
+import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.util.List;
+
+public class Caixa {
+    @com.j256.ormlite.table.DatabaseTable(tableName = "transactions")
+    public static class Transaction {
+        @com.j256.ormlite.field.DatabaseField(generatedId = true)
+        private int id;
+
+        @com.j256.ormlite.field.DatabaseField
+        private int matricula;
+
+        @com.j256.ormlite.field.DatabaseField
+        private double valor;
+
+        @com.j256.ormlite.field.DatabaseField
+        private String data;
+
+        @com.j256.ormlite.field.DatabaseField(foreign = true, foreignAutoRefresh = true)
+        private Aparelho aparelho;
+
+        Transaction() {
+            // Construtor vazio necessário para ORMLite
+        }
+
+        Transaction(int matricula, double valor, Aparelho aparelho) {
+            this.matricula = matricula;
+            this.valor = valor;
+            this.data = LocalDateTime.now().toString();
+            this.aparelho = aparelho;
+        }
+
+        // Getters
+        public int getMatricula() {
+            return matricula;
+        }
+
+        public double getValor() {
+            return valor;
+        }
+
+        public String getData() {
+            return data;
+        }
+
+        public Aparelho getAparelho() {
+            return aparelho;
+        }
+    }
+
+    private static Database database = new Database("lavanderia.db");
+    private static Dao<Transaction, Integer> transactionDao;
+    private static AparelhoRepository aparelhoRepository;
+
+    static {
+        try {
+            ConnectionSource connection = database.getConnection();
+            transactionDao = DaoManager.createDao(connection, Transaction.class);
+            aparelhoRepository = new AparelhoRepository(database);
+            System.out.println("Tabela transactions e aparelhos inicializadas.");
+        } catch (SQLException e) {
+            System.err.println("Erro ao inicializar Caixa: " + e.getMessage());
+            e.printStackTrace();
+            System.exit(0);
+        }
+    }
+
+    public static void cobrar(Usuario usuario, Aparelho aparelho) {
+        if (usuario instanceof Autenticavel && ((Autenticavel) usuario).login(usuario.getMatricula(), usuario.getSenha())) {
+            double valor = aparelho.getCusto();
+            System.out.println("Matrícula: " + usuario.getMatricula());
+            System.out.println("Total a pagar: R$ " + String.format("%.2f", valor));
+
+            try {
+                Transaction transacao = new Transaction(usuario.getMatricula(), valor, aparelho);
+                transactionDao.create(transacao);
+                System.out.println("Transação registrada no banco em " + LocalDateTime.now());
+            } catch (SQLException e) {
+                System.err.println("Erro ao registrar transação: " + e.getMessage());
+                e.printStackTrace();
+                System.out.println("Falha ao registrar transação em " + LocalDateTime.now());
+            }
+        } else {
+            System.out.println("Autenticação falhou para matrícula " + usuario.getMatricula());
+        }
+    }
+
+    public static List<Transaction> getTransacoesPorMatricula(int matricula) {
+        try {
+            return transactionDao.queryForEq("matricula", matricula);
+        } catch (SQLException e) {
+            System.err.println("Erro ao consultar transações: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static void closeConnection() {
+        database.close();
+    }
+}
+
+---------------------------------------------------------------- Main - Classe Teste
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Main {
+    public static void main(String[] args) {
+        System.out.println("Iniciando o programa...");
+
+        // Instanciar o Database
+        Database database = new Database("lavanderia.db");
+        System.out.println("Database instanciado.");
+
+        // Criar repositórios e forçar criação das tabelas
+        try {
+            UsuarioRepository usuarioRepository = new UsuarioRepository(database);
+            System.out.println("Repositório de usuários criado.");
+            AparelhoRepository aparelhoRepository = new AparelhoRepository(database);
+            System.out.println("Repositório de aparelhos criado.");
+        } catch (Exception e) {
+            System.err.println("Erro ao criar repositórios: " + e.getMessage());
+            e.printStackTrace();
+            return;
+        }
+
+        // Criar usuários
+        Usuario cliente = new Cliente("João Silva", 12345, "senha123");
+        Usuario admin = new Administrador("Maria Oliveira", 67890, "admin456");
+        UsuarioRepository usuarioRepository = new UsuarioRepository(database);
+        usuarioRepository.create(cliente);
+        usuarioRepository.create(admin);
+        System.out.println("Usuários criados e salvos.");
+
+        // Criar aparelhos
+        Aparelho lavadora = new MaquinaDeLavar(1, "Lavadora Eco", "Lavadora de 8kg", true, 8);
+        Aparelho secadora = new Secadora(2, "Secadora Pro", "Secadora de 6kg", true, 6);
+        AparelhoRepository aparelhoRepository = new AparelhoRepository(database);
+        aparelhoRepository.create(lavadora);
+        aparelhoRepository.create(secadora);
+        System.out.println("Aparelhos criados e salvos.");
+
+        // Testar reservas com Agenda
+        LocalDateTime agora = LocalDateTime.now();
+        System.out.println("Tentando reservar lavadora...");
+        lavadora.reservar();
+        System.out.println("Tentando reservar secadora...");
+        secadora.reservar();
+
+        // Testar liberação
+        System.out.println("Liberando lavadora...");
+        lavadora.liberar();
+
+        // Testar cobranças
+        System.out.println("Testando cobrança para cliente com lavadora...");
+        Caixa.cobrar(cliente, lavadora);
+
+        System.out.println("Testando cobrança para administrador com secadora...");
+        Caixa.cobrar(admin, secadora);
+
+        // Carregar e exibir transações
+        List<Caixa.Transaction> transacoes = Caixa.getTransacoesPorMatricula(12345);
+        if (transacoes != null) {
+            System.out.println("Transações para matrícula 12345: " + transacoes.size());
+            for (Caixa.Transaction t : transacoes) {
+                System.out.println("Matrícula: " + t.getMatricula() + ", Valor: R$ " + t.getValor() + 
+                                   ", Data: " + t.getData() + ", Aparelho: " + t.getAparelho().getModelo());
+            }
+        } else {
+            System.out.println("Nenhuma transação encontrada para matrícula 12345.");
+        }
+
+        // Carregar e exibir usuários
+        List<Usuario> usuarios = usuarioRepository.loadAll();
+        System.out.println("Usuários no banco: " + (usuarios != null ? usuarios.size() : 0));
+        if (usuarios != null) {
+            for (Usuario u : usuarios) {
+                System.out.println(u.mostrarDados());
+            }
+        }
+
+        // Carregar e exibir aparelhos
+        List<Aparelho> aparelhos = aparelhoRepository.loadAll();
+        System.out.println("Aparelhos no banco: " + (aparelhos != null ? aparelhos.size() : 0));
+        if (aparelhos != null) {
+            for (Aparelho a : aparelhos) {
+                System.out.println("Modelo: " + a.getModelo() + ", Descrição: " + a.getDescricao() + ", Reservado: " + a.estaReservado());
+            }
+        }
+
+        // Fechar a conexão
+        Caixa.closeConnection();
+        System.out.println("Teste concluído. Verifique o banco de dados.");
+    }
+}
+
+---------------------------------------------------------------- FIM
