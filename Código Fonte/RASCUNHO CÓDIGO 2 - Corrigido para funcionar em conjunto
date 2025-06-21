@@ -1,7 +1,7 @@
 Código adaptado e atualizado com base nas classes iniciais para que compilasse sem nenhum erro em conjunto no BlueJ
 (Espera-se atualizações posteriores para conexão com frontend e banco de dados)
 
-----------------------------------------------------------------
+---------------------------------------------------------------- MaquinaPequena - Classe
 
 public class MaquinaPequena extends MaquinaLavar {
     public MaquinaPequena(String idMaquina) {
@@ -19,7 +19,7 @@ public class MaquinaPequena extends MaquinaLavar {
     }
 }
 
-----------------------------------------------------------------
+---------------------------------------------------------------- MaquinaMedia - Classe
 
 public class MaquinaMedia extends MaquinaLavar {
     public MaquinaMedia(String idMaquina) {
@@ -37,7 +37,7 @@ public class MaquinaMedia extends MaquinaLavar {
     }
 }
 
-----------------------------------------------------------------
+---------------------------------------------------------------- MaquinaPesada - Classe
 
 public class MaquinaPesada extends MaquinaLavar {
     public MaquinaPesada(String idMaquina) {
@@ -55,7 +55,7 @@ public class MaquinaPesada extends MaquinaLavar {
     }
 }
 
-----------------------------------------------------------------
+---------------------------------------------------------------- Intervalo - Classe
 
 public class Intervalo {
     /**
@@ -84,7 +84,7 @@ public class Intervalo {
     }
 }
 
-----------------------------------------------------------------
+---------------------------------------------------------------- Agenda - Classe
 
 public class Agenda {
     static final double tempoDeFuncionamentoSemana[] = {8.0, 8.0, 8.0, 8.0, 8.0, 8.0, 8.0};
@@ -211,7 +211,7 @@ public class Agenda {
     }
 }
 
-----------------------------------------------------------------
+---------------------------------------------------------------- MaquinaLavar - Classe
 
 public abstract class MaquinaLavar {
     /**
@@ -265,7 +265,7 @@ public abstract class MaquinaLavar {
     }
 }
 
-----------------------------------------------------------------
+---------------------------------------------------------------- Caixa - Classe
 
 public class Caixa {
     public static void cobrar(MaquinaLavar maquina, int matricula) {
@@ -277,7 +277,7 @@ public class Caixa {
     }
 }
 
-----------------------------------------------------------------
+---------------------------------------------------------------- User - Classe
 
 public class User {
     /*
@@ -294,7 +294,7 @@ public class User {
     }
 }
 
-----------------------------------------------------------------
+---------------------------------------------------------------- Sistema - Classe
 
 import java.util.Scanner;
 
@@ -327,4 +327,4 @@ public class Sistema {
     }
 }
 
-----------------------------------------------------------------
+---------------------------------------------------------------- FIM
