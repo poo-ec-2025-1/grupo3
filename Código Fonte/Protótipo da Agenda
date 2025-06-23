@@ -12,6 +12,7 @@ public class AgendaRepository
    
    class HorarioReservavel extends HorarioIntervalo implements Reservavel 
    {
+       //Não estará presente no database
        private int marcado;
        
        public boolean reservar()
