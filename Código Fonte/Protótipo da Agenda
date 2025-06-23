@@ -1,0 +1,112 @@
+import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.dao.Dao;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.ArrayList;
+
+public class AgendaRepository
+{
+   private static Database database;
+   private static Dao<Intervalo, Integer> horariosIndisponíveis;   //Vou por isso no repositório dos aparelhos para cada aparelho
+   private static Dao<HorarioIntervalo, Integer> horariosReservados;        //Vou por isso no repositório dos usuários para cada usuário
+   
+   class HorarioReservavel extends HorarioIntervalo implements Reservavel 
+   {
+       private int marcado;
+       
+       public boolean reservar()
+       {
+           return false;
+       }
+       public void liberar()
+       {
+           
+       }
+       public boolean estaReservado()
+       {
+           return false;
+       }
+   }
+}
+
+
+
+
+
+/**
+ * Servirá como uma unidade de tempo. 
+ * De maneira que possibilite uma lógica para agrupar os "HoráriosIntervalo" em grandes "Intervalos" no banco de dados futuramente.
+ * Estará presente no Database
+ *
+ * @author Miguel Moreira 
+ */
+public class Intervalo
+{
+    // variáveis de instância
+    protected int dia;
+    protected double inicio = 0;
+    protected double fim = 0;
+    protected double intervaloDeTempo = 0;
+    protected String idMaquina;
+
+    /**
+     * Construtor para objetos da classe Intervalo
+     */
+    Intervalo()
+    {
+        
+    }
+    
+    public Intervalo(int dia, double inicio, double fim)
+    {
+        
+        // inicializa variáveis de instância
+        boolean teste = (inicio < fim);
+        if (teste)  {
+                this.dia = dia;
+                this.inicio = inicio;
+                this.fim = fim;
+                intervaloDeTempo = fim - inicio;
+        }
+    }
+    
+    public Intervalo(String idMaquina, int dia,double inicio, double fim)
+    {
+        this(dia, inicio, fim);
+        this.idMaquina = idMaquina;
+    }
+}
+
+
+
+/**
+ * Estará presente no database
+ * 
+ * @author (seu nome) 
+ * @version (um número da versão ou uma data)
+ */
+public class HorarioIntervalo extends Intervalo
+{
+    protected int matriculaDoUsuario;
+    
+    HorarioIntervalo()
+    {
+        
+    }
+    
+    HorarioIntervalo(int dia, double inicio, double fim, int matricula)
+    {
+        super(dia, inicio, fim);
+        this.matriculaDoUsuario = matricula;
+    }
+    
+    HorarioIntervalo(String idMaquina, int dia, double inicio, double fim, int matricula)
+    {
+        super(idMaquina, dia, inicio, fim);
+        this.matriculaDoUsuario = matricula;
+    }
+}
+
+
+
+
