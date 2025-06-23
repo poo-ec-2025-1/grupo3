@@ -11,8 +11,8 @@ public class AgendaRepository
    private static Dao<HorarioIntervalo, Integer> horariosReservados;        //Vou por isso no repositório dos usuários para cada usuário
    
    class HorarioReservavel extends HorarioIntervalo implements Reservavel 
+   ////Não estará presente no database
    {
-       //Não estará presente no database
        private int marcado;
        
        public boolean reservar()
