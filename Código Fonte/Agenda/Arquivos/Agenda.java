@@ -1,235 +1,72 @@
-public class Agenda
+import java.time.LocalDateTime;
+import java.lang.Exception;
+import java.lang.StringBuilder;
+
 /**
- * A Agenda funcionará com sua instaciacao.
- * Ou seja, para o sistema funcionar ele precisará de um objeto Agenda (ainda será implementado).
- * Ademais, em resumo, serve para marcar horários com método "marcarHorário".
+ * Escreva uma descrição da classe Agenda aqui.
  * 
- * @author Miguel Moreira 
+ * @author (seu nome) 
+ * @version (um número da versão ou uma data)
  */
+public class Agenda
 {
-    // Atributos de classe
-    static final double tempoDeFuncionamentoSemana[] = {8.0, 8.0, 8.0, 8.0, 8.0, 8.0, 8.0};
-    static HorarioIntervalo horariosMarcados[][] = new HorarioIntervalo[7][999];     //Simulacao de banco de dados 
+    static final String[] diasSemana = {"domingo", "segunda", "terça", "quarta", "quinta", "sexta", "sábado"};
     
-    // Atributos
-    String nomeAgenda;
-    //protected double tempoOfertadoAgenda[] = tempoDeFuncionamentoSemana;       //Em geral, esse será o padrão
-    protected double tempoOfertadoAgenda[] = {0.0, 1.0, 0.5, 2.0, 7.0, 8.0, 4.0};      //Esse é só um teste de uma instaciacao no qual o domingo é retirado da oferta por exemplo. Talvez só alguns clientes tem acesso lavanderia no domingo...
-    final double tempoPadrao = 1.0;
+    private double tempoDeFuncionamentoSemana[] = new double[7];
     
-    //Classes
-    class HorarioIntervalo extends Intervalo
+    class IntervaloReservavel extends IntervaloDeUso
     {
-        /**
-         * Parecido ao Intervalo, o HorarioIntervalo funcionará como uma unidade de tempo, porém não poderão ser agrupadas.
-         * Atencao: o nome não é "Horario" e sim "HorarioIntervalo" por causa de um pacote no "Java" com um nome parecido com aquele primeiro.
-         * Obs.: necessita de um "banco de dados" que, por sua vez, está, por enquanto implementado dentro da "MaquinaLavar" e suas subclasses.
-         * 
-         * @author Miguel Moreira 
-         */
-        
-        int matriculaDoUsuario;
-        
-        HorarioIntervalo(int dia, double inicioDoHorario, double fimDoHorario, int matricula)
-        {
-            super(dia, inicioDoHorario, fimDoHorario);
-            matriculaDoUsuario = matricula;
-        }
-            
-        boolean selecionarDia(char tipoMaquina)
-        {
-            /**
-             * Verifica se o dia está disponível para uma instanciacao do "HorarioIntervalo"
-             */
-            if (dia < tempoDeFuncionamentoSemana.length && tempoDeFuncionamentoSemana[dia] >= 0)
-            {
-                double[] tempo = new double[7];
-                int tipo;
-                switch(tipoMaquina)
-                {
-                    case 'l':
-                    case 'L':
-                        tempo = MaquinaPequena.tempoOfertadoMaquinaS;
-                        tipo = MaquinaPequena.qtdMaquina;
-                        break;
-                            
-                    case 'm':
-                    case 'M':
-                        tempo = MaquinaMedia.tempoOfertadoMaquinaS;
-                        tipo = MaquinaMedia.qtdMaquina;
-                        break;
-                            
-                    case 'p':
-                    case 'P':
-                    case 'g':
-                    case 'G':
-                        tempo = MaquinaPesada.tempoOfertadoMaquinaS;
-                        tipo = MaquinaPesada.qtdMaquina;
-                        break;
-                            
-                    default:
-                        tempo = MaquinaLavar.tempoOfertadoMaquinaS;
-                        tipo = MaquinaLavar.qtdMaquina;
-                }
-                
-                if(tempoDeFuncionamentoSemana[dia] != 0 && tipo != 0)
-                {   
-                    if(tempo[dia] != 0)
-                    {
-                        return true;                
-                    }
-                    else
-                    {
-                        System.out.println("O dia " + this.dia  + " selecionado está cheio...");
-                    }
-                    
-                }
-                else
-                {
-                    System.out.println("O dia " + this.dia  + " selecionado está indisponível...");
-                }
-                
-            }
-            else
-            {
-                System.out.println("Não é possível selecionar esse dia " + this.dia + "...");
-            }
-            return false;
-        }
-        
-        String verificarMaquinaDisponivel(char tipoMaquina, String nome)
-         /**
-          * Verifica se há uma máquina disponível para uma instanciacao do "HorarioIntervalo".
-          * Resumo da lógica: é impossível indisponibilzar algo já indisponível.
-          */
-        {
-            if (!selecionarDia(tipoMaquina)) {
-                return ""; // Mensagens já são impressas dentro de selecionarDia
-            }
-            
-            if (intervaloDeTempo > Agenda.tempoDeFuncionamentoSemana[dia]) {
-                System.out.println("Intervalo de tempo escolhido vai além do horário de funcionamento da lavanderia.");
-                return "";
-            }
-        
-            for (int i = 0; i < MaquinaLavar.maquinasOfertadas.length && MaquinaLavar.maquinasOfertadas[i] != null; i++) {
-                MaquinaLavar maquina = MaquinaLavar.maquinasOfertadas[i];
-        
-                if (maquina.tipoMaquina == tipoMaquina && maquina.idMaquina != nome) {
-                    if (intervaloDeTempo <= maquina.tempoOfertadoDaMaquina[this.dia]) {
-                        return maquina.idMaquina;
-                    }
-                }
-            }
-        
-            System.out.println("O dia " + dia + " requerido não tem essa disponibilidade de tempo em específico...");
-            return "";
-        }
-        
-        private String verificarMaquinaDisponivel(char tipoMaquina)
-        {
-            return verificarMaquinaDisponivel(tipoMaquina, "");
-        }
-        
-        public boolean marcarHorario(double pesoRoupa)
-        {
-            char tipo = ' ';
-            if (pesoRoupa <= 5)
-            {
-                tipo = 'l';
-            }
-            else if(pesoRoupa <= 8)
-            {
-                tipo = 'm';
-            }
-            else if(pesoRoupa <= 15)
-            {
-                tipo = 'p';
-            }
-            
-            String nome = verificarMaquinaDisponivel(tipo);
-            if (!nome.isEmpty())
-            {
-                for (int i = 0; i < MaquinaLavar.maquinasOfertadas.length; i++)
-                {
-                    MaquinaLavar maquina = MaquinaLavar.maquinasOfertadas[i];
-                    if (maquina.idMaquina.equals(nome))
-                    {
-                        maquina.descontarTempo(this.dia, this.intervaloDeTempo);
-                        this.idMaquina = nome;
-                        System.out.println("Horário marcado para o dia " + dia + " :)");
-                        break;
-                    }
-                }
-                
-                for (int i = 0; i < horariosMarcados[dia].length; i++)
-                {
-                    
-                    if (horariosMarcados[dia][i] == null)
-                    {
-                        horariosMarcados[dia][i] = this;
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
+       IntervaloReservavel(LocalDateTime inicio, LocalDateTime fim, Aparelho aparelho) throws Exception
+       {
+           super(inicio, fim, aparelho);
+       }
     }
     
-    /**
-     * Construtor para objetos da classe Agenda
-     */
     Agenda()
     {
-        
-    }
-    
-    Agenda(String nome)
-    {
-        setNomeAgenda(nome);
-    }
-    
-    public boolean marcarHorario(int dia, double inicioDoHorario, double fimDoHorario, int matricula, double pesoRoupa)
-    {
-         /**
-          * Se conseguir reservar tempo, armazena a marcação em horáriosMarcados.
-          */
-        HorarioIntervalo novo = new HorarioIntervalo(dia, inicioDoHorario, fimDoHorario, matricula);
-        if (novo.marcarHorario(pesoRoupa))
+        for (int i = 0; i < tempoDeFuncionamentoSemana.length; i++)
         {
-            return true;        //Facilitando a leitura...
-        }
-        else
-        {
-            return false;
+            tempoDeFuncionamentoSemana[i] = 8.0;
         }
     }
     
-    
-    /*public ?UmObjeto? gerarCalendario()
+    Agenda(double tempo) throws Exception
     {
-        return calendario;
-    }*/
+        if (tempo < 0.0 || tempo > 24.0) {
+            throw new Exception("Tempo padrão inválido: " + tempo + "h. Deve estar entre 0.0 e 24.0 horas.");
+        }
     
-    void setNomeAgenda(String nome)
-    {
-        nomeAgenda =  nome;
+        tempoDeFuncionamentoSemana = new double[7];
+        for (int i = 0; i < tempoDeFuncionamentoSemana.length; i++) {
+            tempoDeFuncionamentoSemana[i] = tempo;
+        }
     }
     
-    void teste()
+    Agenda(double dom, double seg, double ter, double qua, double qui, double sex, double sab) throws Exception
     {
-        HorarioIntervalo teste1 = new HorarioIntervalo(0, 0, 1, 123);
-        System.out.println(teste1.selecionarDia('m'));
-        MaquinaPequena pp = new MaquinaPequena("jjj");
-        System.out.println(teste1.selecionarDia('m'));
-        System.out.println(teste1.selecionarDia('l'));
+        double[] novosTempos = {dom, seg, ter, qua, qui, sex, sab};
+        StringBuilder erros = new StringBuilder();
         
-        HorarioIntervalo teste2 = new HorarioIntervalo(0, 0, 10, 123);
-        System.out.println(teste2.verificarMaquinaDisponivel('l'));
-        System.out.println(teste1.verificarMaquinaDisponivel('l'));
-        
-        teste1.marcarHorario(1);
-        HorarioIntervalo teste3 = new HorarioIntervalo(0, 0, 8, 123);
-        System.out.println(teste3.verificarMaquinaDisponivel('l'));
+        for (int i = 0; i < novosTempos.length; i++)
+        {
+            if (novosTempos[i] < 0.0 || novosTempos[i] > 24.0) {
+            erros.append(" - ")
+                 .append(diasSemana[i])
+                 .append(": ")
+                 .append(novosTempos[i])
+                 .append(" horas (deve estar entre 0.0 e 24.0)\n");
+        }
+    }
+
+    if (erros.length() > 0) {
+        throw new Exception("Foram encontrados os seguintes erros nos tempos de funcionamento:\n" + erros.toString());
+    }
+
+    tempoDeFuncionamentoSemana = novosTempos.clone();
+    }
+    
+    public double[] getTempoDeFuncionamentoSemana()
+    {
+        return tempoDeFuncionamentoSemana.clone();
     }
 }
