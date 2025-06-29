@@ -21,8 +21,7 @@ public abstract class Aparelho implements Reservavel {
     public Aparelho() {
     }
 
-    public Aparelho(int id, String modelo, String descricao, boolean agendavel) {
-        this.id = id;
+    public Aparelho(String modelo, String descricao, boolean agendavel) {
         this.modelo = modelo;
         this.descricao = descricao;
         this.agendavel = agendavel;
