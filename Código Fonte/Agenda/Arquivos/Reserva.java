@@ -1,28 +1,54 @@
 /**
  * Estará presente no database
+ * Será uma composicao do Usuario, Intervalo e DiaDaReserva
+ * A composicao será feita na Agenda e, a partir dela será mandada ao database
+ * Assim, tudo necessário para o armazenamento de horários no Database será organizado em um só objeto, facilitando a análise.
  * 
- * @author (seu nome) 
- * @version (um número da versão ou uma data)
+ * @author Miguel Moreira
  */
 
+import java.util.Date;
+import java.text.SimpleDateFormat;
+import com.j256.ormlite.table.DatabaseTable;
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.field.DataType;
+
+@DatabaseTable(tableName = "reserva")
 public class Reserva
 {
-    // variáveis de instância - substitua o exemplo abaixo pelo seu próprio
+    @DatabaseField(generatedId = true)
+    private int id;
+    
+    @DatabaseField(foreign = true, foreignAutoRefresh = true)
     private Usuario user;
+    
+    @DatabaseField(foreign = true, foreignAutoRefresh = true)
     private IntervaloDeUso intervalo;
-    private int idReserva;
+    
+    @DatabaseField(foreign = true, foreignAutoRefresh = true)
+    private DiaDaReserva dia;
 
     /**
      * Construtor para objetos da classe Reserva
      */
     Reserva()
     {
-        // inicializa variáveis de instância
         
     }
     
-    Reserva(Usuario user, IntervaloDeUso intervalo)
+    Reserva(Usuario user, IntervaloDeUso intervalo, DiaDaReserva dia)
     {
-        
+        if (user == null) {
+            throw new IllegalArgumentException("Usuário não pode ser nulo.");
+        }
+        if (intervalo == null) {
+            throw new IllegalArgumentException("Intervalo de uso não pode ser nulo.");
+        }
+        if (dia == null) {
+            throw new IllegalArgumentException("Dia da reserva não pode ser nulo.");
+        }
+        this.user = user;
+        this.intervalo = intervalo;
+        this.dia = dia;
     }
 }

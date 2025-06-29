@@ -1,26 +1,50 @@
 import java.time.LocalDateTime;
-import java.lang.Exception;
-import java.lang.StringBuilder;
 
 /**
- * Escreva uma descrição da classe Agenda aqui.
+ * Fará todas as checagens para garantir as reservas.
+ * Focado a um servico com uma implementacao abstrata e facilitada para o cliente.
+ * Necessita dos repositórios para funcionar.
  * 
- * @author (seu nome) 
- * @version (um número da versão ou uma data)
+ * @author Miguel Moreira 
  */
+
 public class Agenda
 {
     static final String[] diasSemana = {"domingo", "segunda", "terça", "quarta", "quinta", "sexta", "sábado"};
     
-    private double tempoDeFuncionamentoSemana[] = new double[7];
+    private static double tempoDeFuncionamentoSemana[] = {8.0, 8.0, 8.0, 8.0, 8.0, 8.0, 8.0};
     
     class IntervaloReservavel extends IntervaloDeUso
     {
+        /*
+         * O intervalo de uso mas com métodos que posibilite sua reseva.
+         * 
+         */
+        
        IntervaloReservavel(LocalDateTime inicio, LocalDateTime fim, Aparelho aparelho) throws Exception
        {
            super(inicio, fim, aparelho);
        }
+       
+       boolean selecionarDia(char modelo)
+       {
+           return false;
+       }
+       
+       String verificarAparelhoDisponivel(char modelo)
+       {
+           return "";
+       }
+       
     }
+    
+    Agenda()
+    {
+        
+    }
+    
+    /*
+     
     
     Agenda()
     {
@@ -64,6 +88,7 @@ public class Agenda
 
     tempoDeFuncionamentoSemana = novosTempos.clone();
     }
+    */
     
     public double[] getTempoDeFuncionamentoSemana()
     {
