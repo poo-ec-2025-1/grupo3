@@ -6,8 +6,8 @@ import com.j256.ormlite.field.DataType;
 
 @DatabaseTable(tableName = "usuario")
 
-public abstract class Usuario {
-    @DatabaseField(generatedId = true)
+public class Usuario {
+    @DatabaseField(generatedId = true, dataType=DataType.INTEGER)
     private int id;
     
     @DatabaseField(dataType=DataType.STRING)
@@ -29,10 +29,6 @@ public abstract class Usuario {
     */
     
     Usuario() {
-        this.nomeCompleto = "N/A";
-        this.matricula = 0;
-        this.senha = "N/A";
-        this.saldo = 0.0;
     }
     
     Usuario(String nomeCompleto, int matricula, String senha) {

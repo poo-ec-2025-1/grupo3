@@ -8,12 +8,9 @@ import java.util.ArrayList;
 public class ReservaRepository {
     private static Database database;
     private static Dao<Reserva, Integer> dao;
-    private List<Reserva> loadedReservas;
-    private Reserva loadedReserva;
     
     public ReservaRepository(Database database) {
         ReservaRepository.setDatabase(database);
-        loadedReservas = new ArrayList<Reserva>();
     }
     
     public static void setDatabase(Database database) {
@@ -32,9 +29,7 @@ public class ReservaRepository {
         try {
             nrows = dao.create(reserva);
             if ( nrows == 0 )
-                throw new SQLException("Error: object not saved");
-            this.loadedReserva = reserva;
-            loadedReservas.add(reserva);
+                throw new SQLException("Erro ao criar o objeto.");
         } catch (SQLException e) {
             System.out.println(e);
         }
@@ -57,25 +52,34 @@ public class ReservaRepository {
       }
     }
     
-    public Reserva loadFromId(int id) {
+    public void deletePorId(int id) {
         try {
-            this.loadedReserva = dao.queryForId(id);
-            if (this.loadedReserva != null)
-                this.loadedReservas.add(this.loadedReserva);
+            dao.deleteById(id);
+        } catch(SQLException e) {
+            System.err.println("Erro ao deletar o reserva: " +e.getMessage());
+        }
+    }
+    
+    public Reserva loadFromId(int id) {
+        Reserva loadedReserva = new Reserva();
+        try {
+            loadedReserva = dao.queryForId(id);
         } catch (SQLException e) {
             System.out.println(e);
         }
-        return this.loadedReserva;
+        return loadedReserva;
     }    
     
     public List<Reserva> loadAll() {
+        Reserva loadedReserva = new Reserva();
+        List<Reserva> loadedReservas = new ArrayList<Reserva>();
         try {
-            this.loadedReservas =  dao.queryForAll();
-            if (this.loadedReservas.size() != 0)
-                this.loadedReserva = this.loadedReservas.get(0);
+            loadedReservas =  dao.queryForAll();
+            if (loadedReservas.size() != 0)
+                loadedReserva = loadedReservas.get(0);
         } catch (SQLException e) {
             System.out.println(e);
         }
-        return this.loadedReservas;
+        return loadedReservas;
     }
 }

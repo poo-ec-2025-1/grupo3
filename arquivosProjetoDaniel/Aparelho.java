@@ -1,43 +1,36 @@
 import com.j256.ormlite.table.DatabaseTable;
 import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.field.DataType;
 
-public abstract class Aparelho {
-    @DatabaseField
+public class Aparelho {
+    @DatabaseField(generatedId = true, dataType=DataType.INTEGER)
     private int id;
     
-    @DatabaseField
+    @DatabaseField(dataType=DataType.STRING)
     private String modelo;
     
-    @DatabaseField
+    @DatabaseField(dataType=DataType.STRING)
     private String descricao;
     
-    @DatabaseField
+    @DatabaseField(dataType=DataType.INTEGER)
     private int capacidadeKg;
     
-    @DatabaseField
+    @DatabaseField(dataType=DataType.BOOLEAN)
     private boolean agendavel;
     
-    @DatabaseField
+    @DatabaseField(dataType=DataType.BOOLEAN)
     private boolean disponivel;
     
-    @DatabaseField
+    @DatabaseField(dataType=DataType.BOOLEAN)
     private boolean reservado;
     
-    @DatabaseField
+    @DatabaseField(dataType=DataType.DOUBLE)
     private double custo;
     
     Aparelho() {
-        this.id = 0;
-        this.modelo = "N/A";
-        this.descricao = "N/A";
-        this.capacidadeKg = 0;
-        this.agendavel = false;
-        this.disponivel = false;
-        this.custo = 0.0;
     }
     
-    Aparelho(int id, String modelo, String descricao, int capacidadeKg, boolean agendavel, double custo) {
-        this.id = id;
+    Aparelho(String modelo, String descricao, int capacidadeKg, boolean agendavel, double custo) {
         this.modelo = modelo;
         this.descricao = descricao;
         this.capacidadeKg = capacidadeKg;

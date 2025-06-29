@@ -8,12 +8,10 @@ import java.util.ArrayList;
 public class UsuarioRepository {
     private static Database database;
     private static Dao<Usuario, Integer> dao;
-    private List<Usuario> loadedUsuarios;
-    private Usuario loadedUsuario;
+    
     
     public UsuarioRepository(Database database) {
         UsuarioRepository.setDatabase(database);
-        loadedUsuarios = new ArrayList<Usuario>();
     }
     
     public static void setDatabase(Database database) {
@@ -32,9 +30,7 @@ public class UsuarioRepository {
         try {
             nrows = dao.create(usuario);
             if ( nrows == 0 )
-                throw new SQLException("Error: object not saved");
-            this.loadedUsuario = usuario;
-            loadedUsuarios.add(usuario);
+                throw new SQLException("Erro ao criar o objeto.");
         } catch (SQLException e) {
             System.out.println(e);
         }
@@ -66,37 +62,26 @@ public class UsuarioRepository {
         }
     }
     
-    public Usuario findFromId(int id) {
-        try {
-            this.loadedUsuario = dao.queryForId(id);
-            if(id == 0) {
-                System.out.println("ID inválido.");
-            }
-        } catch (SQLException e) {
-            System.out.println(e);
-        }
-        return this.loadedUsuario;
-    }
-    
     public Usuario loadFromId(int id) {
+        Usuario loadedUsuario = new Usuario();
         try {
-            this.loadedUsuario = dao.queryForId(id);
-            if (this.loadedUsuario != null)
-                this.loadedUsuarios.add(this.loadedUsuario);
+            loadedUsuario = dao.queryForId(id);
         } catch (SQLException e) {
             System.out.println(e);
         }
-        return this.loadedUsuario;
+        return loadedUsuario;
     }    
     
     public List<Usuario> loadAll() {
+        Usuario loadedUsuario = new Usuario();
+        List<Usuario> loadedUsuarios = new ArrayList<Usuario>();
         try {
-            this.loadedUsuarios =  dao.queryForAll();
-            if (this.loadedUsuarios.size() != 0)
-                this.loadedUsuario = this.loadedUsuarios.get(0);
+            loadedUsuarios =  dao.queryForAll();
+            if (loadedUsuarios.size() != 0)
+                loadedUsuario = loadedUsuarios.get(0);
         } catch (SQLException e) {
             System.out.println(e);
         }
-        return this.loadedUsuarios;
+        return loadedUsuarios;
     }
 }

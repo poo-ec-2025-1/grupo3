@@ -1,5 +1,10 @@
 import java.sql.SQLException;
 
+/** Essa classe é a responsável por fazer os serviços relacionados às operações
+ *  de adicionar/debitar saldo do Usuário.
+ * 
+ */
+
 public class Caixa {
     private final UsuarioRepository usuarioRepository;
     private final AparelhoRepository aparelhoRepository;
@@ -12,7 +17,7 @@ public class Caixa {
     
     public boolean adicionarSaldo(int usuarioId, double valor, MetodoDePagamento listaMetodos) {
         try {
-            Usuario usuario = usuarioRepository.findFromId(usuarioId);
+            Usuario usuario = usuarioRepository.loadFromId(usuarioId);
             if(usuario == null) {
                 mensagemDeAviso = ("Erro: Usuário com ID: " +usuarioId+ " não encontrado.");
                 return false;
@@ -29,8 +34,8 @@ public class Caixa {
     
     public boolean debitarSaldo(int usuarioId, int aparelhoId) {
         try {
-            Usuario usuario = usuarioRepository.findFromId(usuarioId);
-            Aparelho aparelho = aparelhoRepository.findFromId(aparelhoId);
+            Usuario usuario = usuarioRepository.loadFromId(usuarioId);
+            Aparelho aparelho = aparelhoRepository.loadFromId(aparelhoId);
             double valor = aparelho.getCusto();
             if(usuario == null) {
                 mensagemDeAviso = ("Erro: Usuário com ID: " +usuarioId+ " não encontrado.");

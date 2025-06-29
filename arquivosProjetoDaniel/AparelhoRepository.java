@@ -8,12 +8,9 @@ import java.util.ArrayList;
 public class AparelhoRepository {
     private static Database database;
     private static Dao<Aparelho, Integer> dao;
-    private List<Aparelho> loadedAparelhos;
-    private Aparelho loadedAparelho;
     
     public AparelhoRepository(Database database) {
         AparelhoRepository.setDatabase(database);
-        loadedAparelhos = new ArrayList<Aparelho>();
     }
     
     public static void setDatabase(Database database) {
@@ -32,9 +29,7 @@ public class AparelhoRepository {
         try {
             nrows = dao.create(aparelho);
             if ( nrows == 0 )
-                throw new SQLException("Error: object not saved");
-            this.loadedAparelho = aparelho;
-            loadedAparelhos.add(aparelho);
+                throw new SQLException("Erro ao criar o objeto.");
         } catch (SQLException e) {
             System.out.println(e);
         }
@@ -57,37 +52,34 @@ public class AparelhoRepository {
       }
     }
     
-    public Aparelho findFromId(int id) {
+    public void deletePorId(int id) {
         try {
-            this.loadedAparelho = dao.queryForId(id);
-            if(id == 0) {
-                System.out.println("ID inválido.");
-            }
-        } catch (SQLException e) {
-            System.out.println(e);
+            dao.deleteById(id);
+        } catch(SQLException e) {
+            System.err.println("Erro ao deletar o aparelho: " +e.getMessage());
         }
-        return this.loadedAparelho;
     }
     
     public Aparelho loadFromId(int id) {
+        Aparelho loadedAparelho = new Aparelho();
         try {
-            this.loadedAparelho = dao.queryForId(id);
-            if (this.loadedAparelho != null)
-                this.loadedAparelhos.add(this.loadedAparelho);
+            loadedAparelho = dao.queryForId(id);
         } catch (SQLException e) {
             System.out.println(e);
         }
-        return this.loadedAparelho;
+        return loadedAparelho;
     }    
     
     public List<Aparelho> loadAll() {
+        Aparelho loadedAparelho = new Aparelho();
+        List<Aparelho> loadedAparelhos = new ArrayList<Aparelho>();
         try {
-            this.loadedAparelhos =  dao.queryForAll();
-            if (this.loadedAparelhos.size() != 0)
-                this.loadedAparelho = this.loadedAparelhos.get(0);
+            loadedAparelhos =  dao.queryForAll();
+            if (loadedAparelhos.size() != 0)
+                loadedAparelho = loadedAparelhos.get(0);
         } catch (SQLException e) {
             System.out.println(e);
         }
-        return this.loadedAparelhos;
+        return loadedAparelhos;
     }
 }
