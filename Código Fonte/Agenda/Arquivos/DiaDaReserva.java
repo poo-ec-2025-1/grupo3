@@ -3,7 +3,7 @@
  * Serve para armazenar os dias com intervalos maracados e sua disponibilidade de tempo.
  * Será um produto de uma análise de dados do Database através da Agenda. 
  * Também possibilitará outras análises na Agenda.
- * Para cada DIA DO ANO E APARELHO haverá UMA instanciacao!
+ * Para cada ANO, DIA DO ANO E APARELHO haverá UMA instanciacao!
  * 
  * @author Miguel Moreira
  */
