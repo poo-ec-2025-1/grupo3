@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.Ellipse?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
+
+<Pane fx:id="cadastroPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" styleClass="painel-cinza" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Pane fx:id="loginPopupPane" layoutX="125.0" layoutY="60.0" prefHeight="300.0" prefWidth="350.0" styleClass="painel-branco">
+         <children>
+            <Label fx:id="loginLabel" layoutX="113.0" layoutY="21.0" text="Cadastro">
+               <font>
+                  <Font name="System Bold" size="30.0" />
+               </font>
+            </Label>
+            <Line endX="130.0" layoutX="160.0" layoutY="65.0" startX="-100.0" />
+            <Label fx:id="matriculaLabel" layoutX="50.0" layoutY="120.0" text="Matrícula:">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Label>
+            <TextField fx:id="matriculaTextField" layoutX="130.0" layoutY="120.0" prefHeight="30.0" prefWidth="175.0" styleClass="caixa-de-texto">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </TextField>
+            <Button fx:id="finalizarCadastroButton" layoutX="110.0" layoutY="205.0" mnemonicParsing="false" prefHeight="10.0" prefWidth="130.0" styleClass="botoes" text="Finalizar cadastro">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+            <Label fx:id="senhaLabel" layoutX="50.0" layoutY="160.0" text="Senha: ">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Label>
+            <PasswordField fx:id="senhaPasswordField" layoutX="130.0" layoutY="160.0" prefHeight="30.0" prefWidth="175.0" styleClass="caixa-de-texto" />
+            <CheckBox fx:id="exibirSenhaCheckbox" layoutX="266.0" layoutY="195.0" mnemonicParsing="false">
+               <font>
+                  <Font size="11.0" />
+               </font>
+            </CheckBox>
+            <Label fx:id="nomeLabel" layoutX="50.0" layoutY="80.0" text="Nome:">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Label>
+            <TextField fx:id="nomeTextField" layoutX="130.0" layoutY="80.0" prefHeight="30.0" prefWidth="175.0" styleClass="caixa-de-texto">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </TextField>
+            <Ellipse fill="#1f93ff00" layoutX="295.0" layoutY="203.0" radiusX="8.0" radiusY="5.0" stroke="BLACK" strokeType="INSIDE" />
+            <Circle layoutX="295.0" layoutY="203.0" radius="5.0" scaleX="0.8" scaleY="0.8" stroke="BLACK" strokeType="INSIDE" />
+            <Line endX="188.0" layoutX="160.0" layoutY="250.0" startX="-158.0" />
+            <Label layoutX="19.0" layoutY="262.0" text="Já possui um cadastro?">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Label>
+            <Button fx:id="fazerLoginButton" layoutX="201.0" layoutY="260.0" mnemonicParsing="false" prefHeight="10.0" prefWidth="130.0" styleClass="botoes" text="Fazer login">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+         </children>
+      </Pane>
+   </children>
+   <stylesheets>
+      <URL value="@login-estilos.css" />
+      <URL value="@selecao-data-estilos.css" />
+   </stylesheets>
+</Pane>
