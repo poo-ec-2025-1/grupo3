@@ -1,0 +1,19 @@
+#BlueJ class context
+comment0.target=PainelUsuarioController
+comment1.params=
+comment1.target=void\ initialize()
+comment2.params=event
+comment2.target=void\ handleAlterarCadastro(javafx.event.ActionEvent)
+comment3.params=event
+comment3.target=void\ handleEncerrarSessao(javafx.event.ActionEvent)
+comment4.params=event
+comment4.target=void\ handleAdicionarSaldo(javafx.event.ActionEvent)
+comment5.params=event
+comment5.target=void\ handleMinhasReservas(javafx.event.ActionEvent)
+comment6.params=fxmlFile\ event
+comment6.target=void\ mudarTela(java.lang.String,\ javafx.event.ActionEvent)
+comment7.params=novoSaldo
+comment7.target=void\ setSaldo(double)
+comment8.params=
+comment8.target=double\ getSaldo()
+numComments=9
