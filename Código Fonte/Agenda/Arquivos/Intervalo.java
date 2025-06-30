@@ -20,21 +20,19 @@ public class Intervalo
 {
     public final static String formatoData = "yyyy-MM-dd HH:mm";
     
-    @DatabaseField
     protected String inicio;
     
-    @DatabaseField
     protected String fim;
 
     /**
      * Construtor para objetos da classe Intervalo
      */
-    protected Intervalo()
+    public Intervalo()
     {
         
     }
     
-    public Intervalo(LocalDateTime inicio, LocalDateTime fim) throws Exception
+    public Intervalo(LocalDateTime inicio, LocalDateTime fim)
     {
         
         //Por causa da data padrão
@@ -52,8 +50,16 @@ public class Intervalo
         }
         else
         {
-            Exception e = new Exception("Horário final é anterior ao inicial.");
-            throw e;
+            new IllegalArgumentException("Horário final é anterior ao inicial.");
         }
+    }    
+    public String getInicio()
+    {
+        return inicio;
+    }
+    
+    public String getFim()
+    {
+        return fim;
     }
 }

@@ -16,27 +16,24 @@ import com.j256.ormlite.field.DataType;
 @DatabaseTable(tableName = "reserva")
 public class Reserva
 {
-    @DatabaseField(generatedId = true)
+    @DatabaseField(generatedId = true, dataType = DataType.INTEGER)
     private int id;
-    
-    @DatabaseField(foreign = true, foreignAutoRefresh = true)
-    private Usuario user;
     
     @DatabaseField(foreign = true, foreignAutoRefresh = true)
     private IntervaloDeUso intervalo;
     
     @DatabaseField(foreign = true, foreignAutoRefresh = true)
-    private DiaDaReserva dia;
-
+    private Usuario user;
+    
     /**
      * Construtor para objetos da classe Reserva
      */
-    Reserva()
+    public Reserva()
     {
         
     }
     
-    Reserva(Usuario user, IntervaloDeUso intervalo, DiaDaReserva dia)
+    Reserva(Usuario user, IntervaloDeUso intervalo)
     {
         if (user == null) {
             throw new IllegalArgumentException("Usuário não pode ser nulo.");
@@ -44,11 +41,22 @@ public class Reserva
         if (intervalo == null) {
             throw new IllegalArgumentException("Intervalo de uso não pode ser nulo.");
         }
-        if (dia == null) {
-            throw new IllegalArgumentException("Dia da reserva não pode ser nulo.");
-        }
         this.user = user;
         this.intervalo = intervalo;
-        this.dia = dia;
+    }
+    
+    Usuario getUser()
+    {
+        return user;
+    }
+    
+    int getId()
+    {
+        return id;
+    }
+    
+    IntervaloDeUso getIntervalo()
+    {
+        return intervalo;
     }
 }

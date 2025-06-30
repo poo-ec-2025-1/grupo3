@@ -16,33 +16,33 @@ import com.j256.ormlite.field.DataType;
 @DatabaseTable(tableName = "dia da reserva")
 public class DiaDaReserva {
     
-    @DatabaseField(generatedId = true)
-    private int idDiaDaReserva;
+    @DatabaseField(generatedId = true, dataType = DataType.INTEGER)
+    int id;
     
     @DatabaseField(foreign = true, foreignAutoRefresh = true)
-    private Aparelho aparelho;
+    Aparelho aparelho;
     
-    @DatabaseField
-    private int ano;
+    @DatabaseField(dataType = DataType.INTEGER)
+    int ano;
     
-    @DatabaseField
-    private int diaDaSemana;
+     @DatabaseField(dataType = DataType.INTEGER)
+    int diaDaSemana;
     
-    @DatabaseField
-    private int diaDoAno;
+    @DatabaseField(dataType = DataType.INTEGER)
+    int diaDoAno;
     
-    @DatabaseField
-    private double tempoDeFuncionamento;
+    @DatabaseField(dataType = DataType.DOUBLE)
+    double tempoDeFuncionamento;
     
-    @DatabaseField
-    private double tempoDisponivel;
+    @DatabaseField(dataType = DataType.DOUBLE)
+    double tempoDisponivel;
 
-    DiaDaReserva()
+    public DiaDaReserva()
     {
         
     }
     
-    public DiaDaReserva(Aparelho aparelho, int ano, int diaDaSemana, int diaDoAno,
+    DiaDaReserva(Aparelho aparelho, int ano, int diaDaSemana, int diaDoAno,
                         double tempoDeFuncionamento, double tempoDisponivel) {
 
         if (aparelho == null)
@@ -68,14 +68,14 @@ public class DiaDaReserva {
         this.tempoDisponivel = tempoDisponivel;
     }
 
-    boolean indisponibilzarTempo(double tempoIndisponivel) throws Exception
+    public boolean indisponibilzarTempo(double tempoIndisponivel)
     {
         
         if (tempoIndisponivel < 0)
             throw new IllegalArgumentException("Tempo indisponível deve ser positivo.");
         
         if (tempoIndisponivel > tempoDisponivel)
-            throw new Exception("O tempo solicitado vai além do disponível.");
+            throw new IllegalArgumentException("O tempo solicitado vai além do disponível.");
         
         double temp = tempoDisponivel;
         temp -= tempoIndisponivel;
@@ -87,8 +87,8 @@ public class DiaDaReserva {
     }
     
     // Getters
-    public int getIdDiaDaReserva() {
-        return idDiaDaReserva;
+    int getId() {
+        return id;
     }
 
     Aparelho getAparelho() {

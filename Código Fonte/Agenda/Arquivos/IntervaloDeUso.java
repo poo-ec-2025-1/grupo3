@@ -15,37 +15,60 @@ import com.j256.ormlite.field.DataType;
 @DatabaseTable(tableName = "intervalo de uso")
 public class IntervaloDeUso extends Intervalo
 {
-    static public enum Status 
-    {
-        EM_USO, RESERVADO, EM_MANUTENCAO, INDISPONIVEL;
-    }
     
-    @DatabaseField(generatedId = true)
+    @DatabaseField(generatedId = true, dataType = DataType.INTEGER)
     private int id;
+    
+    @DatabaseField(dataType = DataType.STRING)
+    protected String inicio;
+    
+    @DatabaseField(dataType = DataType.STRING)
+    protected String fim;
+    
+    @DatabaseField(dataType = DataType.STRING)
+    protected String status = null;
     
     @DatabaseField(foreign = true, foreignAutoRefresh = true)
     protected Aparelho aparelho;
     
-    @DatabaseField
-    protected Status status = null;
-    
-    IntervaloDeUso()
+    public IntervaloDeUso()
     {
         
     }
     
-    IntervaloDeUso(LocalDateTime inicio, LocalDateTime fim, Aparelho aparelho) throws Exception
+    IntervaloDeUso(LocalDateTime inicio, LocalDateTime fim)
     {
         super(inicio, fim);
+        this.inicio = super.inicio;
+        this.fim = super.fim;
+    }
+    
+    IntervaloDeUso(Aparelho aparelho, LocalDateTime inicio, LocalDateTime fim)
+    {
+        this(inicio, fim);
         if (aparelho == null)
-        {
-            throw new IllegalArgumentException("Aparelho não pode ser nulo.");
-        }
+                throw new IllegalArgumentException("Aparelho não pode ser nulo.");
+                
         this.aparelho = aparelho;
+    }
+    
+    Aparelho getAparelho()
+    {
+        return aparelho;
+    }
+    
+    public String getStatus()
+    {
+        return status;
+    }
+    
+    public void setStatus(String status)
+    {
+        this.status = status;
     }
     
     int getId()
     {
-        return this.id;
+        return id;
     }
 }
