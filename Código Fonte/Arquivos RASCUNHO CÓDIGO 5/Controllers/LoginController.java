@@ -1,99 +1,110 @@
 package lavanderia.Controller;
 
-import lavanderia.Model.Database;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.TextField;
-import javafx.scene.control.PasswordField;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import lavanderia.Controller.PainelUsuarioController;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import lavanderia.Model.Database;
+import lavanderia.Model.UsuarioRepository;
+import lavanderia.Model.Usuario;
 
-/**
- * Controla os dados do modelo e a interação com a interface (visão) para o Login
- * 
- * @author (seu nome)
- * @version 29/06/2025
- */
-public class LoginController
-{
+public class LoginController {
     @FXML
-    private TextField matriculaTextField; // Campo para matrícula
+    private TextField matriculaTextField;
     @FXML
-    private PasswordField senhaPasswordField; // Campo para senha
+    private PasswordField senhaPasswordField;
     @FXML
-    private Button logarButton; // Botão de login
+    private TextField senhaTextField;
     @FXML
-    private Button cadastroButton; // Botão de registro
+    private Button logarButton;
     @FXML
-    private Label mensagemLabel; // Label para mensagens
+    private Button cadastroButton;
     @FXML
-    private CheckBox exibirSenhaCheckbox; // Checkbox para exibir senha
+    private CheckBox exibirSenhaCheckbox;
 
-    private Stage stage; // Janela atual
-
-    /**
-     * Construtor para objetos da classe LoginController
-     */
-    public LoginController()
-    {
-        // O LoginView cuida do carregamento do FXML
-    }
-    
-    /**
-     * Inicia a janela da interface (chamado pela LoginView)
-     */
-    public void iniciar() {
-        // Inicializa a exibição da senha com base no CheckBox
-        exibirSenhaCheckbox.selectedProperty().addListener((obs, oldVal, newVal) -> {
-            senhaPasswordField.setVisible(!newVal); // Oculta o PasswordField
-            // Simulação simples: exibe a senha como texto (em produção, use um TextField)
-            if (newVal) {
-                System.out.println("Exibir senha implementado (a ajustar).");
-            }
-        });
-        mensagemLabel.setText(""); // Limpa a mensagem inicial
- }
-    
-    
     @FXML
-private void logar() {
-    String matricula = matriculaTextField.getText();
-    String senha = senhaPasswordField.getText();
+private void handleLogin(ActionEvent event) {
+    System.out.println("Botão Logar clicado! - " + java.time.LocalDateTime.now());
+    String matriculaStr = matriculaTextField.getText();
+    String senha = senhaPasswordField.isVisible() ? senhaPasswordField.getText() : senhaTextField.getText();
 
-    if (matricula.isEmpty() || senha.isEmpty()) {
-        mensagemLabel.setText("Preencha todos os campos.");
+    if (matriculaStr.isEmpty() || senha.isEmpty()) {
+        System.out.println("Erro: Matrícula ou senha não podem estar vazios!");
         return;
     }
 
     try {
-        Connection conn = DriverManager.getConnection("jdbc:sqlite:lavanderia.db");
-        String sql = "SELECT * FROM usuarios WHERE matricula = ? AND senha = ?";
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        stmt.setString(1, matricula);
-        stmt.setString(2, senha);
+        int matricula = Integer.parseInt(matriculaStr);
+        Database db = new Database("lavanderia.db");
+        UsuarioRepository usuarioRepo = new UsuarioRepository(db);
 
-        ResultSet rs = stmt.executeQuery();
+        var usuario = usuarioRepo.buscarPorMatriculaESenha(matricula, senha);
+        db.close();
 
-        if (rs.next()) {
-            mensagemLabel.setText("Login bem-sucedido!");
-            // Aqui você pode trocar de tela ou abrir o painel do usuário
+        if (usuario != null) {
+            System.out.println("Login bem-sucedido. Usuário: " + usuario.getNomeCompleto());
+
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/lavanderia/view/telaPainelUsuario.fxml"));
+            Scene scene = new Scene(fxmlLoader.load());
+            Stage stage = new Stage();
+            stage.setTitle("Painel do Usuário");
+            stage.setScene(scene);
+            stage.show();
+
+            Stage loginStage = (Stage) logarButton.getScene().getWindow();
+            loginStage.close();
         } else {
-            mensagemLabel.setText("Matrícula ou senha inválida.");
+            System.out.println("Erro: Matrícula ou senha inválidos!");
         }
 
-        rs.close();
-        stmt.close();
-        conn.close();
-    } catch (SQLException e) {
-        mensagemLabel.setText("Erro ao conectar ao banco.");
+    } catch (NumberFormatException e) {
+        System.out.println("Erro: Matrícula deve ser numérica.");
+    } catch (Exception e) {
+        System.out.println("Erro ao processar login: " + e.getMessage());
         e.printStackTrace();
     }
-}    
+}
+
+    @FXML
+    private void handleCadastro(ActionEvent event) {
+        System.out.println("Cadastro clicado - " + java.time.LocalDateTime.now());
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/lavanderia/view/telaCadastro.fxml"));
+            Scene scene = new Scene(fxmlLoader.load());
+            Stage stage = new Stage();
+            stage.setTitle("Tela de Cadastro");
+            stage.setScene(scene);
+            stage.show();
+            Stage loginStage = (Stage) cadastroButton.getScene().getWindow();
+            loginStage.close();
+        } catch (Exception e) {
+            System.out.println("Erro ao carregar telaCadastro.fxml: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void toggleSenhaVisibilidade(ActionEvent event) {
+        System.out.println("Toggle senha visibilidade: " + exibirSenhaCheckbox.isSelected() + " - " + java.time.LocalDateTime.now());
+        if (exibirSenhaCheckbox.isSelected()) {
+            if (senhaPasswordField.isVisible()) {
+                senhaTextField.setText(senhaPasswordField.getText());
+                senhaTextField.setVisible(true);
+                senhaPasswordField.setVisible(false);
+                senhaTextField.requestFocus(); // Foco no campo visível
+            }
+        } else {
+            if (senhaTextField.isVisible()) {
+                senhaPasswordField.setText(senhaTextField.getText());
+                senhaPasswordField.setVisible(true);
+                senhaTextField.setVisible(false);
+                senhaPasswordField.requestFocus(); // Foco no campo visível
+            }
+        }
+    }
 }

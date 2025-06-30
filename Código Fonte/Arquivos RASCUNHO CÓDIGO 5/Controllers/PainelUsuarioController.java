@@ -1,126 +1,98 @@
 package lavanderia.Controller;
 
-import lavanderia.Model.Reserva;
-import lavanderia.Model.Agenda;
-import lavanderia.Model.HorariosFixos;
-import lavanderia.Model.IntervaloHorario;
-import lavanderia.Model.Aparelho;
-import lavanderia.Model.ReservaRepository;
-import lavanderia.Model.Database;
-import lavanderia.Model.Usuario;
-import javafx.stage.Stage;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TableColumn;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import lavanderia.View.PainelUsuarioView;
+import javafx.scene.control.Label;
+import javafx.stage.Stage;
 
-public class PainelUsuarioController
-{
-    PainelUsuarioView painelUsuarioView;
-    Stage stage;
-    Agenda agenda; 
-    public ComboBox<IntervaloHorario> horarioCombo; 
-    public TableView<Reserva> reservaTable;
-    public TableColumn<Reserva, String> dataColumn;
-    public TableColumn<Reserva, String> horarioColumn;
-    public TableColumn<Reserva, String> aparelhoColumn;
-    public Button novaReservaButton;
-    public Aparelho aparelhoSelecionado;
-    
-    public PainelUsuarioController()
-    {
-        this.stage = new Stage();
-        this.painelUsuarioView = new PainelUsuarioView();
-        this.painelUsuarioView.setController(this);
+public class PainelUsuarioController {
+    @FXML
+    private Label nomeLabel;
+    @FXML
+    private Label emailLabel;
+    @FXML
+    private Label matriculaLabel;
+    @FXML
+    private Label saldoLabel;
+    @FXML
+    private Label nomeDisplay;
+    @FXML
+    private Label emailDisplay;
+    @FXML
+    private Label matriculaDisplay;
+    @FXML
+    private Label saldoDisplay;
+    @FXML
+    private Button alterarCadastroButton;
+    @FXML
+    private Button encerrarSessaoButton;
+    @FXML
+    private Button adicionarSaldoButton;
+    @FXML
+    private Button minhasReservasButton;
+
+    @FXML
+    private void initialize() {
+        nomeLabel.setText("Nome:");
+        emailLabel.setText("Email:");
+        matriculaLabel.setText("Matrícula:");
+        saldoLabel.setText("Saldo:");
+        nomeDisplay.setText("Pessoa Exemplo");
+        emailDisplay.setText("emailpessoaexemplo@gmail.com");
+        matriculaDisplay.setText("00000000000");
+        saldoDisplay.setText("R$: 0.00");
     }
-        
-    public void iniciar() throws Exception {
-        this.painelUsuarioView.start(this.stage);
-        this.stage.show();
-        configurarInterface();
+
+    @FXML
+    private void handleAlterarCadastro(ActionEvent event) {
+        System.out.println("Alterar cadastro clicado em " + java.time.LocalDateTime.now());
     }
-        
-    private void configurarInterface() {
-        horarioCombo.setItems(FXCollections.observableArrayList(HorariosFixos.getIntervalos()));
-        dataColumn.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getDataReserva()));
-        horarioColumn.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(
-                cellData.getValue().getHoraInicio() + " - " + cellData.getValue().getHoraFim()));
-        aparelhoColumn.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(
-                cellData.getValue().getAparelho().getModelo()));
-        atualizarTabela();
+
+    @FXML
+    private void handleEncerrarSessao(ActionEvent event) {
+        System.out.println("Encerrando sessão em " + java.time.LocalDateTime.now());
+        mudarTela("telaLogin.fxml", event);
     }
-       
-    private void carregarDadosUsuario(Usuario usuario) {
-        usuario.getNomeCompleto();
-        usuario.getMatricula();
+
+    @FXML
+    private void handleAdicionarSaldo(ActionEvent event) {
+        System.out.println("Adicionar saldo clicado em " + java.time.LocalDateTime.now());
+        mudarTela("telaAdicionarSaldo.fxml", event);
     }
-    
-    public void botaoMinhasReservasClicado(javafx.event.Event e) {
-        // Fecha a tela atual
-        this.stage.close();
-        
-        // Cria e inicia a nova tela
-        MinhasReservasController minhasReservasController = new MinhasReservasController();
+
+    @FXML
+    private void handleMinhasReservas(ActionEvent event) {
+        System.out.println("Navegando para minhas reservas em " + java.time.LocalDateTime.now());
+        mudarTela("telaMinhasReservas.fxml", event);
+    }
+
+    private void mudarTela(String fxmlFile, ActionEvent event) {
         try {
-            minhasReservasController.iniciar();
-        } catch (Exception ex) {
-            System.out.println("Erro ao abrir a nova tela: " + ex.getMessage());
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/lavanderia/view/" + fxmlFile));
+            Scene scene = new Scene(fxmlLoader.load());
+            Stage stage = new Stage();
+            stage.setTitle(fxmlFile.replace(".fxml", "").replace("tela", ""));
+            stage.setScene(scene);
+            stage.show();
+            Stage currentStage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+            currentStage.close();
+        } catch (Exception e) {
+            System.out.println("Erro ao carregar " + fxmlFile + ": " + e.getMessage());
+            e.printStackTrace();
         }
     }
-    
-    public void botaoAdicionarSaldoClicado(javafx.event.Event e) {
-        // Fecha a tela atual
-        this.stage.close();
-        
-        // Cria e inicia a nova tela
-        AdicionarSaldoController adicionarSaldoController = new AdicionarSaldoController();
-        try {
-            adicionarSaldoController.iniciar();
-        } catch (Exception ex) {
-            System.out.println("Erro ao abrir a nova tela: " + ex.getMessage());
-        }
+
+    // Métodos públicos para atualizar o saldo
+    public void setSaldo(double novoSaldo) {
+        saldoLabel.setText("Saldo:");
+        saldoDisplay.setText(String.format("R$: %.2f", novoSaldo));
     }
-    
-    public void botaoEncerrarSessaoClicado(javafx.event.Event e) {
-        // Fecha a tela atual
-        this.stage.close();
-        
-        // Cria e inicia a nova tela
-        LoginController loginController = new LoginController();
-        try {
-            loginController.iniciar();
-        } catch (Exception ex) {
-            System.out.println("Erro ao abrir a nova tela: " + ex.getMessage());
-        }
-    }
-        
-    public void botaoAlterarCadastroClicado(javafx.event.Event e) {
-        // Fecha a tela atual
-        this.stage.close();
-        
-        // Cria e inicia a nova tela
-        CadastroController cadastroController = new CadastroController();
-        try {
-            cadastroController.iniciar();
-        } catch (Exception ex) {
-            System.out.println("Erro ao abrir a nova tela: " + ex.getMessage());
-        }
-    }
-    
-    public void botaoLimparClicado(javafx.event.Event e) {
-        horarioCombo.getSelectionModel().clearSelection();
-        atualizarTabela();
-    }
-        
-    private void atualizarTabela() {
-        ReservaRepository repo = new ReservaRepository(new Database("lavanderia.db"));
-        reservaTable.setItems(FXCollections.observableArrayList(repo.loadAll()));
-    }
-        
-    public void setAparelhoSelecionado(Aparelho aparelho) {
-        this.aparelhoSelecionado = aparelho;
+
+    public double getSaldo() {
+        String textoSaldo = saldoDisplay.getText().replace("R$: ", "").trim();
+        return Double.parseDouble(textoSaldo);
     }
 }

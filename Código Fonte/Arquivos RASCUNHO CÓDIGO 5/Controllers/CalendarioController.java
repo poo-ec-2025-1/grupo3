@@ -1,72 +1,78 @@
 package lavanderia.Controller;
 
-import lavanderia.Model.Reserva;
-import lavanderia.Model.Agenda;
-import lavanderia.Model.HorariosFixos;
-import lavanderia.Model.IntervaloHorario;
-import lavanderia.Model.Aparelho;
-import lavanderia.Model.ReservaRepository;
-import lavanderia.Model.Database;
-import javafx.stage.Stage;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TableColumn;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import lavanderia.View.CalendarioView;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
+import javafx.stage.Stage;
 
-public class CalendarioController
-{
-    CalendarioView calendarioView;
-    Stage stage;
-    Agenda agenda; 
-    public ComboBox<IntervaloHorario> horarioCombo; 
-    public TableView<Reserva> reservaTable;
-    public TableColumn<Reserva, String> dataColumn;
-    public TableColumn<Reserva, String> horarioColumn;
-    public TableColumn<Reserva, String> aparelhoColumn;
-    public Button novaReservaButton;
-    public Aparelho aparelhoSelecionado;
-    
-    public CalendarioController()
-    {
-        this.stage = new Stage();
-        this.calendarioView = new CalendarioView();
-        this.calendarioView.setController(this);
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+public class CalendarioController {
+    @FXML
+    private DatePicker dataDatePicker;
+    @FXML
+    private ComboBox<String> horarioComboBox; // Especificado como String
+    @FXML
+    private ComboBox<String> maquinaComboBox; // Especificado como String
+    @FXML
+    private Label mostrarUsuarioLabel;
+    @FXML
+    private Label valorTotalLabel;
+    @FXML
+    private Button limparReservaButton;
+    @FXML
+    private Button confirmarReservaButton;
+
+    public static List<String> reservas = new ArrayList<>();
+
+    @FXML
+    private void initialize() {
+        horarioComboBox.getItems().addAll("08:00", "10:00", "14:00", "16:00");
+        maquinaComboBox.getItems().addAll("Máquina 1", "Máquina 2", "Máquina 3");
     }
-        
-    public void iniciar() throws Exception {
-        this.calendarioView.start(this.stage);
-        this.stage.show();
-        configurarInterface();
+
+    @FXML
+    private void handleLimpar(ActionEvent event) {
+        System.out.println("Limpar clicado em " + java.time.LocalDateTime.now());
+        dataDatePicker.setValue(null);
+        horarioComboBox.getSelectionModel().clearSelection();
+        maquinaComboBox.getSelectionModel().clearSelection();
+        valorTotalLabel.setText("");
     }
-        
-    private void configurarInterface() {
-        horarioCombo.setItems(FXCollections.observableArrayList(HorariosFixos.getIntervalos()));
-        dataColumn.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getDataReserva()));
-        horarioColumn.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(
-                cellData.getValue().getHoraInicio() + " - " + cellData.getValue().getHoraFim()));
-        aparelhoColumn.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(
-                cellData.getValue().getAparelho().getModelo()));
-        atualizarTabela();
-    }
-        
-    public void botaoConfirmarDepositoClicado(javafx.event.Event e) {
-        
-    }
-        
-    public void botaoLimparClicado(javafx.event.Event e) {
-        horarioCombo.getSelectionModel().clearSelection();
-        atualizarTabela();
-    }
-        
-    private void atualizarTabela() {
-        ReservaRepository repo = new ReservaRepository(new Database("lavanderia.db"));
-        reservaTable.setItems(FXCollections.observableArrayList(repo.loadAll()));
-    }
-        
-    public void setAparelhoSelecionado(Aparelho aparelho) {
-        this.aparelhoSelecionado = aparelho;
+
+    @FXML
+    private void handleConfirmarReserva(ActionEvent event) {
+        System.out.println("Confirmar reserva clicado em " + java.time.LocalDateTime.now());
+        LocalDate data = dataDatePicker.getValue();
+        String horario = horarioComboBox.getValue();
+        String maquina = maquinaComboBox.getValue();
+
+        if (data != null && horario != null && maquina != null) {
+            String reserva = String.format("Data: %s, Horário: %s, Máquina: %s", data, horario, maquina);
+            reservas.add(reserva);
+            System.out.println("Reserva adicionada: " + reserva);
+            try {
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/lavanderia/view/telaMinhasReservas.fxml"));
+                Scene scene = new Scene(fxmlLoader.load());
+                Stage stage = new Stage();
+                stage.setTitle("Minhas Reservas");
+                stage.setScene(scene);
+                stage.show();
+                Stage calendarioStage = (Stage) confirmarReservaButton.getScene().getWindow();
+                calendarioStage.close();
+            } catch (Exception e) {
+                System.out.println("Erro ao carregar painel de reservas: " + e.getMessage());
+                e.printStackTrace();
+            }
+        } else {
+            System.out.println("Preencha todos os campos da reserva!");
+        }
     }
 }
