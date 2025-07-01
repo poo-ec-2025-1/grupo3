@@ -1,0 +1,16 @@
+@startuml
+
+actor Usuario
+
+Usuario -> PainelDoUsuario: cancelarReserva(idReserva)
+PainelDoUsuario -> Reserva: cancelar(idReserva)
+Reserva -> ReservaRepository: atualizarStatus(idReserva, "cancelada")
+ReservaRepository -> DatabaseManager: atualizarDatabase()
+DatabaseManager --> ReservaRepository: sucesso
+ReservaRepository --> Reserva: statusAtualizado
+Reserva -> Agenda: liberarIntervalo(idReserva)
+Agenda --> Reserva: intervaloLiberado
+Reserva --> PainelDoUsuario: reservaCancelada
+PainelDoUsuario --> Usuario: Reserva cancelada com sucesso
+
+@enduml
