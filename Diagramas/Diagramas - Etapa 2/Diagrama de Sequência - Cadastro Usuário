@@ -1,0 +1,12 @@
+@startuml
+
+actor Cliente
+
+Cliente -> PainelDeLogin: cadastrarUsuario(dados)
+PainelDeLogin -> UsuarioRepository: validarEcriarUsuario(dados)
+UsuarioRepository -> DatabaseManager: salvarUsuario(dados)
+DatabaseManager --> UsuarioRepository: sucesso
+UsuarioRepository --> PainelDeLogin: usuarioCriado
+PainelDeLogin --> Cliente: Cadastro realizado com sucesso, redirecionando para login
+
+@enduml
