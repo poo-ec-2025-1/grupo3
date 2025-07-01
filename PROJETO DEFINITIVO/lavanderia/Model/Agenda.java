@@ -33,7 +33,7 @@ public class Agenda
     
     /*
     public static Database testD = new Database("testD");
-    private static Aparelho teste = new Aparelho("Eletrolux", "Funcionando", 10, true, 8000.0);
+    private static Aparelho teste = new Aparelho("Eletrolux", "Gostosa", 10, true, 8000.0);
     private static LocalDateTime F_Teste = LocalDateTime.of(2025, 6, 30, 14, 30);
     private static LocalDateTime I_Teste = LocalDateTime.of(2025, 6, 30, 6, 17);
     public IntervaloReservavel horarioTeste = new IntervaloReservavel(I_Teste, F_Teste);
