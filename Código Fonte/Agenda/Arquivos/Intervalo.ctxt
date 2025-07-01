@@ -1,8 +1,0 @@
-#BlueJ class context
-comment0.target=Intervalo
-comment1.params=
-comment1.target=Intervalo()
-comment1.text=\r\n\ Construtor\ para\ objetos\ da\ classe\ Intervalo\r\n
-comment2.params=inicio\ fim
-comment2.target=Intervalo(java.time.LocalDateTime,\ java.time.LocalDateTime)
-numComments=3
