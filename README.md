@@ -193,6 +193,24 @@ interface Autenticavel
 ````
 ---------------
 ### Diagramas de sequência
+Diagrama de Sequência - Cadastro Usuário
+
+![Diagrama de Sequência Cadastro Usuário](Imagens/Etapa%202/Diagrama_Sequência_Cadastro_Usuario.png)
+````
+@startuml
+
+actor Cliente
+
+Cliente -> PainelDeLogin: cadastrarUsuario(dados)
+PainelDeLogin -> UsuarioRepository: validarEcriarUsuario(dados)
+UsuarioRepository -> DatabaseManager: salvarUsuario(dados)
+DatabaseManager --> UsuarioRepository: sucesso
+UsuarioRepository --> PainelDeLogin: usuarioCriado
+PainelDeLogin --> Cliente: Cadastro realizado com sucesso, redirecionando para login
+
+@enduml
+````
+---------------
 Diagrama de Sequência - Fazer Login
 
 ![Diagrama de Sequência Fazer Login](Imagens/Etapa%202/Diagrama_Sequência_Fazer_Login.png)
