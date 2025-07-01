@@ -77,112 +77,256 @@ Cada tarefa foi associada a um prazo específico, definido em conjunto para gara
 
 ### Diagrama de classes 
 
-![Diagrama de Classe Inicial - João](Imagens/Diagrama_Classes_João.png)
+![Diagrama de Classe](Imagens/Etapa%202/Diagrama_Classes.png)
 
 ```java
 @startuml
-class User {
-    ~ matricula: int    
-    + setMatricula(matricula: int)    
-}
+class Aparelho
+class MaquinaDeLavar
+class Secadora
 
-class Agenda {
-    # tempoDeFuncionamentoSemana: static double[]
-    # HorarioMarcado: static []
-    # nomeAgenda: String
-    # tempoOfertadoAgenda: double[]
-    # tempoPadrao: double
-    + Agenda(){} : Construtor de agenda
-    + Agenda(nome: String): setNomeAgenda(nome)    
-    ~ marcarHorario(int dia, double inicioDoHorario, double fimDoHorario, int matricula, double pesoRoupa) : boolean
-    ~ setNomeAgenda(nome: String)
-}
+class Agenda
+class Reserva
+class DiaDaReserva
+class Intervalo
+class IntervaloDeUso
+class IntervaloHorario
+class HorariosFixos
 
-abstract class MaquinaLavar {
-    ~ pesoMax: int  
-    ~ MaquinaDeLavar(int pesoMax)
-    + lavar()
-    + getPreco()
-    + MaquinaLavar criarMaquina(int pesoRoupa)    
-}
+class Usuario
+class Administrador
+class Cliente
+class Caixa
 
-class MaquinaPequena{
-    ~ MaquinaPequena()
-    + lavar()
-    + getPreco()
-}
+class Database
+class DatabaseManager
+class ReservaRepository
+class AparelhoRepository
+class DiaDaReservaRepository
+class IntervaloDeUsoRepository
+class UsuarioRepository
 
-class MaquinaMedia{
-     ~ MaquinaMedia()
-    + lavar()
-    + getPreco()
-}
+class CrudTest
 
-class MaquinaGrande{
-    ~ MaquinaGrande()
-    + lavar()
-    + getPreco()
-}
+Agenda --> Aparelho
+Agenda --> AparelhoRepository
+Agenda --> Reserva
+Agenda --> ReservaRepository
+Agenda --> DiaDaReserva
+Agenda --> DiaDaReservaRepository
+Agenda --> Intervalo
+Agenda --> IntervaloDeUso
+Agenda --> IntervaloDeUsoRepository 
+Agenda --> IntervaloHorario
+Agenda --> Database
+Agenda --> UsuarioRepository
 
-class Caixa {    
-    + Cobrar(MaquinaLavar maquina, int matricula)    
-}
+Caixa --> Aparelho
+Caixa --> AparelhoRepository
+Caixa --> Usuario
+Caixa --> Database
+Caixa --> Autenticavel
 
-class Sistema {
-    ~ import java.util.Scanner;
-    + public static void main(String[] args)
-}
+Reserva --> Usuario
+Reserva --> IntervaloDeUso 
 
-class Intervalo {
-    # inicio : double
-    # fim : double
-    # tempoTotal : double
-    # idMaquina : double
-    + Intervalo() {}
-    + Intervalo(double inicio, double fim)
-    + Intervalo(String idMaquina, double inicio, double fim)
-}
+Aparelho <|-- MaquinaDeLavar  
+Aparelho <|-- Secadora  
 
-class HorarioMarcado extends Intervalo {
-    #int matriculaDoUsuario
-    #int dia
-    #String idMaquina
-    +HorarioMarcado(int dia, double inicioDoHorario, double fimDoHorario, int matricula)
-    +double[] definirTempoMaquinaS(char tipoMaquina)
-    +boolean selecionarDia(char tipoMaquina)
-    +boolean indisponibilizarTempo(char tipoMaquina)
-}
-Agenda ..> User : Dependencia
-MaquinaLavar <|-- MaquinaPequena : Herança
-MaquinaLavar <|-- MaquinaMedia : Herança
-MaquinaLavar <|-- MaquinaGrande : Herança
-User -- Caixa : Usa >
-Caixa ..> User : Dependência (int matricula)
-Sistema..> User : Cria
-Sistema..> Caixa : Cria
-Sistema..> Agenda : Interage
-Sistema..> MaquinaLavar : Cria
+Usuario <|-- Administrador
+Usuario <|-- Cliente 
+  
+Autenticavel <|.. Cliente 
+Autenticavel <|.. Administrador  
+
+IntervaloDeUso --> Aparelho  
+IntervaloDeUso --> Intervalo
+
+HorariosFixos --> IntervaloHorario
+
+DiaDaReserva --> DatabaseManager 
+
+CrudTest --> IntervaloDeUsoRepository 
+CrudTest --> IntervaloDeUso
+CrudTest --> DiaDaReserva
+CrudTest --> DiaDaReservaRepository
+CrudTest --> Reserva
+CrudTest --> ReservaRepository
+CrudTest --> Database
+CrudTest --> Aparelho
+CrudTest --> AparelhoRepository
+CrudTest --> Usuario
+CrudTest --> UsuarioRepository
+
+DatabaseManager --> Aparelho
+DatabaseManager --> Usuario
+DatabaseManager --> IntervaloDeUso
+DatabaseManager --> DiaDaReserva
+DatabaseManager --> DiaDaReservaRepository
+
+UsuarioRepository --> Usuario
+UsuarioRepository --> Database
+UsuarioRepository --> DatabaseManager
+
+ReservaRepository --> Database
+ReservaRepository --> Reserva
+ReservaRepository --> DatabaseManager
+
+AparelhoRepository --> Database
+AparelhoRepository --> Aparelho
+AparelhoRepository --> DatabaseManager
+
+IntervaloDeUsoRepository --> IntervaloDeUso 
+DiaDaReservaRepository --> DiaDaReserva
+
+IntervaloDeUsoRepository --> Database
+IntervaloDeUsoRepository --> DatabaseManager
+IntervaloDeUsoRepository --> IntervaloDeUso
+
+DiaDaReservaRepository --> Database
+DiaDaReservaRepository --> DatabaseManager 
+DiaDaReservaRepository --> AparelhoRepository
+DiaDaReservaRepository --> DiaDaReserva 
+
+interface Autenticavel
 @enduml
 ````
 ### Diagramas de sequência
+Diagrama de Sequência - Fazer Login
 
-![Diagrama de Sequência Inicial - João](Imagens/Diagrama_Sequência_João.png)
+![Diagrama de Sequência Fazer Login](Imagens/Etapa%202/Diagrama_Sequência_Fazer_Login.png)
 ````
 @startuml
+
 actor Usuario
-participant Maquina
-participant Caixa
 
-Usuario -> Sistema : login(nome, telefone)
-Sistema --> Usuario : confirmação de login
+Usuario -> PainelDeLogin: fazerLogin(credenciais)
+PainelDeLogin -> Autenticavel: autenticar(credenciais)
+Autenticavel -> UsuarioRepository: verificarCredenciais(credenciais)
+UsuarioRepository -> DatabaseManager: consultarDatabase()
+DatabaseManager --> UsuarioRepository: dadosUsuario
+UsuarioRepository --> Autenticavel: autenticado = true
+Autenticavel --> PainelDeLogin: loginSucesso
+PainelDeLogin -> PainelDoUsuario: abrirPainel()
+PainelDoUsuario --> PainelDeLogin: painelAberto
+PainelDeLogin --> Usuario: Login realizado com sucesso
 
-Usuario -> Sistema : nRoupas
-Sistema --> Caixa : calcPeso()
-Caixa --> Usuario : valorTotal()
-Sistema --> Maquina  : Modelo de Máquina
-Sistema --> Usuario : Modelo de Máquina 
-Maquina -> Sistema : iniciarLavagem()
-Sistema --> Usuario : "Lavagem finalizada!"
+@enduml
+````
+Diagrama de Sequência - Alterar Cadastro
+
+![Diagrama de Sequência Alterar Cadastro](Imagens/Etapa%202/Diagrama_Sequência_Alterar_Cadastro.png)
+````
+@startuml
+
+actor Usuario
+
+Usuario -> PainelDoUsuario: alterarCadastro(novoLogin, novoEmail)
+PainelDoUsuario -> UsuarioRepository: atualizarDados(usuario, novoLogin, novoEmail)
+UsuarioRepository -> DatabaseManager: atualizarDatabase()
+DatabaseManager --> UsuarioRepository: sucesso
+UsuarioRepository --> PainelDoUsuario: dadosAtualizados
+PainelDoUsuario --> Usuario: Cadastro alterado com sucesso
+
+@enduml
+````
+Diagrama de Sequência - Adicionar Saldo
+
+![Diagrama de Sequência Adicionar Saldo](Imagens/Etapa%202/Diagrama_Sequência_Adicionar_Saldo.png)
+````
+@startuml
+
+actor Usuario
+
+Usuario -> PainelDoUsuario: adicionarSaldo(valor)
+PainelDoUsuario -> Caixa: processarPagamento(valor)
+Caixa --> PainelDoUsuario: pagamentoConfirmado
+PainelDoUsuario -> UsuarioRepository: atualizarSaldo(usuario, valor)
+UsuarioRepository -> DatabaseManager: atualizarDatabase()
+DatabaseManager --> UsuarioRepository: sucesso
+UsuarioRepository --> PainelDoUsuario: saldoAtualizado
+PainelDoUsuario --> Usuario: Saldo adicionado com sucesso
+
+@enduml
+````
+Diagrama de Sequência - Fazer Reserva
+
+![Diagrama de Sequência Fazer Reserva](Imagens/Etapa%202/Diagrama_Sequência_Fazer_Reserva.png)
+````
+@startuml
+
+actor Usuario
+
+Usuario -> Agenda: selecionarAparelhoEData(aparelho, data)
+Agenda -> IntervaloDeUso: verificarDisponibilidade(data)
+IntervaloDeUso --> Agenda: disponivel = true
+Agenda -> Reserva: calcularValorTotal(aparelho)
+Reserva --> Agenda: valorTotal
+Agenda -> Reserva: criarReserva(usuario, aparelho, data, valorTotal)
+Reserva -> ReservaRepository: salvarReserva(reserva)
+ReservaRepository -> DatabaseManager: atualizarDatabase()
+DatabaseManager --> ReservaRepository: sucesso
+ReservaRepository --> Reserva: reservaSalva
+Reserva --> Agenda: reservaConfirmada
+Agenda --> Usuario: Reserva realizada com sucesso
+
+@enduml
+````
+Diagrama de Sequência - Mostrar Reservas
+
+![Diagrama de Sequência Mostrar Reservas](Imagens/Etapa%202/Diagrama_Sequência_Mostrar_Reservas.png)
+````
+@startuml
+
+actor Usuario
+
+Usuario -> PainelDoUsuario: mostrarReservas()
+PainelDoUsuario -> ReservaRepository: obterReservasPorUsuario(idUsuario)
+ReservaRepository -> DatabaseManager: consultarDatabase(idUsuario)
+DatabaseManager --> ReservaRepository: listaReservas
+ReservaRepository --> PainelDoUsuario: listaReservas
+PainelDoUsuario -> MinhasReservas: exibirReservas(listaReservas)
+MinhasReservas --> PainelDoUsuario: reservasExibidas
+PainelDoUsuario --> Usuario: Reservas exibidas com sucesso
+
+@enduml
+````
+Diagrama de Sequência - Cancelar Reserva
+
+![Diagrama de Sequência Cancelar Reserva](Imagens/Etapa%202/Diagrama_Sequência_Cancelar_Reserva.png)
+````
+@startuml
+
+actor Usuario
+
+Usuario -> PainelDoUsuario: cancelarReserva(idReserva)
+PainelDoUsuario -> Reserva: cancelar(idReserva)
+Reserva -> ReservaRepository: atualizarStatus(idReserva, "cancelada")
+ReservaRepository -> DatabaseManager: atualizarDatabase()
+DatabaseManager --> ReservaRepository: sucesso
+ReservaRepository --> Reserva: statusAtualizado
+Reserva -> Agenda: liberarIntervalo(idReserva)
+Agenda --> Reserva: intervaloLiberado
+Reserva --> PainelDoUsuario: reservaCancelada
+PainelDoUsuario --> Usuario: Reserva cancelada com sucesso
+
+@enduml
+````
+Diagrama de Sequência - Finalizar Sessão
+
+![Diagrama de Sequência Finalizar Sessão](Imagens/Etapa%202/Diagrama_Sequência_Finalizar_Sessão.png)
+````
+@startuml
+
+actor Usuario
+
+Usuario -> PainelDoUsuario: finalizarSessao()
+PainelDoUsuario -> Usuario: encerrarSessao()
+Usuario --> PainelDoUsuario: sessaoEncerrada
+PainelDoUsuario -> PainelDeLogin: redirecionar()
+PainelDeLogin --> PainelDoUsuario: redirecionamentoCompleto
+PainelDoUsuario --> Usuario: Sessão finalizada, redirecionado para login
+
 @enduml
 ````
 ### Casos de uso
@@ -222,7 +366,7 @@ Sistema --> Usuario : "Lavagem finalizada!"
 
 ### Casos de Uso Específico
 
-![Diagrama de Casos de Uso Específicos - Daniel](Imagens/Diagrama_Casos_Uso_Especifico_Daniel_Atualizado.png)
+![Diagrama de Casos de Uso Específicos - Daniel](Imagens/Etapa%202/Diagrama_Caso_Uso_Específico.png)
 
 ````java
 @startuml
