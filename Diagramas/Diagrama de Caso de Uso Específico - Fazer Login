@@ -1,0 +1,16 @@
+@startuml
+
+actor Usuario
+
+Usuario -> PainelDeLogin: fazerLogin(credenciais)
+PainelDeLogin -> Autenticavel: autenticar(credenciais)
+Autenticavel -> UsuarioRepository: verificarCredenciais(credenciais)
+UsuarioRepository -> DatabaseManager: consultarDatabase()
+DatabaseManager --> UsuarioRepository: dadosUsuario
+UsuarioRepository --> Autenticavel: autenticado = true
+Autenticavel --> PainelDeLogin: loginSucesso
+PainelDeLogin -> PainelDoUsuario: abrirPainel()
+PainelDoUsuario --> PainelDeLogin: painelAberto
+PainelDeLogin --> Usuario: Login realizado com sucesso
+
+@enduml
