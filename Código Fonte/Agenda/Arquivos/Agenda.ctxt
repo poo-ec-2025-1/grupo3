@@ -1,12 +1,15 @@
 #BlueJ class context
 comment0.target=Agenda
-comment0.text=\r\n\ Escreva\ uma\ descri\u00E7\u00E3o\ da\ classe\ Agenda\ aqui.\r\n\ \r\n\ @author\ (seu\ nome)\ \r\n\ @version\ (um\ n\u00FAmero\ da\ vers\u00E3o\ ou\ uma\ data)\r\n
-comment1.params=
-comment1.target=Agenda()
-comment2.params=tempo
-comment2.target=Agenda(double)
-comment3.params=dom\ seg\ ter\ qua\ qui\ sex\ sab
-comment3.target=Agenda(double,\ double,\ double,\ double,\ double,\ double,\ double)
-comment4.params=
-comment4.target=double[]\ getTempoDeFuncionamentoSemana()
-numComments=5
+comment0.text=\r\n\ Far\u00E1\ todas\ as\ checagens\ para\ garantir\ as\ reservas.\r\n\ Focado\ a\ um\ servico\ com\ uma\ implementacao\ abstrata\ e\ facilitada\ para\ o\ cliente.\r\n\ Necessita\ dos\ reposit\u00F3rios\ para\ funcionar.\r\n\ \r\n\ @author\ Miguel\ Moreira\ \r\n
+comment1.params=database
+comment1.target=Agenda(Database)
+comment2.params=user\ aparelho\ inicio\ fim
+comment2.target=Reserva\ fazerReserva(Usuario,\ Aparelho,\ java.time.LocalDateTime,\ java.time.LocalDateTime)
+comment2.text=public\ Reserva\ reservar(Usuario\ usuario,\ Aparelho\ aparelho,\ LocalDate\ data,\ IntervaloHorario\ horario)\r\n\ \ \ \ {\r\n\ \ \ \ \ \ \ \ DiaReservavel\r\n}
+comment3.params=inicio\ fim
+comment3.target=java.util.List\ terMaquinas(java.time.LocalDateTime,\ java.time.LocalDateTime)
+comment4.params=tempo
+comment4.target=java.util.List\ terMaquinas(Agenda.IntervaloReservavel)
+comment5.params=
+comment5.target=double[]\ getTempoDeFuncionamentoSemana()
+numComments=6

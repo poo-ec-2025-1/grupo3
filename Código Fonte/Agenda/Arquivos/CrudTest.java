@@ -1,4 +1,4 @@
-import java.time.LocalDateTime;
+import java.time.*;
 import java.util.List;
 import java.sql.SQLException;
 
@@ -152,7 +152,7 @@ public class CrudTest {
             // CREATE
             LocalDateTime inicio = LocalDateTime.of(2025, 6, 30, 10, 0);
             LocalDateTime fim = LocalDateTime.of(2025, 6, 30, 11, 0);
-            IntervaloDeUso intervalo = new IntervaloDeUso(inicio, fim, aparelhoCriado);
+            IntervaloDeUso intervalo = new IntervaloDeUso(aparelhoCriado, inicio, fim);
             repo.create(intervalo);
             System.out.println("create(): ID " + intervalo.getId());
             
@@ -205,7 +205,8 @@ public class CrudTest {
             aparelhoCriado = aparelhoRepo.create(aparelho);
             
             // CREATE
-            DiaDaReserva dia = new DiaDaReserva(aparelhoCriado, 2025, 1, 180, 24.0, 12.0);
+            LocalDate data = LocalDate.of(2025, 6, 30);
+            DiaDaReserva dia = new DiaDaReserva(data, aparelhoCriado, 8.9);
             repo.create(dia);
             System.out.println("create(): ID " + dia.getId());
             
@@ -265,7 +266,7 @@ public class CrudTest {
             
             LocalDateTime inicio = LocalDateTime.of(2025, 6, 30, 14, 0);
             LocalDateTime fim = LocalDateTime.of(2025, 6, 30, 15, 0);
-            intervalo = new IntervaloDeUso(inicio, fim, aparelhoCriado);
+            intervalo = new IntervaloDeUso(aparelhoCriado, inicio, fim);
             intervaloRepo.create(intervalo);
             
             

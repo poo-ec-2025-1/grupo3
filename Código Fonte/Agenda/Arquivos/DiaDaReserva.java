@@ -12,9 +12,13 @@ import java.text.SimpleDateFormat;
 import com.j256.ormlite.table.DatabaseTable;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.DataType;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 @DatabaseTable(tableName = "dia da reserva")
 public class DiaDaReserva {
+    
+    public final static String formatoData = "yyyy-MM-dd";
     
     @DatabaseField(generatedId = true, dataType = DataType.INTEGER)
     int id;
@@ -36,36 +40,43 @@ public class DiaDaReserva {
     
     @DatabaseField(dataType = DataType.DOUBLE)
     double tempoDisponivel;
+    
+    @DatabaseField(dataType = DataType.STRING)
+    String data;
 
     public DiaDaReserva()
     {
         
     }
     
-    DiaDaReserva(Aparelho aparelho, int ano, int diaDaSemana, int diaDoAno,
-                        double tempoDeFuncionamento, double tempoDisponivel) {
-
+    public DiaDaReserva(LocalDate data)
+    {
+        if (data == null)
+            throw new IllegalArgumentException("Data não pode ser nula.");
+            
+        this.data = data.format(DateTimeFormatter.ofPattern(formatoData));
+        this.ano = data.getYear();
+        this.diaDaSemana = data.getDayOfWeek().getValue() - 1;
+        this.diaDoAno = data.getDayOfYear();
+    }
+    
+    public DiaDaReserva(LocalDate data, Aparelho aparelho)
+    {
+        this(data);
         if (aparelho == null)
             throw new IllegalArgumentException("Aparelho não pode ser nulo.");
 
-        if (diaDoAno == 0)
-            throw new IllegalArgumentException("Dia do ano não pode ser zero.");
-
-        if (diaDaSemana < 0 || diaDaSemana > 6)
-            throw new IllegalArgumentException("Dia da semana deve estar entre 0 (domingo) e 6 (sábado).");
-
+        this.aparelho = aparelho;
+    }
+    
+    public DiaDaReserva(LocalDate data, Aparelho aparelho, double tempoPadrao)
+    {
+        this(data, aparelho);
         if (tempoDeFuncionamento < 0 || tempoDeFuncionamento > 24)
             throw new IllegalArgumentException("Tempo de funcionamento deve estar entre 0 e 24 horas.");
 
-        if (tempoDisponivel < 0 || tempoDisponivel > tempoDeFuncionamento)
-            throw new IllegalArgumentException("Tempo disponível deve estar entre 0 e o tempo de funcionamento.");
-
-        this.aparelho = aparelho;
-        this.ano = ano;
-        this.diaDaSemana = diaDaSemana;
-        this.diaDoAno = diaDoAno;
-        this.tempoDeFuncionamento = tempoDeFuncionamento;
-        this.tempoDisponivel = tempoDisponivel;
+        this.tempoDeFuncionamento = tempoPadrao;
+        this.tempoDisponivel = tempoPadrao;
     }
 
     public boolean indisponibilzarTempo(double tempoIndisponivel)
@@ -91,6 +102,11 @@ public class DiaDaReserva {
         return id;
     }
 
+    public LocalDate getData()
+    {
+        return LocalDate.parse(data, DateTimeFormatter.ofPattern(formatoData));
+    }
+    
     Aparelho getAparelho() {
         return aparelho;
     }

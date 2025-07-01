@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.ArrayList;
 import java.time.DayOfWeek;
 import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 /**
  * Fará todas as checagens para garantir as reservas.
@@ -33,31 +35,16 @@ public class Agenda
     private static LocalDateTime F_Teste = LocalDateTime.of(2025, 6, 30, 14, 30);
     private static LocalDateTime I_Teste = LocalDateTime.of(2025, 6, 30, 6, 17);
     public IntervaloReservavel horarioTeste = new IntervaloReservavel(I_Teste, F_Teste);
-    public DiaReservavel diaTeste = new DiaReservavel(I_Teste, teste);
+    public DiaReservavel diaTeste = new DiaReservavel(I_Teste.toLocalDate(), teste);
     
-    class DiaReservavel extends DiaDaReserva
+    public static class DiaReservavel extends DiaDaReserva
     {
-        DiaReservavel(LocalDateTime tempo, Aparelho aparelho)
+        private LocalDate data;
+        
+        public DiaReservavel(LocalDate tempo, Aparelho aparelho)
         {
-            super();
-            ano = tempo.getYear();
-            diaDoAno = tempo.getDayOfYear();
-            diaDaSemana = tempo.getDayOfWeek().getValue() - 1;
-            tempoDeFuncionamento = tempoDeFuncionamentoSemana[diaDaSemana];
-            tempoDisponivel = tempoDeFuncionamento;
-            this.aparelho = aparelho;
-            if (diaDoAno == 0)
-                throw new IllegalArgumentException("Dia do ano não pode ser zero.");
-
-            if (diaDaSemana < 0 || diaDaSemana > 6)
-                throw new IllegalArgumentException("Dia da semana deve estar entre 0 (domingo) e 6 (sábado).");
-
-            if (tempoDeFuncionamento < 0 || tempoDeFuncionamento > 24)
-                throw new IllegalArgumentException("Tempo de funcionamento deve estar entre 0 e 24 horas.");
-                
-            if (aparelho == null)
-                    throw new IllegalArgumentException("Aparelho não pode ser nulo.");
-                    
+            super(tempo, aparelho, tempoDeFuncionamentoSemana[tempo.getDayOfWeek().getValue() - 1]);
+            
         }
         
         Integer jaEstaReservado()
@@ -91,9 +78,59 @@ public class Agenda
             
             return R_Dia.loadFromId(reposta.intValue());
         }
+        
+        public Reserva criarReservaEAtualizarTempo(Usuario usuario, Aparelho aparelho, LocalDate data, IntervaloHorario horario) {
+            if (usuario == null || aparelho == null || data == null || horario == null) {
+                // Verificação para garantir que todos os dados foram passados como parâmtro.
+                System.err.println("Dados insuficientes para criar a reserva.");
+                return null;
+            }
+        
+            /* encontrar/criar o DiaDaReserva para este aparelho e data.
+            *  a classe DiaReservavel já faz esse trabalho.
+            */
+            DiaReservavel diaReservavel = new DiaReservavel(data, aparelho);
+            DiaDaReserva diaParaReserva = diaReservavel.terDiaParaReserva();
+        
+            // calcular a duração do intervalo fornecido em horas (como double).
+            Duration duracao = Duration.between(horario.getHoraInicio(), horario.getHoraFim());
+            double duracaoEmHoras = duracao.toMinutes() / 60.0;
+        
+            // tentar indisponibilizar o tempo, o método já valida se há tempo suficiente.
+            boolean sucessoAoAbaterTempo;
+            try {
+                sucessoAoAbaterTempo = diaParaReserva.indisponibilzarTempo(duracaoEmHoras);
+            } catch (IllegalArgumentException e) {
+                // Capturar a exceção e tratar como falha na reserva
+                System.err.println("Falha ao fazer a reserva: " + e.getMessage());
+                return null;
+            }
+        
+            if (!sucessoAoAbaterTempo) {
+                System.err.println("Falha ao fazer a reserva. Talvez não haja tempo suficiente.");
+                return null; 
+            }
+        
+            // se der certo, é feita a atualização no banco de dados.
+            R_Dia.update(diaParaReserva);
+        
+            // criar o IntervaloDeUso que será utilizado.
+            LocalDateTime inicio = data.atTime(horario.getHoraInicio());
+            LocalDateTime fim = data.atTime(horario.getHoraFim());
+            IntervaloDeUso intervaloDeUso = new IntervaloDeUso(aparelho, inicio, fim);
+            intervaloDeUso.setStatus("RESERVADO");
+            R_Intervalo.create(intervaloDeUso);
+        
+            // por fim, criar a Reserva e em seguida salvá-la no banco de dados.
+            Reserva novaReserva = new Reserva(usuario, intervaloDeUso);
+            R_Reserva.create(novaReserva);
+        
+            System.out.println("Reserva criada com sucesso para o usuário " + usuario.getNomeCompleto());
+            return novaReserva;
+        }
     }
     
-    class IntervaloReservavel extends IntervaloDeUso
+    public static class IntervaloReservavel extends IntervaloDeUso
     {
         /*
          * O intervalo de uso mas com métodos que posibilite sua reseva.
@@ -102,7 +139,7 @@ public class Agenda
         private LocalDateTime inicio;
         private LocalDateTime fim;
         
-        IntervaloReservavel(LocalDateTime inicio, LocalDateTime fim)
+        public IntervaloReservavel(LocalDateTime inicio, LocalDateTime fim)
         {
            super(inicio, fim);
            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Intervalo.formatoData);
@@ -110,9 +147,18 @@ public class Agenda
            this.fim = LocalDateTime.parse(super.fim, formatter);
         }
         
-        List<DiaDaReserva> agregarMaquinasPeloDia(int diaDoAno)
+        public IntervaloReservavel(Intervalo interval)
         {
-            List<DiaDaReserva> maquinasUteis = new ArrayList();
+            super.inicio = interval.inicio;
+            super.fim = interval.fim;
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Intervalo.formatoData);
+            this.inicio = LocalDateTime.parse(super.inicio, formatter);
+            this.fim = LocalDateTime.parse(super.fim, formatter);
+        }
+        
+        List<Aparelho> agregarMaquinasPeloDia()
+        {
+            List<Aparelho> maquinasUteis = new ArrayList<>();
             if(fim.getDayOfYear() != inicio.getDayOfYear())
             {
                 return null;
@@ -124,11 +170,11 @@ public class Agenda
             
             for(DiaDaReserva d : dias)
             {
-                if( d.getDiaDoAno() == diaDoAno && d.tempoDeFuncionamento > 0 )
+                if( d.getDiaDoAno() == fim.getDayOfYear() && d.tempoDeFuncionamento > 0 )
                 {
                     if( d.tempoDisponivel > 0 ) 
                     {
-                        maquinasUteis.add(d);
+                        maquinasUteis.add(d.getAparelho());
                     }
                 }
             }
@@ -136,21 +182,25 @@ public class Agenda
             return maquinasUteis;
         }
        
-       public Reserva fazerReserva(Usuario user, Aparelho aparelho, LocalDateTime inicio, LocalDateTime fim)
+       public Reserva fazerReserva(Usuario user, Aparelho aparelho)
        {
            IntervaloReservavel intervalo = new IntervaloReservavel(inicio, fim);
            
-           DiaReservavel dia = new DiaReservavel(inicio, aparelho);
+           DiaReservavel dia = new DiaReservavel(inicio.toLocalDate(), aparelho);
            DiaDaReserva diaParaReserva = dia.terDiaParaReserva();
            
-           IntervaloDeUso intervaloDaReserva = new IntervaloDeUso(aparelho, inicio, fim);
-           R_Intervalo.create(intervaloDaReserva);
+           super.aparelho = aparelho;
+           R_Intervalo.create(this);
            
-           Reserva novaReserva = new Reserva(user, intervaloDaReserva);
-           R_Reserva.create(novaReserva);
+           Duration duracao = Duration.between(inicio, fim);
+           double indisponibilidade = duracao.toMinutes() / 60.0;
+           if(!diaParaReserva.indisponibilzarTempo(indisponibilidade))
+               return null;
            
-           //inicio.get
-           //diaParaReserva.indisponibilizarTempo();
+           R_Dia.update(diaParaReserva);
+           
+           Reserva novaReserva = new Reserva(user, this);
+           R_Reserva.create(novaReserva);   
            return novaReserva;
        }
        
@@ -221,6 +271,30 @@ public class Agenda
     tempoDeFuncionamentoSemana = novosTempos.clone();
     }
     */
+   
+    /*public Reserva reservar(Usuario usuario, Aparelho aparelho, LocalDate data, IntervaloHorario horario)
+    {
+        DiaReservavel
+    }*/
+    
+    public Reserva fazerReserva(Usuario user, Aparelho aparelho, LocalDateTime inicio, LocalDateTime fim)
+    {
+        Agenda.IntervaloReservavel interval = new IntervaloReservavel(inicio, fim);
+        return interval.fazerReserva(user, aparelho);
+    }
+    
+    public List<Aparelho> terMaquinas(LocalDateTime inicio, LocalDateTime fim)
+    {
+        IntervaloReservavel interval = new IntervaloReservavel(inicio, fim);
+        return interval.agregarMaquinasPeloDia();
+    }
+    
+    public List<Aparelho> terMaquinas(IntervaloReservavel tempo)
+    {
+        IntervaloReservavel interval = new IntervaloReservavel(tempo);
+        return interval.agregarMaquinasPeloDia();
+    }
+    
     
     public double[] getTempoDeFuncionamentoSemana()
     {
