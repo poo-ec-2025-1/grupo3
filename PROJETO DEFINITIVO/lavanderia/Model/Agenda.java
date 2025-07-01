@@ -193,18 +193,25 @@ public class Agenda
             return maquinasUteis;
         }
        
-       public Reserva fazerReserva(Usuario user, Aparelho aparelho, LocalDateTime inicio, LocalDateTime fim)
+       public Reserva fazerReserva(Usuario user, Aparelho aparelho)
        {
            IntervaloReservavel intervalo = new IntervaloReservavel(inicio, fim);
            
            DiaReservavel dia = new DiaReservavel(inicio, aparelho);
            DiaDaReserva diaParaReserva = dia.terDiaParaReserva();
            
-           IntervaloDeUso intervaloDaReserva = new IntervaloDeUso(aparelho, inicio, fim);
-           R_Intervalo.create(intervaloDaReserva);
+           super.aparelho = aparelho;
+           R_Intervalo.create(this);
            
-           Reserva novaReserva = new Reserva(user, intervaloDaReserva);
-           R_Reserva.create(novaReserva);
+           Duration duracao = Duration.between(inicio, fim);
+           double indisponibilidade = duracao.toMinutes() / 60.0;
+           if(!diaParaReserva.indisponibilzarTempo(indisponibilidade))
+               return null;
+           
+           R_Dia.update(diaParaReserva);
+           
+           Reserva novaReserva = new Reserva(user, this);
+           R_Reserva.create(novaReserva);   
            return novaReserva;
        }
        
@@ -277,6 +284,11 @@ public class Agenda
     tempoDeFuncionamentoSemana = novosTempos.clone();
     }
     */
+    public Reserva fazerReserva(Usuario user, Aparelho aparelho, LocalDateTime inicio, LocalDateTime fim)
+    {
+        Agenda.IntervaloReservavel interval = new IntervaloReservavel(inicio, fim);
+        return interval.fazerReserva(user, aparelho);
+    }
     
     public List<Aparelho> terMaquinas(LocalDateTime inicio, LocalDateTime fim)
     {
