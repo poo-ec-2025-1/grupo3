@@ -169,7 +169,7 @@ public class Agenda
         
         List<Aparelho> agregarMaquinasPeloDia(int diaDoAno)
         {
-            List<Aparelho> maquinasUteis = new ArrayList();
+            List<Aparelho> maquinasUteis = new ArrayList<>();
             if(fim.getDayOfYear() != inicio.getDayOfYear())
             {
                 return null;
