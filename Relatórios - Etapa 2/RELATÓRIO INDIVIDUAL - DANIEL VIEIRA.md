@@ -1,6 +1,6 @@
 ## Aluno: Daniel Vieira
 
-Inicialmente, foi designada à mim a responsabilidade com relação ao frontend do projeto. No entanto, tivemos que fazer um remanejamento de funções devido à um dos membros do grupo ter saído da disciplina por motivos pessoais. Dito isso, minha função estava próxima a um "programador fullstack", fiquei responsável por intercambiar entre as funções de acordo com a necessidade do grupo. Trabalhei em conjunto com o Miguel, na tentativa de implementar a funcionalidade da classe Agenda, pensada por ele próprio. Infelizmente não consegui acompanhá-lo e, como nosso prazo estava bem curto, achei que fosse mais prudente fazer o refactoring do projeto como um todo, para que a ideia do mesmo consiga ser apresentada ao senhor. Seguem os números dos meus principais commits e, de forma resumida, o que foi feito em cada um deles. 
+Inicialmente, foi designada à mim a responsabilidade com relação ao frontend do projeto. No entanto, tivemos que fazer um remanejamento de funções devido à um dos membros do grupo ter saído da disciplina por motivos pessoais. Dito isso, minha função estava próxima a um "programador fullstack", fiquei responsável por intercambiar entre as funções de acordo com a necessidade do grupo. Trabalhei em conjunto com o Miguel, na tentativa de implementar a funcionalidade da classe Agenda, pensada por ele próprio. Infelizmente não consegui acompanhá-lo e, como nosso prazo estava bem curto, achei que fosse mais prudente fazer o refactoring do funcionamento das reservas como um todo, para que a ideia pudesse ser apresentada ao senhor. Seguem os números dos meus principais commits e, de forma resumida, o que foi feito em cada um deles. 
 
 12e0ebf e 80ec4f7- implementação de uma classe Database, atualização das classes Usuario, criação das subclasses Administrador e Cliente, criação da interface Autenticavel e criação do UsuarioRepository;
 
@@ -18,5 +18,5 @@ Inicialmente, foi designada à mim a responsabilidade com relação ao frontend 
 
 5f73056- complementação da classe Agenda;
 
-7da69e7- refactoring do projeto como um todo para funcionamento temporário para a apresentação;
+7da69e7- implementação do restante das classes Controller e refactoring do sistema de reservas para funcionamento temporário para a apresentação;
 
