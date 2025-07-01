@@ -1,0 +1,14 @@
+@startuml
+
+actor Usuario
+
+Usuario -> PainelDoUsuario: adicionarSaldo(valor)
+PainelDoUsuario -> Caixa: processarPagamento(valor)
+Caixa --> PainelDoUsuario: pagamentoConfirmado
+PainelDoUsuario -> UsuarioRepository: atualizarSaldo(usuario, valor)
+UsuarioRepository -> DatabaseManager: atualizarDatabase()
+DatabaseManager --> UsuarioRepository: sucesso
+UsuarioRepository --> PainelDoUsuario: saldoAtualizado
+PainelDoUsuario --> Usuario: Saldo adicionado com sucesso
+
+@enduml
