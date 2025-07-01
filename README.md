@@ -76,119 +76,244 @@ Cada tarefa foi associada a um prazo específico, definido em conjunto para gara
 ## Seção 4 - Modelagem inicial: 
 
 ### Diagrama de classes 
+Diagrama de Classes Completo
 
-![Diagrama de Classe](Imagens/Etapa%202/Diagrama_Classes.png)
+![Diagrama de Classe](Imagens/Etapa%202/Diagrama_Classes_Atualizado.png)
+
+---------------
+Diagrama separado em partes para facilitar a vizualização
+
+![Diagrama de Classe](Imagens/Etapa%202/Diagrama_Classes_Atualizado_Parte1.png)
+![Diagrama de Classe](Imagens/Etapa%202/Diagrama_Classes_Atualizado_Parte2.png)
 
 ```java
 @startuml
-class Aparelho
-class MaquinaDeLavar
-class Secadora
+' Configurações para layout vertical e melhor legibilidade
+skinparam monochrome true
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+left to right direction
 
-class Agenda
-class Reserva
-class DiaDaReserva
-class Intervalo
-class IntervaloDeUso
-class IntervaloHorario
-class HorariosFixos
+' Pacote para Interfaces
+package "Interfaces" {
+  interface Autenticavel {
+    + autenticar(senha: String): boolean
+  }
+}
 
-class Usuario
-class Administrador
-class Cliente
-class Caixa
+' Pacote para Entidades/Domínio
+package "Dominio" {
+  class Usuario {
+    - id: int
+    - nome: String
+    - saldo: double
+    - email: String
+    - login: String
+    + autenticar(senha: String): boolean
+    + atualizarDados(novoLogin: String, novoEmail: String): boolean
+    + encerrarSessao(): void
+    + getId(): int
+    + getNome(): String
+  }
+  class Cliente {
+    - preferencias: String
+    + selecionarHorario(data: Date, aparelho: Aparelho): void
+    + getPreferencias(): String
+  }
+  class Administrador {
+    - permissoes: String[]
+    + gerenciarUsuarios(): void
+    + getPermissoes(): String[]
+  }
+  class Aparelho {
+    - id: int
+    - tipo: String
+    - status: String
+    + verificarDisponibilidade(): boolean
+    + getId(): int
+    + getTipo(): String
+  }
+  class MaquinaDeLavar {
+    - capacidade: double
+    - ciclos: int
+    + lavar(): void
+    + getCapacidade(): double
+  }
+  class Secadora {
+    - temperaturaMaxima: int
+    - duracao: int
+    + secar(): void
+    + getTemperaturaMaxima(): int
+  }
+  class Reserva {
+    - id: int
+    - data: Date
+    - status: String
+    - aparelhoId: int
+    - usuarioId: int
+    + calcularValorTotal(aparelho: Aparelho): double
+    + cancelar(): boolean
+    + criarReserva(usuario: Usuario, aparelho: Aparelho, data: Date): boolean
+    + getStatus(): String
+  }
+  class Intervalo {
+    - inicio: Date
+    - fim: Date
+    + isDisponivel(): boolean
+    + getInicio(): Date
+    + getFim(): Date
+  }
+  class IntervaloDeUso {
+    - ocupado: boolean
+    - aparelho: Aparelho
+    - intervalo: Intervalo
+    + verificarDisponibilidade(data: Date): boolean
+    + reservar(): void
+    + liberar(): void
+  }
+  class DiaDaReserva {
+    - data: Date
+    - reservas: List<Reserva>
+    + adicionarReserva(reserva: Reserva): void
+    + getReservas(): List<Reserva>
+  }
+  class IntervaloHorario {
+    - horaInicio: Time
+    - horaFim: Time
+    + isDentroHorario(data: Date): boolean
+  }
+  class HorariosFixos {
+    - horarios: List<IntervaloHorario>
+    + obterHorariosLivres(): List<IntervaloHorario>
+    + adicionarHorario(horario: IntervaloHorario): void
+  }
 
-class Database
-class DatabaseManager
-class ReservaRepository
-class AparelhoRepository
-class DiaDaReservaRepository
-class IntervaloDeUsoRepository
-class UsuarioRepository
+  Usuario <|-- Cliente
+  Usuario <|-- Administrador
+  Aparelho <|-- MaquinaDeLavar
+  Aparelho <|-- Secadora
+  IntervaloDeUso --> Aparelho
+  IntervaloDeUso --> Intervalo
+  HorariosFixos --> IntervaloHorario
+  Reserva --> Usuario
+  Reserva --> IntervaloDeUso
+  Cliente ..|> Autenticavel
+  Administrador ..|> Autenticavel
+}
 
-class CrudTest
+' Pacote para Repositórios
+package "Repositorios" {
+  class UsuarioRepository {
+    + salvarUsuario(usuario: Usuario): boolean
+    + verificarCredenciais(login: String, senha: String): Usuario
+    + atualizarSaldo(usuario: Usuario, valor: double): boolean
+    + atualizarDados(usuario: Usuario, novoLogin: String, novoEmail: String): boolean
+    + findById(id: int): Usuario
+  }
+  class ReservaRepository {
+    + salvarReserva(reserva: Reserva): boolean
+    + obterReservasPorUsuario(idUsuario: int): List<Reserva>
+    + atualizarStatus(idReserva: int, status: String): boolean
+    + findById(id: int): Reserva
+  }
+  class AparelhoRepository {
+    + obterAparelhosDisponiveis(): List<Aparelho>
+    + findById(id: int): Aparelho
+    + salvarAparelho(aparelho: Aparelho): boolean
+  }
+  class DiaDaReservaRepository {
+    + salvarDiaDaReserva(dia: DiaDaReserva): boolean
+    + findByData(data: Date): DiaDaReserva
+  }
+  class IntervaloDeUsoRepository {
+    + salvarIntervalo(uso: IntervaloDeUso): boolean
+    + findByAparelho(aparelhoId: int): IntervaloDeUso
+  }
 
-Agenda --> Aparelho
-Agenda --> AparelhoRepository
-Agenda --> Reserva
-Agenda --> ReservaRepository
-Agenda --> DiaDaReserva
-Agenda --> DiaDaReservaRepository
-Agenda --> Intervalo
-Agenda --> IntervaloDeUso
-Agenda --> IntervaloDeUsoRepository 
-Agenda --> IntervaloHorario
-Agenda --> Database
-Agenda --> UsuarioRepository
+  UsuarioRepository --> Dominio::Usuario
+  ReservaRepository --> Dominio::Reserva
+  AparelhoRepository --> Dominio::Aparelho
+  DiaDaReservaRepository --> Dominio::DiaDaReserva
+  IntervaloDeUsoRepository --> Dominio::IntervaloDeUso
+}
 
-Caixa --> Aparelho
-Caixa --> AparelhoRepository
-Caixa --> Usuario
-Caixa --> Database
-Caixa --> Autenticavel
+' Pacote para Gerenciamento
+package "Gerenciamento" {
+  class Database {
+    - conexao: Connection
+    + conectar(): Connection
+    + desconectar(): void
+  }
+  class DatabaseManager {
+    + atualizarDatabase(objeto: Object): boolean
+    + consultarDatabase(id: int): Object
+    + salvarDados(objeto: Object): boolean
+  }
+  class Agenda {
+    + selecionarAparelhoEData(aparelho: Aparelho, data: Date): boolean
+    + verificarDisponibilidade(data: Date): boolean
+    + liberarIntervalo(idReserva: int): boolean
+    + calcularPesoRoupas(): double
+  }
+  class Caixa {
+    + processarPagamento(valor: double): boolean
+    + verificarSaldo(usuario: Usuario): double
+  }
 
-Reserva --> Usuario
-Reserva --> IntervaloDeUso 
+  Agenda --> Dominio::Aparelho
+  Agenda --> Repositorios::ReservaRepository
+  Agenda --> Dominio::Reserva
+  Agenda --> Repositorios::DiaDaReservaRepository
+  Agenda --> Dominio::DiaDaReserva
+  Agenda --> Dominio::Intervalo
+  Agenda --> Dominio::IntervaloDeUso
+  Agenda --> Repositorios::IntervaloDeUsoRepository
+  Agenda --> Dominio::IntervaloHorario
+  Agenda --> Repositorios::UsuarioRepository
+  Caixa --> Dominio::Aparelho
+  Caixa --> Repositorios::AparelhoRepository
+  Caixa --> Dominio::Usuario
+  Caixa --> Gerenciamento::Database
+  Caixa --> Interfaces::Autenticavel
 
-Aparelho <|-- MaquinaDeLavar  
-Aparelho <|-- Secadora  
+  DatabaseManager --> Dominio::Aparelho
+  DatabaseManager --> Dominio::Usuario
+  DatabaseManager --> Dominio::IntervaloDeUso
+  DatabaseManager --> Dominio::DiaDaReserva
+  DatabaseManager --> Repositorios::DiaDaReservaRepository
 
-Usuario <|-- Administrador
-Usuario <|-- Cliente 
-  
-Autenticavel <|.. Cliente 
-Autenticavel <|.. Administrador  
+  Repositorios::UsuarioRepository --> Gerenciamento::Database
+  Repositorios::UsuarioRepository --> Gerenciamento::DatabaseManager
+  Repositorios::ReservaRepository --> Gerenciamento::Database
+  Repositorios::ReservaRepository --> Gerenciamento::DatabaseManager
+  Repositorios::AparelhoRepository --> Gerenciamento::Database
+  Repositorios::AparelhoRepository --> Gerenciamento::DatabaseManager
+  Repositorios::IntervaloDeUsoRepository --> Gerenciamento::Database
+  Repositorios::IntervaloDeUsoRepository --> Gerenciamento::DatabaseManager
+  Repositorios::DiaDaReservaRepository --> Gerenciamento::Database
+  Repositorios::DiaDaReservaRepository --> Gerenciamento::DatabaseManager
+}
 
-IntervaloDeUso --> Aparelho  
-IntervaloDeUso --> Intervalo
+' Pacote para Testes
+package "Testes" {
+  class CrudTest {
+    + testarCrud(): void
+    + testarReserva(): void
+    + testarUsuario(): void
+  }
 
-HorariosFixos --> IntervaloHorario
-
-DiaDaReserva --> DatabaseManager 
-
-CrudTest --> IntervaloDeUsoRepository 
-CrudTest --> IntervaloDeUso
-CrudTest --> DiaDaReserva
-CrudTest --> DiaDaReservaRepository
-CrudTest --> Reserva
-CrudTest --> ReservaRepository
-CrudTest --> Database
-CrudTest --> Aparelho
-CrudTest --> AparelhoRepository
-CrudTest --> Usuario
-CrudTest --> UsuarioRepository
-
-DatabaseManager --> Aparelho
-DatabaseManager --> Usuario
-DatabaseManager --> IntervaloDeUso
-DatabaseManager --> DiaDaReserva
-DatabaseManager --> DiaDaReservaRepository
-
-UsuarioRepository --> Usuario
-UsuarioRepository --> Database
-UsuarioRepository --> DatabaseManager
-
-ReservaRepository --> Database
-ReservaRepository --> Reserva
-ReservaRepository --> DatabaseManager
-
-AparelhoRepository --> Database
-AparelhoRepository --> Aparelho
-AparelhoRepository --> DatabaseManager
-
-IntervaloDeUsoRepository --> IntervaloDeUso 
-DiaDaReservaRepository --> DiaDaReserva
-
-IntervaloDeUsoRepository --> Database
-IntervaloDeUsoRepository --> DatabaseManager
-IntervaloDeUsoRepository --> IntervaloDeUso
-
-DiaDaReservaRepository --> Database
-DiaDaReservaRepository --> DatabaseManager 
-DiaDaReservaRepository --> AparelhoRepository
-DiaDaReservaRepository --> DiaDaReserva 
-
-interface Autenticavel
+  CrudTest --> Repositorios::IntervaloDeUsoRepository
+  CrudTest --> Dominio::IntervaloDeUso
+  CrudTest --> Repositorios::DiaDaReservaRepository
+  CrudTest --> Dominio::DiaDaReserva
+  CrudTest --> Dominio::Reserva
+  CrudTest --> Repositorios::ReservaRepository
+  CrudTest --> Gerenciamento::Database
+  CrudTest --> Dominio::Aparelho
+  CrudTest --> Repositorios::AparelhoRepository
+  CrudTest --> Dominio::Usuario
+  CrudTest --> Repositorios::UsuarioRepository
+}
 @enduml
 ````
 ---------------
@@ -353,6 +478,85 @@ Usuario --> PainelDoUsuario: sessaoEncerrada
 PainelDoUsuario -> PainelDeLogin: redirecionar()
 PainelDeLogin --> PainelDoUsuario: redirecionamentoCompleto
 PainelDoUsuario --> Usuario: Sessão finalizada, redirecionado para login
+
+@enduml
+````
+
+---------------
+Diagrama de Sequência - Completo
+
+![Diagrama de Sequência Completo](Imagens/Etapa%202/Diagrama_Sequência_Completo.png)
+````
+@startuml
+
+actor Cliente
+
+Cliente -> PainelDeLogin: cadastrarUsuario(dados)
+PainelDeLogin -> UsuarioRepository: validarEcriarUsuario(dados)
+UsuarioRepository -> DatabaseManager: salvarUsuario(dados)
+DatabaseManager --> UsuarioRepository: sucesso
+UsuarioRepository --> PainelDeLogin: usuarioCriado
+PainelDeLogin --> Cliente: Cadastro realizado, redirecionando
+Cliente -> PainelDeLogin: fazerLogin(credenciais)
+PainelDeLogin -> UsuarioRepository: verificarCredenciais(credenciais)
+UsuarioRepository -> DatabaseManager: consultarDatabase()
+DatabaseManager --> UsuarioRepository: dadosUsuario
+UsuarioRepository --> PainelDeLogin: autenticado = true
+PainelDeLogin -> PainelDoUsuario: abrirPainel()
+PainelDoUsuario --> PainelDeLogin: painelAberto
+PainelDeLogin --> Cliente: Login realizado
+Cliente -> PainelDoUsuario: adicionarSaldo(valor)
+PainelDoUsuario -> Caixa: processarPagamento(valor)
+Caixa --> PainelDoUsuario: pagamentoConfirmado
+PainelDoUsuario -> UsuarioRepository: atualizarSaldo(valor)
+UsuarioRepository -> DatabaseManager: atualizarDatabase()
+DatabaseManager --> UsuarioRepository: sucesso
+UsuarioRepository --> PainelDoUsuario: saldoAtualizado
+PainelDoUsuario --> Cliente: Saldo adicionado
+Cliente -> PainelDoUsuario: alterarCadastro(novoLogin, novoEmail)
+PainelDoUsuario -> UsuarioRepository: atualizarDados(novoLogin, novoEmail)
+UsuarioRepository -> DatabaseManager: atualizarDatabase()
+DatabaseManager --> UsuarioRepository: sucesso
+UsuarioRepository --> PainelDoUsuario: dadosAtualizados
+PainelDoUsuario --> Cliente: Cadastro alterado
+Cliente -> PainelDoUsuario: marcarHorario(aparelho, data)
+PainelDoUsuario -> Agenda: selecionarAparelhoEData(aparelho, data)
+Agenda -> IntervaloDeUso: verificarDisponibilidade(data)
+IntervaloDeUso --> Agenda: disponivel = true
+Agenda -> Reserva: calcularValorTotal(aparelho)
+Reserva --> Agenda: valorTotal
+Agenda -> Reserva: criarReserva(cliente, aparelho, data, valorTotal)
+Reserva -> ReservaRepository: salvarReserva(reserva)
+ReservaRepository -> DatabaseManager: atualizarDatabase()
+DatabaseManager --> ReservaRepository: sucesso
+ReservaRepository --> Reserva: reservaSalva
+Reserva --> Agenda: reservaConfirmada
+Agenda --> PainelDoUsuario: Reserva realizada
+PainelDoUsuario -> Cliente: Reserva confirmada
+Cliente -> PainelDoUsuario: mostrarReservas()
+PainelDoUsuario -> ReservaRepository: obterReservasPorUsuario(idCliente)
+ReservaRepository -> DatabaseManager: consultarDatabase(idCliente)
+DatabaseManager --> ReservaRepository: listaReservas
+ReservaRepository --> PainelDoUsuario: listaReservas
+PainelDoUsuario -> MinhasReservas: exibirReservas(listaReservas)
+MinhasReservas --> PainelDoUsuario: reservasExibidas
+PainelDoUsuario --> Cliente: Reservas exibidas
+Cliente -> PainelDoUsuario: cancelarReserva(idReserva)
+PainelDoUsuario -> Reserva: cancelar(idReserva)
+Reserva -> ReservaRepository: atualizarStatus(idReserva, "cancelada")
+ReservaRepository -> DatabaseManager: atualizarDatabase()
+DatabaseManager --> ReservaRepository: sucesso
+ReservaRepository --> Reserva: statusAtualizado
+Reserva -> Agenda: liberarIntervalo(idReserva)
+Agenda --> Reserva: intervaloLiberado
+Reserva --> PainelDoUsuario: reservaCancelada
+PainelDoUsuario --> Cliente: Reserva cancelada
+Cliente -> PainelDoUsuario: finalizarSessao()
+PainelDoUsuario -> Cliente: encerrarSessao()
+Cliente --> PainelDoUsuario: sessaoEncerrada
+PainelDoUsuario -> PainelDeLogin: redirecionar()
+PainelDeLogin --> PainelDoUsuario: redirecionamentoCompleto
+PainelDoUsuario --> Cliente: Sessão finalizada, redirecionado
 
 @enduml
 ````
