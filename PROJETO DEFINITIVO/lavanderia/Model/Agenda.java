@@ -157,6 +157,15 @@ public class Agenda
            this.inicio = LocalDateTime.parse(super.inicio, formatter);
            this.fim = LocalDateTime.parse(super.fim, formatter);
         }
+
+        IntervaloReservavel(IntervaloDeUso interval)
+        {
+            super.inicio = interval.inicio;
+            super.fim = interval.fim;
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Intervalo.formatoData);
+            this.inicio = LocalDateTime.parse(super.inicio, formatter);
+            this.fim = LocalDateTime.parse(super.fim, formatter);
+        }
         
         List<Aparelho> agregarMaquinasPeloDia(int diaDoAno)
         {
@@ -272,6 +281,12 @@ public class Agenda
     public List<Aparelho> terMaquinas(DiaDaReserva dia, LocalDateTime inicio, LocalDateTime fim)
     {
         IntervaloReservavel interval = new IntervaloReservavel(inicio, fim);
+        return interval.agregarMaquinasPeloDia(dia.getAno());
+    }
+
+    public List<Aparelho> terMaquinas(DiaDaReserva dia, IntervaloDeUso tempo)
+    {
+        IntervaloReservavel interval = new IntervaloReservavel(tempo);
         return interval.agregarMaquinasPeloDia(dia.getAno());
     }
     
