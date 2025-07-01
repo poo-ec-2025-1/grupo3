@@ -1,0 +1,110 @@
+@startuml
+class Aparelho
+class MaquinaDeLavar
+class Secadora
+
+class Agenda
+class Reserva
+class DiaDaReserva
+class Intervalo
+class IntervaloDeUso
+class IntervaloHorario
+class HorariosFixos
+
+class Usuario
+class Administrador
+class Cliente
+class Caixa
+
+class Database
+class DatabaseManager
+class ReservaRepository
+class AparelhoRepository
+class DiaDaReservaRepository
+class IntervaloDeUsoRepository
+class UsuarioRepository
+
+class CrudTest
+
+Agenda --> Aparelho
+Agenda --> AparelhoRepository
+Agenda --> Reserva
+Agenda --> ReservaRepository
+Agenda --> DiaDaReserva
+Agenda --> DiaDaReservaRepository
+Agenda --> Intervalo
+Agenda --> IntervaloDeUso
+Agenda --> IntervaloDeUsoRepository 
+Agenda --> IntervaloHorario
+Agenda --> Database
+Agenda --> UsuarioRepository
+
+Caixa --> Aparelho
+Caixa --> AparelhoRepository
+Caixa --> Usuario
+Caixa --> Database
+Caixa --> Autenticavel
+
+Reserva --> Usuario
+Reserva --> IntervaloDeUso 
+
+Aparelho <|-- MaquinaDeLavar  
+Aparelho <|-- Secadora  
+
+Usuario <|-- Administrador
+Usuario <|-- Cliente 
+  
+Autenticavel <|.. Cliente 
+Autenticavel <|.. Administrador  
+
+IntervaloDeUso --> Aparelho  
+IntervaloDeUso --> Intervalo
+
+HorariosFixos --> IntervaloHorario
+
+DiaDaReserva --> DatabaseManager 
+
+CrudTest --> IntervaloDeUsoRepository 
+CrudTest --> IntervaloDeUso
+CrudTest --> DiaDaReserva
+CrudTest --> DiaDaReservaRepository
+CrudTest --> Reserva
+CrudTest --> ReservaRepository
+CrudTest --> Database
+CrudTest --> Aparelho
+CrudTest --> AparelhoRepository
+CrudTest --> Usuario
+CrudTest --> UsuarioRepository
+
+DatabaseManager --> Aparelho
+DatabaseManager --> Usuario
+DatabaseManager --> IntervaloDeUso
+DatabaseManager --> DiaDaReserva
+DatabaseManager --> DiaDaReservaRepository
+
+UsuarioRepository --> Usuario
+UsuarioRepository --> Database
+UsuarioRepository --> DatabaseManager
+
+ReservaRepository --> Database
+ReservaRepository --> Reserva
+ReservaRepository --> DatabaseManager
+
+AparelhoRepository --> Database
+AparelhoRepository --> Aparelho
+AparelhoRepository --> DatabaseManager
+
+IntervaloDeUsoRepository --> IntervaloDeUso 
+DiaDaReservaRepository --> DiaDaReserva
+
+IntervaloDeUsoRepository --> Database
+IntervaloDeUsoRepository --> DatabaseManager
+IntervaloDeUsoRepository --> IntervaloDeUso
+
+DiaDaReservaRepository --> Database
+DiaDaReservaRepository --> DatabaseManager 
+DiaDaReservaRepository --> AparelhoRepository
+DiaDaReservaRepository --> DiaDaReserva 
+
+interface Autenticavel
+@enduml
