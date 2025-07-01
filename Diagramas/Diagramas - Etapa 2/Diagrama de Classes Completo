@@ -1,0 +1,228 @@
+@startuml
+' Configurações para layout vertical e melhor legibilidade
+skinparam monochrome true
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+left to right direction
+
+' Pacote para Interfaces
+package "Interfaces" {
+  interface Autenticavel {
+    + autenticar(senha: String): boolean
+  }
+}
+
+' Pacote para Entidades/Domínio
+package "Dominio" {
+  class Usuario {
+    - id: int
+    - nome: String
+    - saldo: double
+    - email: String
+    - login: String
+    + autenticar(senha: String): boolean
+    + atualizarDados(novoLogin: String, novoEmail: String): boolean
+    + encerrarSessao(): void
+    + getId(): int
+    + getNome(): String
+  }
+  class Cliente {
+    - preferencias: String
+    + selecionarHorario(data: Date, aparelho: Aparelho): void
+    + getPreferencias(): String
+  }
+  class Administrador {
+    - permissoes: String[]
+    + gerenciarUsuarios(): void
+    + getPermissoes(): String[]
+  }
+  class Aparelho {
+    - id: int
+    - tipo: String
+    - status: String
+    + verificarDisponibilidade(): boolean
+    + getId(): int
+    + getTipo(): String
+  }
+  class MaquinaDeLavar {
+    - capacidade: double
+    - ciclos: int
+    + lavar(): void
+    + getCapacidade(): double
+  }
+  class Secadora {
+    - temperaturaMaxima: int
+    - duracao: int
+    + secar(): void
+    + getTemperaturaMaxima(): int
+  }
+  class Reserva {
+    - id: int
+    - data: Date
+    - status: String
+    - aparelhoId: int
+    - usuarioId: int
+    + calcularValorTotal(aparelho: Aparelho): double
+    + cancelar(): boolean
+    + criarReserva(usuario: Usuario, aparelho: Aparelho, data: Date): boolean
+    + getStatus(): String
+  }
+  class Intervalo {
+    - inicio: Date
+    - fim: Date
+    + isDisponivel(): boolean
+    + getInicio(): Date
+    + getFim(): Date
+  }
+  class IntervaloDeUso {
+    - ocupado: boolean
+    - aparelho: Aparelho
+    - intervalo: Intervalo
+    + verificarDisponibilidade(data: Date): boolean
+    + reservar(): void
+    + liberar(): void
+  }
+  class DiaDaReserva {
+    - data: Date
+    - reservas: List<Reserva>
+    + adicionarReserva(reserva: Reserva): void
+    + getReservas(): List<Reserva>
+  }
+  class IntervaloHorario {
+    - horaInicio: Time
+    - horaFim: Time
+    + isDentroHorario(data: Date): boolean
+  }
+  class HorariosFixos {
+    - horarios: List<IntervaloHorario>
+    + obterHorariosLivres(): List<IntervaloHorario>
+    + adicionarHorario(horario: IntervaloHorario): void
+  }
+
+  Usuario <|-- Cliente
+  Usuario <|-- Administrador
+  Aparelho <|-- MaquinaDeLavar
+  Aparelho <|-- Secadora
+  IntervaloDeUso --> Aparelho
+  IntervaloDeUso --> Intervalo
+  HorariosFixos --> IntervaloHorario
+  Reserva --> Usuario
+  Reserva --> IntervaloDeUso
+  Cliente ..|> Autenticavel
+  Administrador ..|> Autenticavel
+}
+
+' Pacote para Repositórios
+package "Repositorios" {
+  class UsuarioRepository {
+    + salvarUsuario(usuario: Usuario): boolean
+    + verificarCredenciais(login: String, senha: String): Usuario
+    + atualizarSaldo(usuario: Usuario, valor: double): boolean
+    + atualizarDados(usuario: Usuario, novoLogin: String, novoEmail: String): boolean
+    + findById(id: int): Usuario
+  }
+  class ReservaRepository {
+    + salvarReserva(reserva: Reserva): boolean
+    + obterReservasPorUsuario(idUsuario: int): List<Reserva>
+    + atualizarStatus(idReserva: int, status: String): boolean
+    + findById(id: int): Reserva
+  }
+  class AparelhoRepository {
+    + obterAparelhosDisponiveis(): List<Aparelho>
+    + findById(id: int): Aparelho
+    + salvarAparelho(aparelho: Aparelho): boolean
+  }
+  class DiaDaReservaRepository {
+    + salvarDiaDaReserva(dia: DiaDaReserva): boolean
+    + findByData(data: Date): DiaDaReserva
+  }
+  class IntervaloDeUsoRepository {
+    + salvarIntervalo(uso: IntervaloDeUso): boolean
+    + findByAparelho(aparelhoId: int): IntervaloDeUso
+  }
+
+  UsuarioRepository --> Dominio::Usuario
+  ReservaRepository --> Dominio::Reserva
+  AparelhoRepository --> Dominio::Aparelho
+  DiaDaReservaRepository --> Dominio::DiaDaReserva
+  IntervaloDeUsoRepository --> Dominio::IntervaloDeUso
+}
+
+' Pacote para Gerenciamento
+package "Gerenciamento" {
+  class Database {
+    - conexao: Connection
+    + conectar(): Connection
+    + desconectar(): void
+  }
+  class DatabaseManager {
+    + atualizarDatabase(objeto: Object): boolean
+    + consultarDatabase(id: int): Object
+    + salvarDados(objeto: Object): boolean
+  }
+  class Agenda {
+    + selecionarAparelhoEData(aparelho: Aparelho, data: Date): boolean
+    + verificarDisponibilidade(data: Date): boolean
+    + liberarIntervalo(idReserva: int): boolean
+    + calcularPesoRoupas(): double
+  }
+  class Caixa {
+    + processarPagamento(valor: double): boolean
+    + verificarSaldo(usuario: Usuario): double
+  }
+
+  Agenda --> Dominio::Aparelho
+  Agenda --> Repositorios::ReservaRepository
+  Agenda --> Dominio::Reserva
+  Agenda --> Repositorios::DiaDaReservaRepository
+  Agenda --> Dominio::DiaDaReserva
+  Agenda --> Dominio::Intervalo
+  Agenda --> Dominio::IntervaloDeUso
+  Agenda --> Repositorios::IntervaloDeUsoRepository
+  Agenda --> Dominio::IntervaloHorario
+  Agenda --> Repositorios::UsuarioRepository
+  Caixa --> Dominio::Aparelho
+  Caixa --> Repositorios::AparelhoRepository
+  Caixa --> Dominio::Usuario
+  Caixa --> Gerenciamento::Database
+  Caixa --> Interfaces::Autenticavel
+
+  DatabaseManager --> Dominio::Aparelho
+  DatabaseManager --> Dominio::Usuario
+  DatabaseManager --> Dominio::IntervaloDeUso
+  DatabaseManager --> Dominio::DiaDaReserva
+  DatabaseManager --> Repositorios::DiaDaReservaRepository
+
+  Repositorios::UsuarioRepository --> Gerenciamento::Database
+  Repositorios::UsuarioRepository --> Gerenciamento::DatabaseManager
+  Repositorios::ReservaRepository --> Gerenciamento::Database
+  Repositorios::ReservaRepository --> Gerenciamento::DatabaseManager
+  Repositorios::AparelhoRepository --> Gerenciamento::Database
+  Repositorios::AparelhoRepository --> Gerenciamento::DatabaseManager
+  Repositorios::IntervaloDeUsoRepository --> Gerenciamento::Database
+  Repositorios::IntervaloDeUsoRepository --> Gerenciamento::DatabaseManager
+  Repositorios::DiaDaReservaRepository --> Gerenciamento::Database
+  Repositorios::DiaDaReservaRepository --> Gerenciamento::DatabaseManager
+}
+
+' Pacote para Testes
+package "Testes" {
+  class CrudTest {
+    + testarCrud(): void
+    + testarReserva(): void
+    + testarUsuario(): void
+  }
+
+  CrudTest --> Repositorios::IntervaloDeUsoRepository
+  CrudTest --> Dominio::IntervaloDeUso
+  CrudTest --> Repositorios::DiaDaReservaRepository
+  CrudTest --> Dominio::DiaDaReserva
+  CrudTest --> Dominio::Reserva
+  CrudTest --> Repositorios::ReservaRepository
+  CrudTest --> Gerenciamento::Database
+  CrudTest --> Dominio::Aparelho
+  CrudTest --> Repositorios::AparelhoRepository
+  CrudTest --> Dominio::Usuario
+  CrudTest --> Repositorios::UsuarioRepository
+}
+@enduml
