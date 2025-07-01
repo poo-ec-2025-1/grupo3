@@ -167,7 +167,7 @@ public class Agenda
             this.fim = LocalDateTime.parse(super.fim, formatter);
         }
         
-        List<Aparelho> agregarMaquinasPeloDia(int diaDoAno)
+        List<Aparelho> agregarMaquinasPeloDia()
         {
             List<Aparelho> maquinasUteis = new ArrayList<>();
             if(fim.getDayOfYear() != inicio.getDayOfYear())
@@ -181,7 +181,7 @@ public class Agenda
             
             for(DiaDaReserva d : dias)
             {
-                if( d.getDiaDoAno() == diaDoAno && d.tempoDeFuncionamento > 0 )
+                if( d.getDiaDoAno() == fim.getDayOfYear() && d.tempoDeFuncionamento > 0 )
                 {
                     if( d.tempoDisponivel > 0 ) 
                     {
@@ -278,16 +278,16 @@ public class Agenda
     }
     */
     
-    public List<Aparelho> terMaquinas(DiaDaReserva dia, LocalDateTime inicio, LocalDateTime fim)
+    public List<Aparelho> terMaquinas(LocalDateTime inicio, LocalDateTime fim)
     {
         IntervaloReservavel interval = new IntervaloReservavel(inicio, fim);
-        return interval.agregarMaquinasPeloDia(dia.getAno());
+        return interval.agregarMaquinasPeloDia();
     }
-
-    public List<Aparelho> terMaquinas(DiaDaReserva dia, IntervaloDeUso tempo)
+    
+    public List<Aparelho> terMaquinas(Intervalo tempo)
     {
         IntervaloReservavel interval = new IntervaloReservavel(tempo);
-        return interval.agregarMaquinasPeloDia(dia.getAno());
+        return interval.agregarMaquinasPeloDia();
     }
     
     public double[] getTempoDeFuncionamentoSemana()
