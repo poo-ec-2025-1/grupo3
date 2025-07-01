@@ -565,92 +565,70 @@ PainelDoUsuario --> Cliente: Sessão finalizada, redirecionado
 ### Casos de uso
 Caso de Uso - Fazer Login
 
-| Campo               | Descrição                                                                 |
-|--------------------|---------------------------------------------------------------------------|
-| **Nome**           | fazerLogin                                                                |
-| **Ator Principal** | Cliente                                                                   |
-| **Descrição**      | O cliente acessa o sistema inserindo suas credenciais.                   |
-| **Pré-condições**  | O cliente possui credenciais válidas cadastradas.                        |
-| **Pós-condições**  | O cliente é autenticado e acessa o painel do usuário.                     |
-| **Fluxo Principal**|                                                                           |
-| 1. O cliente insere suas credenciais (login e senha).      |
-| 2. O sistema verifica as credenciais no banco de dados.     |
-| 3. O sistema autentica o cliente.                         |
-| 4. O sistema abre o painel do usuário.                      |
-| **Alternativas**   |                                                                           |
-| 2a. Se as credenciais forem inválidas, o sistema informa o erro e solicita nova tentativa.           |
+| Campo              | Descrição                                                                                  |
+|--------------------|--------------------------------------------------------------------------------------------|
+| **Nome**           | fazerLogin                                                                                 |
+| **Ator Principal** | Cliente                                                                                    |
+| **Descrição**      | O cliente acessa o sistema inserindo suas credenciais.                                     |
+| **Pré-condições**  | O cliente possui credenciais válidas cadastradas.                                          |
+| **Pós-condições**  | O cliente é autenticado e acessa o painel do usuário.                                      |
+| **Fluxo Principal**| 1. O cliente insere suas credenciais (login e senha). <br> 2. O sistema verifica as credenciais no banco de dados. <br> 3. O sistema autentica o cliente. <br>  4. O sistema abre o painel do usuário.  |
+| **Alternativas**   | 2a. Se as credenciais forem inválidas, o sistema informa o erro e solicita nova tentativa. |
+
 
 ---------------
 Caso de Uso - Alterar Cadastro
 
-  | Campo               | Descrição                                                                 |
-|--------------------|---------------------------------------------------------------------------|
-| **Nome**           | alterarCadastro                                                           |
-| **Ator Principal** | Cliente                                                                   |
-| **Descrição**      | O cliente atualiza seus dados pessoais, como login ou email.              |
-| **Pré-condições**  | O cliente precisa estar autenticado.                                     |
-| **Pós-condições**  | Os dados do cliente são atualizados no sistema.                           |
-| **Fluxo Principal**|                                                                           |
-| 1. O cliente solicita alterar o cadastro.                 |
-| 2. O sistema valida os novos dados.                        |
-| 3. O sistema atualiza os dados no banco de dados.          |
-| 4. O sistema confirma a alteração ao cliente.            |
-| **Alternativas**   |                                                                           |
-| 2a. Se os dados forem inválidos, o sistema informa o erro e solicita correção.           |
+| Campo            | Descrição                                                                        | 
+|--------------------|--------------------------------------------------------------------------------|
+| **Nome**           | alterarCadastro                                                                |
+| **Ator Principal** | Cliente                                                                        |
+| **Descrição**      | O cliente atualiza seus dados pessoais, como login ou email.                   |
+| **Pré-condições**  | O cliente precisa estar autenticado.                                           |
+| **Pós-condições**  | Os dados do cliente são atualizados no sistema.                                |
+| **Fluxo Principal**| 1. O cliente solicita alterar o cadastro. <br> 2. O sistema valida os novos dados. <br> 3. O sistema atualiza os dados no banco de dados. <br> 4. O sistema confirma a alteração ao cliente.|
+| **Alternativas**   | 2a. Se os dados forem inválidos, o sistema informa o erro e solicita correção. |
+
 
 ---------------
 Caso de Uso - Adicionar Saldo
 
-| Campo               | Descrição                                                                 |
-|--------------------|---------------------------------------------------------------------------|
-| **Nome**           | adicionarSaldo                                                            |
-| **Ator Principal** | Cliente                                                                   |
-| **Descrição**      | O cliente adiciona saldo ao perfil para usar os serviços.                |
-| **Pré-condições**  | O cliente precisa estar autenticado.                                     |
-| **Pós-condições**  | O saldo do estudante é atualizado e disponível para uso.                   |
-| **Fluxo Principal**|                                                                           |
-| 1. O cliente solicita adicionar saldo.                     |
-| 2. O sistema processa o pagamento.                          |
-| 3. O sistema atualiza o saldo no banco de dados.            |
-| 4. O sistema confirma a operação ao cliente.              |
-| **Alternativas**   |                                                                           |
-| 2a. Se o pagamento for rejeitado, o sistema informa o erro e cancela a operação.           |
+| Campo              | Descrição                                                                         |
+|--------------------|-----------------------------------------------------------------------------------|
+| **Nome**           | adicionarSaldo                                                                    |
+| **Ator Principal** | Cliente                                                                           |
+| **Descrição**      | O cliente adiciona saldo ao perfil para usar os serviços.                         |
+| **Pré-condições**  | O cliente precisa estar autenticado.                                              |
+| **Pós-condições**  | O saldo do estudante é atualizado e disponível para uso.                          |
+| **Fluxo Principal**| 1. O cliente solicita adicionar saldo. <br> 2. O sistema processa o pagamento. <br> 3. O sistema atualiza o saldo no banco de dados. <br> 4. O sistema confirma a operação ao cliente. |
+| **Alternativas**   |  2a. Se o pagamento for rejeitado, o sistema informa o erro e cancela a operação. |
 
 ---------------
 Caso de Uso - Mostrar Reservas
 
-| Campo               | Descrição                                                                 |
+| Campo              | Descrição                                                                 |
 |--------------------|---------------------------------------------------------------------------|
 | **Nome**           | mostrarReservas                                                           |
 | **Ator Principal** | Cliente                                                                   |
 | **Descrição**      | O cliente visualiza a lista de suas reservas ativas.                      |
-| **Pré-condições**  | O cliente precisa estar autenticado.                                     |
+| **Pré-condições**  | O cliente precisa estar autenticado.                                      |
 | **Pós-condições**  | A lista de reservas do cliente é exibida com sucesso.                     |
-| **Fluxo Principal**|                                                                           |
-| 1. O cliente solicita ver suas reservas.                  |
-| 2. O sistema consulta as reservas no banco de dados.       |
-| 3. O sistema exibe a lista de reservas ao cliente.       |
-| **Alternativas**   |                                                                           |
-| 2a. Se não houver reservas, o sistema informa que não há registros.           |
-
+| **Fluxo Principal**| 1. O cliente solicita ver suas reservas. <br> 2. O sistema consulta as reservas no banco de dados. <br> 3. O sistema exibe a lista de reservas ao cliente. |
+| **Alternativas**   | 2a. Se não houver reservas, o sistema informa que não há registros.       |
+       
 ---------------
 Caso de Uso - Cancelar Reserva
 
-| Campo               | Descrição                                                                 |
-|--------------------|---------------------------------------------------------------------------|
-| **Nome**           | cancelarReserva                                                           |
-| **Ator Principal** | Cliente                                                                   |
-| **Descrição**      | O cliente cancela uma reserva de horário previamente feita.              |
-| **Pré-condições**  | O cliente precisa estar autenticado e ter uma reserva ativa.             |
-| **Pós-condições**  | A reserva é cancelada e o horário fica disponível novamente.               |
-| **Fluxo Principal**|                                                                           |
-| 1. O cliente solicita o cancelamento de uma reserva.       |
-| 2. O sistema localiza a reserva.                           |
-| 3. O sistema atualiza o status para "cancelada".            |
-| 4. O sistema libera o horário e confirma ao cliente.      |
-| **Alternativas**   |                                                                           |
-| 2a. Se a reserva não for encontrada, o sistema informa o erro e cancela a operação.           |
-
+| Campo              | Descrição                                                                                |
+|--------------------|----------------------------------------------------------------------------------------- |
+| **Nome**           | cancelarReserva                                                        		        |
+| **Ator Principal** | Cliente                                                                		        |
+| **Descrição**      | O cliente cancela uma reserva de horário previamente feita.             		        |
+| **Pré-condições**  | O cliente precisa estar autenticado e ter uma reserva ativa.             		|
+| **Pós-condições**  | A reserva é cancelada e o horário fica disponível novamente.              		|
+| **Fluxo Principal**| 1. O cliente solicita o cancelamento de uma reserva. <br>2. O sistema localiza a reserva. <br>3. O sistema atualiza o status para "cancelada". <br>4. O sistema libera o horário e confirma ao cliente. |
+| **Alternativas**   |   2a. Se a reserva não for encontrada, o sistema informa o erro e cancela a operação.    |
+          
 ---------------
 ### Casos de Uso Específico
 
