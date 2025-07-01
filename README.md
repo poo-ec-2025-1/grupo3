@@ -76,9 +76,13 @@ Cada tarefa foi associada a um prazo específico, definido em conjunto para gara
 ## Seção 4 - Modelagem inicial: 
 
 ### Diagrama de classes 
+Diagrama Completo
 
 ![Diagrama de Classe](Imagens/Diagrama_Classes_Atualizado.png)
+Diagrama separado em duas partes para facilitar visualização
 
+![Diagrama de Classe](Imagens/Diagrama_Classes_Atualizado_Parte1.png)
+![Diagrama de Classe](Imagens/Diagrama_Classes_Atualizado_Parte2.png)
 ```java
 @startuml
 class User {
