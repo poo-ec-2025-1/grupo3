@@ -3,6 +3,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.ArrayList;
 import java.time.DayOfWeek;
+import java.time.Duration;
 
 /**
  * Fará todas as checagens para garantir as reservas.
@@ -147,6 +148,9 @@ public class Agenda
            
            Reserva novaReserva = new Reserva(user, intervaloDaReserva);
            R_Reserva.create(novaReserva);
+           
+           //inicio.get
+           //diaParaReserva.indisponibilizarTempo();
            return novaReserva;
        }
        
