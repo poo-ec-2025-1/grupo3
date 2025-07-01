@@ -158,9 +158,9 @@ public class Agenda
            this.fim = LocalDateTime.parse(super.fim, formatter);
         }
         
-        List<DiaDaReserva> agregarMaquinasPeloDia(int diaDoAno)
+        List<Aparelho> agregarMaquinasPeloDia(int diaDoAno)
         {
-            List<DiaDaReserva> maquinasUteis = new ArrayList();
+            List<Aparelho> maquinasUteis = new ArrayList();
             if(fim.getDayOfYear() != inicio.getDayOfYear())
             {
                 return null;
@@ -176,7 +176,7 @@ public class Agenda
                 {
                     if( d.tempoDisponivel > 0 ) 
                     {
-                        maquinasUteis.add(d);
+                        maquinasUteis.add(d.getAparelho());
                     }
                 }
             }
@@ -268,6 +268,12 @@ public class Agenda
     tempoDeFuncionamentoSemana = novosTempos.clone();
     }
     */
+    
+    public List<Aparelho> terMaquinas(DiaDaReserva dia, LocalDateTime inicio, LocalDateTime fim)
+    {
+        IntervaloReservavel interval = new IntervaloReservavel(inicio, fim);
+        return interval.agregarMaquinasPeloDia(dia.getAno());
+    }
     
     public double[] getTempoDeFuncionamentoSemana()
     {
