@@ -96,6 +96,11 @@ public class MinhasReservasController {
             Stage stage = new Stage();
             stage.setTitle("Nova Reserva");
             stage.setScene(scene);
+
+            int matriculaUsuario = matriculaUsuarioLogado;
+            CalendarioController calendarioController = fxmlLoader.getController();
+            calendarioController.iniciarDados(matriculaUsuario);
+            
             stage.show();
             Stage reservasStage = (Stage) novaReservaButton.getScene().getWindow();
             reservasStage.close();
