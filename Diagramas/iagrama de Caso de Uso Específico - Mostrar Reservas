@@ -1,0 +1,14 @@
+@startuml
+
+actor Usuario
+
+Usuario -> PainelDoUsuario: mostrarReservas()
+PainelDoUsuario -> ReservaRepository: obterReservasPorUsuario(idUsuario)
+ReservaRepository -> DatabaseManager: consultarDatabase(idUsuario)
+DatabaseManager --> ReservaRepository: listaReservas
+ReservaRepository --> PainelDoUsuario: listaReservas
+PainelDoUsuario -> MinhasReservas: exibirReservas(listaReservas)
+MinhasReservas --> PainelDoUsuario: reservasExibidas
+PainelDoUsuario --> Usuario: Reservas exibidas com sucesso
+
+@enduml
