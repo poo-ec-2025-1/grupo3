@@ -1,0 +1,12 @@
+@startuml
+
+actor Usuario
+
+Usuario -> PainelDoUsuario: finalizarSessao()
+PainelDoUsuario -> Usuario: encerrarSessao()
+Usuario --> PainelDoUsuario: sessaoEncerrada
+PainelDoUsuario -> PainelDeLogin: redirecionar()
+PainelDeLogin --> PainelDoUsuario: redirecionamentoCompleto
+PainelDoUsuario --> Usuario: Sessão finalizada, redirecionado para login
+
+@enduml
