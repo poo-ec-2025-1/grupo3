@@ -383,14 +383,14 @@ Caso de Uso - Adicionar Saldo
 |--------------------|---------------------------------------------------------------------------|
 | **Nome**           | adicionarSaldo                                                            |
 | **Ator Principal** | Cliente                                                                   |
-| **Descrição**      | O estudante adiciona saldo ao perfil para usar os serviços.                |
-| **Pré-condições**  | O estudante precisa estar autenticado.                                     |
+| **Descrição**      | O cliente adiciona saldo ao perfil para usar os serviços.                |
+| **Pré-condições**  | O cliente precisa estar autenticado.                                     |
 | **Pós-condições**  | O saldo do estudante é atualizado e disponível para uso.                   |
 | **Fluxo Principal**|                                                                           |
-| 1. O estudante solicita adicionar saldo.                     |
+| 1. O cliente solicita adicionar saldo.                     |
 | 2. O sistema processa o pagamento.                          |
 | 3. O sistema atualiza o saldo no banco de dados.            |
-| 4. O sistema confirma a operação ao estudante.              |
+| 4. O sistema confirma a operação ao cliente.              |
 | **Alternativas**   |                                                                           |
 | 2a. Se o pagamento for rejeitado, o sistema informa o erro e cancela a operação.           |
 
@@ -401,13 +401,13 @@ Caso de Uso - Mostrar Reservas
 |--------------------|---------------------------------------------------------------------------|
 | **Nome**           | mostrarReservas                                                           |
 | **Ator Principal** | Cliente                                                                   |
-| **Descrição**      | O estudante visualiza a lista de suas reservas ativas.                      |
-| **Pré-condições**  | O estudante precisa estar autenticado.                                     |
-| **Pós-condições**  | A lista de reservas do estudante é exibida com sucesso.                     |
+| **Descrição**      | O cliente visualiza a lista de suas reservas ativas.                      |
+| **Pré-condições**  | O cliente precisa estar autenticado.                                     |
+| **Pós-condições**  | A lista de reservas do cliente é exibida com sucesso.                     |
 | **Fluxo Principal**|                                                                           |
-| 1. O estudante solicita ver suas reservas.                  |
+| 1. O cliente solicita ver suas reservas.                  |
 | 2. O sistema consulta as reservas no banco de dados.       |
-| 3. O sistema exibe a lista de reservas ao estudante.       |
+| 3. O sistema exibe a lista de reservas ao cliente.       |
 | **Alternativas**   |                                                                           |
 | 2a. Se não houver reservas, o sistema informa que não há registros.           |
 
@@ -418,14 +418,14 @@ Caso de Uso - Cancelar Reserva
 |--------------------|---------------------------------------------------------------------------|
 | **Nome**           | cancelarReserva                                                           |
 | **Ator Principal** | Cliente                                                                   |
-| **Descrição**      | O estudante cancela uma reserva de horário previamente feita.              |
-| **Pré-condições**  | O estudante precisa estar autenticado e ter uma reserva ativa.             |
+| **Descrição**      | O cliente cancela uma reserva de horário previamente feita.              |
+| **Pré-condições**  | O cliente precisa estar autenticado e ter uma reserva ativa.             |
 | **Pós-condições**  | A reserva é cancelada e o horário fica disponível novamente.               |
 | **Fluxo Principal**|                                                                           |
-| 1. O estudante solicita o cancelamento de uma reserva.       |
+| 1. O cliente solicita o cancelamento de uma reserva.       |
 | 2. O sistema localiza a reserva.                           |
 | 3. O sistema atualiza o status para "cancelada".            |
-| 4. O sistema libera o horário e confirma ao estudante.      |
+| 4. O sistema libera o horário e confirma ao cliente.      |
 | **Alternativas**   |                                                                           |
 | 2a. Se a reserva não for encontrada, o sistema informa o erro e cancela a operação.           |
 
