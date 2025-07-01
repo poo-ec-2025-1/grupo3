@@ -1,0 +1,12 @@
+@startuml
+
+actor Usuario
+
+Usuario -> PainelDoUsuario: alterarCadastro(novoLogin, novoEmail)
+PainelDoUsuario -> UsuarioRepository: atualizarDados(usuario, novoLogin, novoEmail)
+UsuarioRepository -> DatabaseManager: atualizarDatabase()
+DatabaseManager --> UsuarioRepository: sucesso
+UsuarioRepository --> PainelDoUsuario: dadosAtualizados
+PainelDoUsuario --> Usuario: Cadastro alterado com sucesso
+
+@enduml
