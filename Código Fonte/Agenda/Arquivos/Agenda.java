@@ -218,7 +218,7 @@ public class Agenda
     Agenda(Database database)
     {
         R_Aparelho = new AparelhoRepository(database);
-        R_Aparelho.create(teste);
+        //R_Aparelho.create(teste);
         R_Usuario = new UsuarioRepository(database);
         R_Reserva = new ReservaRepository(database);
         R_Intervalo = new RepositoriosParaAgenda.IntervaloDeUsoRepository(database);
