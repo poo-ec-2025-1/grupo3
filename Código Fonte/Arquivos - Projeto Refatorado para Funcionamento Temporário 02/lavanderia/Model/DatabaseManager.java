@@ -30,7 +30,6 @@ public class DatabaseManager {
         reservaDao = DaoManager.createDao(connectionSource, Reserva.class);
     }
 
-    // Métodos para obter os DAOs
     public static Dao<Usuario, Integer> getUsuarioDao() {
         if (usuarioDao == null) throw new IllegalStateException("DatabaseManager não foi inicializado.");
         return usuarioDao;
