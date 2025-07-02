@@ -4,8 +4,6 @@ Inicialmente, foi designada à mim a responsabilidade com relação ao frontend 
 
 12e0ebf e 80ec4f7- implementação de uma classe Database, atualização das classes Usuario, criação das subclasses Administrador e Cliente, criação da interface Autenticavel e criação do UsuarioRepository;
 
-55d613a - comentário a cerca do atributo "private String email;" da classe abstrata Usuário;
-
 990b0e5, c098d30, b1dbf90, 4b3f737 - atualização e implementação de arquivos fxml, relativos à interface gráfica do programa. Upload das imagens de demonstração;
 
 6b84f9e - arquivo fxml da tela de simulação de pagamento;
@@ -18,5 +16,6 @@ Inicialmente, foi designada à mim a responsabilidade com relação ao frontend 
 
 5f73056- complementação da classe Agenda;
 
-52518e8- implementação do restante das classes Controller e refactoring do sistema de reservas para funcionamento temporário para a apresentação;
+52518e8- implementação do restante das classes Controller, implementação de um DatabaseManager para instanciação resumida dos DAOS e refactoring do sistema de reservas para funcionamento temporário para a apresentação;
 
+532a987- update de algumas classes e refinamento da interface gráfica;
