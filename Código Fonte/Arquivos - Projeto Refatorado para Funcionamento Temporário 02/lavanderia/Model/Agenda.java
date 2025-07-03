@@ -24,6 +24,7 @@ public class Agenda
     private UsuarioRepository R_Usuario;
     private ReservaRepository R_Reserva;
     private DiaComReservaRepository R_Dia;
+    private IntervaloDeUsoRepository R_Intervalo;
     
     
     private static double tempoDeFuncionamentoSemana[] = {8.0, 8.0, 8.0, 8.0, 8.0, 8.0, 8.0};
@@ -91,34 +92,66 @@ public class Agenda
         }
     }
     
-    private class IntervaloReservavel extends Intervalo
+    private class IntervaloReservavel extends IntervaloDeUso
     {
         /*
          * O intervalo de uso mas com métodos que posibilite sua reseva.
          * 
          */
         
-        public IntervaloReservavel(LocalTime inicio, LocalTime fim)
-        {
-           super(inicio, fim);
-        }
-       
-       private Reserva fazerReserva(Usuario user, Aparelho aparelho)
+       public IntervaloReservavel(LocalTime inicio, LocalTime fim, LocalDate dia)
        {
-           IntervaloReservavel intervalo = new IntervaloReservavel(horaInicio, horaFim);
-           
-           DiaReservavel temp = new DiaReservavel(this.dia, aparelho);
+           super(inicio, fim, dia);
+       }
+       
+       Integer jaEstaReservado()
+        {
+            List<IntervaloDeUso> intervalos = R_Intervalo.loadAll();
+            if (intervalos == null || intervalos.isEmpty())
+            {
+                return null;
+            }
+            
+            for(IntervaloDeUso i : intervalos)
+            {
+                if(this.getDiaIntervalo() == i.getDiaIntervalo() && this.getHoraInicioIntervalo() == i.getHoraInicioIntervalo() && this.getHoraFimIntervalo() == i.getHoraFimIntervalo() && this.aparelho.getId() == i.getAparelho().getId())
+                {
+                    return i.getId();
+                }
+            }
+            
+            return null;
+        }
+        
+        private IntervaloDeUso terIntervaloParaReserva()
+        {            
+            Integer reposta = jaEstaReservado();
+            
+            if (reposta == null)
+            {
+                R_Intervalo.create(this);
+                return this;
+            }
+            
+            return R_Intervalo.loadFromId(reposta.intValue());
+        }
+              
+       private Reserva fazerReserva(Usuario user, Aparelho aparelho)
+       {           
+           DiaReservavel temp = new DiaReservavel(this.getDiaIntervalo(), aparelho);
            DiaComReserva diaParaReserva = temp.terDiaParaReserva();
            
            
-           Duration duracao = Duration.between(inicio, fim);
+           Duration duracao = Duration.between( this.getHoraInicioIntervalo(), this.getHoraFimIntervalo() );
            double indisponibilidade = duracao.toMinutes() / 60.0;
            if(!diaParaReserva.indisponibilzarTempo(indisponibilidade))
                return null;
            
            R_Dia.update(diaParaReserva);
            
-           Reserva novaReserva = new Reserva(user, aparelho, this.dia, this.horaInicio, this.horaFim);
+           IntervaloDeUso intervaloParaReserva = this.terIntervaloParaReserva();
+           
+           Reserva novaReserva = new Reserva( user, aparelho, this.getDiaIntervalo(), this.getHoraInicioIntervalo(), this.getHoraFimIntervalo() );
            R_Reserva.create(novaReserva);   
            return novaReserva;
        }
@@ -187,7 +220,7 @@ public class Agenda
     
     public Reserva fazerReserva(Usuario user, Aparelho aparelho,LocalDate dia, LocalTime inicio, LocalTime fim)
     {
-        Agenda.IntervaloReservavel interval = new IntervaloReservavel(inicio, fim);
+        Agenda.IntervaloReservavel interval = new IntervaloReservavel(inicio, fim, dia);
         return interval.fazerReserva(user, aparelho);
     }
     
