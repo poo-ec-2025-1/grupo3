@@ -8,6 +8,10 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.DataType;
 
 public class Reserva {
+
+    public final static String formatoDate = "dd/MM/yyyy";
+    public final static String formatoTime = "HH:mm";
+    
     @DatabaseField(generatedId = true, dataType=DataType.INTEGER)
     private int id;
     
@@ -37,8 +41,8 @@ public class Reserva {
     }
     
     public String formatadorData(Aparelho aparelho, LocalDate dataReserva, LocalTime horaInicio, LocalTime horaFim) {
-        DateTimeFormatter formatadorDeData = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        DateTimeFormatter formatadorDeHora = DateTimeFormatter.ofPattern("HH:mm");
+        DateTimeFormatter formatadorDeData = DateTimeFormatter.ofPattern(formatoDate);
+        DateTimeFormatter formatadorDeHora = DateTimeFormatter.ofPattern(formatoTime);
         
         String dataFormatada = dataReserva.format(formatadorDeData);
         String horaInicioFormatada = horaInicio.format(formatadorDeHora);
@@ -56,7 +60,7 @@ public class Reserva {
         this.aparelho = aparelho;
         this.dataReserva = dataReserva.toString();
         this.horaInicio = horaInicio.toString();
-        this.horaFim = horaFim.toString();
+        this.horaFim = horaFim.toString();      
         this.dadosReserva = formatadorData(aparelho, dataReserva, horaInicio, horaFim);
         this.status = "PENDENTE";
     }
