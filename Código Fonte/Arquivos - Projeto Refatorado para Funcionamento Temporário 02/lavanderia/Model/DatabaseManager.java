@@ -24,6 +24,7 @@ public class DatabaseManager {
         TableUtils.createTableIfNotExists(connectionSource, Usuario.class);
         TableUtils.createTableIfNotExists(connectionSource, Aparelho.class);
         TableUtils.createTableIfNotExists(connectionSource, Reserva.class);
+        TableUtils.createTableIfNotExists(connectionSource, DiaComReserva.class);
         
         usuarioDao = DaoManager.createDao(connectionSource, Usuario.class);
         aparelhoDao = DaoManager.createDao(connectionSource, Aparelho.class);
