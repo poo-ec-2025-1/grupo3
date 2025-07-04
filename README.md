@@ -405,18 +405,28 @@ MetodoDePagamento --> Caixa
 ### Diagramas de sequência
 Diagrama de Sequência - Cadastro Usuário
 
-![Diagrama de Sequência Cadastro Usuário](Imagens/Etapa%202/Diagrama_Sequência_Cadastro_Usuario.png)
+![Diagrama de Sequência Cadastro Usuário](Imagens/Etapa%202/Diagrama_Sequência_Cadastro_Usuário.png)
 ````
 @startuml
 
 actor Cliente
 
-Cliente -> PainelDeLogin: cadastrarUsuario(dados)
-PainelDeLogin -> UsuarioRepository: validarEcriarUsuario(dados)
-UsuarioRepository -> DatabaseManager: salvarUsuario(dados)
-DatabaseManager --> UsuarioRepository: sucesso
-UsuarioRepository --> PainelDeLogin: usuarioCriado
-PainelDeLogin --> Cliente: Cadastro realizado com sucesso, redirecionando para login
+participant "Usuario" as User
+participant "UsuarioRepository" as UsrRepo
+participant "DatabaseManager" as DBMgr
+
+Cliente -> User: new Usuario(nome, matricula, senha)
+activate User
+User -> UsrRepo: create(Usuario)
+activate UsrRepo
+UsrRepo -> DBMgr: getUsuarioDao()
+activate DBMgr
+DBMgr --> UsrRepo: Dao<Usuario, Integer>
+deactivate DBMgr
+UsrRepo --> User: Usuario (salvo)
+deactivate UsrRepo
+User --> Cliente: Usuario criado
+deactivate User
 
 @enduml
 ````
@@ -427,18 +437,24 @@ Diagrama de Sequência - Fazer Login
 ````
 @startuml
 
-actor Usuario
+actor Cliente
 
-Usuario -> PainelDeLogin: fazerLogin(credenciais)
-PainelDeLogin -> Autenticavel: autenticar(credenciais)
-Autenticavel -> UsuarioRepository: verificarCredenciais(credenciais)
-UsuarioRepository -> DatabaseManager: consultarDatabase()
-DatabaseManager --> UsuarioRepository: dadosUsuario
-UsuarioRepository --> Autenticavel: autenticado = true
-Autenticavel --> PainelDeLogin: loginSucesso
-PainelDeLogin -> PainelDoUsuario: abrirPainel()
-PainelDoUsuario --> PainelDeLogin: painelAberto
-PainelDeLogin --> Usuario: Login realizado com sucesso
+participant "Usuario" as User
+participant "UsuarioRepository" as UsrRepo
+participant "DatabaseManager" as DBMgr
+
+Cliente -> User: login(matricula, senha)
+activate User
+User -> UsrRepo: buscarPorMatriculaESenha(matricula, senha)
+activate UsrRepo
+UsrRepo -> DBMgr: getUsuarioDao()
+activate DBMgr
+DBMgr --> UsrRepo: Dao<Usuario, Integer>
+deactivate DBMgr
+UsrRepo --> User: Usuario (se encontrado)
+deactivate UsrRepo
+User --> Cliente: true (autenticado) / false (falha)
+deactivate User
 
 @enduml
 ````
@@ -449,14 +465,24 @@ Diagrama de Sequência - Alterar Cadastro
 ````
 @startuml
 
-actor Usuario
+actor Cliente
 
-Usuario -> PainelDoUsuario: alterarCadastro(novoLogin, novoEmail)
-PainelDoUsuario -> UsuarioRepository: atualizarDados(usuario, novoLogin, novoEmail)
-UsuarioRepository -> DatabaseManager: atualizarDatabase()
-DatabaseManager --> UsuarioRepository: sucesso
-UsuarioRepository --> PainelDoUsuario: dadosAtualizados
-PainelDoUsuario --> Usuario: Cadastro alterado com sucesso
+participant "Usuario" as User
+participant "UsuarioRepository" as UsrRepo
+participant "DatabaseManager" as DBMgr
+
+Cliente -> User: setNomeCompleto(novoNome) / setSenha(novaSenha)
+activate User
+User -> UsrRepo: update(Usuario)
+activate UsrRepo
+UsrRepo -> DBMgr: getUsuarioDao()
+activate DBMgr
+DBMgr --> UsrRepo: Dao<Usuario, Integer>
+deactivate DBMgr
+UsrRepo --> User: sucesso
+deactivate UsrRepo
+User --> Cliente: cadastro atualizado
+deactivate User
 
 @enduml
 ````
@@ -467,16 +493,37 @@ Diagrama de Sequência - Adicionar Saldo
 ````
 @startuml
 
-actor Usuario
+actor Cliente
 
-Usuario -> PainelDoUsuario: adicionarSaldo(valor)
-PainelDoUsuario -> Caixa: processarPagamento(valor)
-Caixa --> PainelDoUsuario: pagamentoConfirmado
-PainelDoUsuario -> UsuarioRepository: atualizarSaldo(usuario, valor)
-UsuarioRepository -> DatabaseManager: atualizarDatabase()
-DatabaseManager --> UsuarioRepository: sucesso
-UsuarioRepository --> PainelDoUsuario: saldoAtualizado
-PainelDoUsuario --> Usuario: Saldo adicionado com sucesso
+participant "Caixa" as Caixa
+participant "UsuarioRepository" as UsrRepo
+participant "DatabaseManager" as DBMgr
+participant "Usuario" as User
+
+Cliente -> Caixa: adicionarSaldo(usuarioId, valor)
+activate Caixa
+Caixa -> UsrRepo: loadFromId(usuarioId)
+activate UsrRepo
+UsrRepo -> DBMgr: getUsuarioDao()
+activate DBMgr
+DBMgr --> UsrRepo: Dao<Usuario, Integer>
+deactivate DBMgr
+UsrRepo --> Caixa: Usuario
+deactivate UsrRepo
+Caixa -> User: depositar(valor)
+activate User
+User --> Caixa: saldo atualizado
+deactivate User
+Caixa -> UsrRepo: update(Usuario)
+activate UsrRepo
+UsrRepo -> DBMgr: getUsuarioDao()
+activate DBMgr
+DBMgr --> UsrRepo: Dao<Usuario, Integer>
+deactivate DBMgr
+UsrRepo --> Caixa: sucesso
+deactivate UsrRepo
+Caixa --> Cliente: "Depósito feito com sucesso!"
+deactivate Caixa
 
 @enduml
 ````
@@ -487,20 +534,83 @@ Diagrama de Sequência - Fazer Reserva
 ````
 @startuml
 
-actor Usuario
+actor Cliente
 
-Usuario -> Agenda: selecionarAparelhoEData(aparelho, data)
-Agenda -> IntervaloDeUso: verificarDisponibilidade(data)
-IntervaloDeUso --> Agenda: disponivel = true
-Agenda -> Reserva: calcularValorTotal(aparelho)
-Reserva --> Agenda: valorTotal
-Agenda -> Reserva: criarReserva(usuario, aparelho, data, valorTotal)
-Reserva -> ReservaRepository: salvarReserva(reserva)
-ReservaRepository -> DatabaseManager: atualizarDatabase()
-DatabaseManager --> ReservaRepository: sucesso
-ReservaRepository --> Reserva: reservaSalva
-Reserva --> Agenda: reservaConfirmada
-Agenda --> Usuario: Reserva realizada com sucesso
+participant "Agenda" as Agenda
+participant "AparelhoRepository" as ApRepo
+participant "UsuarioRepository" as UsrRepo
+participant "ReservaRepository" as ResRepo
+participant "DiaComReservaRepository" as DiaRepo
+participant "IntervaloDeUsoRepository" as IntRepo
+participant "DatabaseManager" as DBMgr
+participant "Reserva" as Reserva
+participant "DiaComReserva" as Dia
+participant "IntervaloDeUso" as Interval
+participant "Aparelho" as Aparelho
+participant "Usuario" as User
+
+Cliente -> Agenda: fazerReserva(User, Aparelho, dia, inicio, fim)
+activate Agenda
+Agenda -> ApRepo: loadFromId(aparelhoId)
+activate ApRepo
+ApRepo -> DBMgr: getAparelhoDao()
+activate DBMgr
+DBMgr --> ApRepo: Dao<Aparelho, Integer>
+deactivate DBMgr
+ApRepo --> Agenda: Aparelho
+deactivate ApRepo
+
+Agenda -> DiaRepo: create(DiaReservavel)
+activate DiaRepo
+DiaRepo -> DBMgr: getDao()
+activate DBMgr
+DBMgr --> DiaRepo: Dao<DiaComReserva, Integer>
+deactivate DBMgr
+DiaRepo -> Dia: setAparelho(Aparelho)
+activate Dia
+Dia --> DiaRepo: DiaComReserva
+deactivate Dia
+DiaRepo --> Agenda: DiaComReserva
+deactivate DiaRepo
+
+Agenda -> IntRepo: create(IntervaloReservavel)
+activate IntRepo
+IntRepo -> DBMgr: getDao()
+activate DBMgr
+DBMgr --> IntRepo: Dao<IntervaloDeUso, Integer>
+deactivate DBMgr
+IntRepo -> Interval: setAparelho(Aparelho)
+activate Interval
+Interval --> IntRepo: IntervaloDeUso
+deactivate Interval
+IntRepo --> Agenda: IntervaloDeUso
+deactivate IntRepo
+
+Agenda -> ResRepo: create(Reserva)
+activate ResRepo
+ResRepo -> DBMgr: getReservaDao()
+activate DBMgr
+DBMgr --> ResRepo: Dao<Reserva, Integer>
+deactivate DBMgr
+ResRepo -> Reserva: setUsuario(User)
+activate Reserva
+Reserva -> Reserva: setAparelho(Aparelho)
+Reserva -> Reserva: setDataReserva(dia)
+Reserva -> Reserva: setHoraInicio(inicio)
+Reserva -> Reserva: setHoraFim(fim)
+Reserva -> Reserva: formatadorData(Aparelho, dia, inicio, fim)
+Reserva --> ResRepo: Reserva
+deactivate Reserva
+ResRepo --> Agenda: Reserva
+deactivate ResRepo
+
+Agenda -> Dia: indisponibilzarTempo(duracao)
+activate Dia
+Dia --> Agenda: true (se sucesso)
+deactivate Dia
+
+Agenda --> Cliente: Reserva
+deactivate Agenda
 
 @enduml
 ````
@@ -511,16 +621,19 @@ Diagrama de Sequência - Mostrar Reservas
 ````
 @startuml
 
-actor Usuario
+actor Cliente
 
-Usuario -> PainelDoUsuario: mostrarReservas()
-PainelDoUsuario -> ReservaRepository: obterReservasPorUsuario(idUsuario)
-ReservaRepository -> DatabaseManager: consultarDatabase(idUsuario)
-DatabaseManager --> ReservaRepository: listaReservas
-ReservaRepository --> PainelDoUsuario: listaReservas
-PainelDoUsuario -> MinhasReservas: exibirReservas(listaReservas)
-MinhasReservas --> PainelDoUsuario: reservasExibidas
-PainelDoUsuario --> Usuario: Reservas exibidas com sucesso
+participant "ReservaRepository" as ResRepo
+participant "DatabaseManager" as DBMgr
+
+Cliente -> ResRepo: loadAll()
+activate ResRepo
+ResRepo -> DBMgr: getReservaDao()
+activate DBMgr
+DBMgr --> ResRepo: Dao<Reserva, Integer>
+deactivate DBMgr
+ResRepo --> Cliente: List<Reserva>
+deactivate ResRepo
 
 @enduml
 ````
@@ -532,18 +645,25 @@ Diagrama de Sequência - Cancelar Reserva
 ````
 @startuml
 
-actor Usuario
+actor Cliente
 
-Usuario -> PainelDoUsuario: cancelarReserva(idReserva)
-PainelDoUsuario -> Reserva: cancelar(idReserva)
-Reserva -> ReservaRepository: atualizarStatus(idReserva, "cancelada")
-ReservaRepository -> DatabaseManager: atualizarDatabase()
-DatabaseManager --> ReservaRepository: sucesso
-ReservaRepository --> Reserva: statusAtualizado
-Reserva -> Agenda: liberarIntervalo(idReserva)
-Agenda --> Reserva: intervaloLiberado
-Reserva --> PainelDoUsuario: reservaCancelada
-PainelDoUsuario --> Usuario: Reserva cancelada com sucesso
+participant "ReservaRepository" as ResRepo
+participant "DatabaseManager" as DBMgr
+participant "Reserva" as Reserva
+
+Cliente -> ResRepo: deletePorId(reservaId)
+activate ResRepo
+ResRepo -> DBMgr: getReservaDao()
+activate DBMgr
+DBMgr --> ResRepo: Dao<Reserva, Integer>
+deactivate DBMgr
+ResRepo -> Reserva: loadFromId(reservaId)
+activate Reserva
+Reserva --> ResRepo: Reserva
+deactivate Reserva
+ResRepo -> ResRepo: delete(Reserva)
+ResRepo --> Cliente: sucesso
+deactivate ResRepo
 
 @enduml
 ````
@@ -554,15 +674,13 @@ Diagrama de Sequência - Finalizar Sessão
 ![Diagrama de Sequência Finalizar Sessão](Imagens/Etapa%202/Diagrama_Sequência_Finalizar_Sessão.png)
 ````
 @startuml
+actor Cliente
+participant "Usuario" as User
 
-actor Usuario
-
-Usuario -> PainelDoUsuario: finalizarSessao()
-PainelDoUsuario -> Usuario: encerrarSessao()
-Usuario --> PainelDoUsuario: sessaoEncerrada
-PainelDoUsuario -> PainelDeLogin: redirecionar()
-PainelDeLogin --> PainelDoUsuario: redirecionamentoCompleto
-PainelDoUsuario --> Usuario: Sessão finalizada, redirecionado para login
+Cliente -> User: logout()
+activate User
+User --> Cliente: sessão finalizada
+deactivate User
 
 @enduml
 ````
