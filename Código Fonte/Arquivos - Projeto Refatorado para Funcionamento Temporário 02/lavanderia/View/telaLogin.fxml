@@ -19,7 +19,7 @@
                </font>
             </Label>
             <Line endX="130.0" layoutX="160.0" layoutY="65.0" startX="-100.0" />
-            <Label fx:id="matriculaLabel" layoutX="53.0" layoutY="77.0" text="MatrÃ­cula:">
+            <Label fx:id="matriculaLabel" layoutX="53.0" layoutY="77.0" text="Matrícula:">
                <font>
                   <Font size="16.0" />
                </font>
@@ -47,7 +47,7 @@
                </font>
             </CheckBox>
             <Line endX="175.0" layoutX="175.0" layoutY="220.0" startX="-175.0" />
-            <Label fx:id="cadastroLabel" layoutX="20.0" layoutY="235.0" text="Ainda nÃ£o possui cadastro?" textAlignment="CENTER">
+            <Label fx:id="cadastroLabel" layoutX="20.0" layoutY="235.0" text="Ainda não possui cadastro?" textAlignment="CENTER">
                <font>
                   <Font size="16.0" />
                </font>
