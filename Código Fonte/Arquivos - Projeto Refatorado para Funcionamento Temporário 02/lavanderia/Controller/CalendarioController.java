@@ -163,6 +163,31 @@ public class CalendarioController {
     }
 
     @FXML
+    private void handleVoltar(ActionEvent event) {
+        try {
+            System.out.println("Tentando carregar telaMinhasResevas.fxml");
+            System.out.println("Recurso: " + getClass().getResource("/lavanderia/view/telaMinhasReservas.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/lavanderia/view/telaMinhasReservas.fxml"));
+            Scene scene = new Scene(fxmlLoader.load());
+            Stage stage = new Stage();
+            stage.setTitle("Minhas Reservas");
+            stage.setScene(scene);
+            System.out.println("Exibindo tela de Minhas Reservas");
+            
+            int matriculaUsuario = matriculaUsuarioLogado;
+            MinhasReservasController minhasReservasController = fxmlLoader.getController();
+            minhasReservasController.iniciarDados(matriculaUsuario);
+            
+            stage.show();
+            Stage calendarioStage = (Stage) confirmarReservaButton.getScene().getWindow();
+            calendarioStage.close();
+        } catch (Exception e) {
+            System.out.println("Erro ao carregar Minhas Reservas: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
     private void handleConfirmarReserva(ActionEvent event) {
         System.out.println("Confirmar reserva clicado em " + java.time.LocalDateTime.now());
         
