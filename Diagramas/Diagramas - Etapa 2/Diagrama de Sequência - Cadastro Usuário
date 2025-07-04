@@ -2,11 +2,21 @@
 
 actor Cliente
 
-Cliente -> PainelDeLogin: cadastrarUsuario(dados)
-PainelDeLogin -> UsuarioRepository: validarEcriarUsuario(dados)
-UsuarioRepository -> DatabaseManager: salvarUsuario(dados)
-DatabaseManager --> UsuarioRepository: sucesso
-UsuarioRepository --> PainelDeLogin: usuarioCriado
-PainelDeLogin --> Cliente: Cadastro realizado com sucesso, redirecionando para login
+participant "Usuario" as User
+participant "UsuarioRepository" as UsrRepo
+participant "DatabaseManager" as DBMgr
+
+Cliente -> User: new Usuario(nome, matricula, senha)
+activate User
+User -> UsrRepo: create(Usuario)
+activate UsrRepo
+UsrRepo -> DBMgr: getUsuarioDao()
+activate DBMgr
+DBMgr --> UsrRepo: Dao<Usuario, Integer>
+deactivate DBMgr
+UsrRepo --> User: Usuario (salvo)
+deactivate UsrRepo
+User --> Cliente: Usuario criado
+deactivate User
 
 @enduml
