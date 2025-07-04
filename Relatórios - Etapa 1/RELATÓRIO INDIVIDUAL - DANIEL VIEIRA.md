@@ -1,24 +1,34 @@
 ## Daniel Vieira Gomes de Faria
 
 01- Atribuição de cargo:
-A princípio, foi concordado que eu seria um dos responsáveis pela atuação no desenvolvimento frontend de
-nosso programa, vindo a trabalhar tanto com as classes 'View', quanto 'Controller' do modelo MVC. O foco inicial
-para essa primeira etapa, era produzir um rascunho das principais janelas que virão a ser nossa interface gráfica.
+Inicialmente, foi designada à mim a responsabilidade com relação ao frontend do projeto. No entanto, tivemos que fazer um remanejamento de funções devido à um dos membros do grupo ter saído da disciplina por motivos pessoais. Dito isso, minha função estava próxima a um "programador fullstack", fiquei responsável por intercambiar entre as funções de acordo com a necessidade do grupo.
 
 02- Contribuição:
-Dentro do que foi proposto à mim, consegui entregar três das janelas que serão usadas em nossa aplicação. Os arquivos
-das mesmas se encontram dentro da pasta 'FXML e CSS'; as janelas propriamente ditas estão no formato .fxml, já os outros
-arquivos em .css são os responsáveis pela estilização de alguns dos elementos contidos na interface.
+Dentro do que foi possível, contribui com algumas das classes relativas ao backend, como Aparelho, Usuário e a própria Reserva em si, bem como toda a parte relacionada ao database dessas classes(optei por criar um DatabaseManager de forma que fosse possível inicializar todos os repositórios através de um único comando, facilitando a atribuição dos DAOS relativos à cada uma das classes). Além disso, ajudei na atribuição dos botões de alguns dos controllers, fazendo a "linkagem" com suas respectivas funções.
 
-Minha contribuição relativa à essa etapa foi feita em praticamente um commit principal, de número #320c30f.
-
-03- Contribuição além do atríbuido:
-Além disso, me propus a criar um dos Diagramas de Caso de Uso Específico, no caso, o relativo ao Usuário Geral de nosso
-programa. Este foi adicionado ao repositório no commit de número #b9b4130.
+03- Contribuição além do atribuído:
+Como falei no tópico de atribuição de cargo, minha função inicial era relacionada ao frontend do projeto, no entanto, por conta da saída do outro membro do grupo acabei dando um foco maior nas classes do backend para não sobrecarregar o Miguel. Tentei ajudá-lo na implementação da sua ideia relacionada à agenda, mas como nosso prazo estava bastante curto, fiquei com receio de não conseguirmos entregar o projeto com a ideia dele e, por isso, optei por fazer um refactoring da forma com que as reservas funcionavam para que ao menos conseguíssemos demonstrar pro senhor como seria a ideia do funcionamento do projeto. Esse refactoring está em: 'Arquivos - PROJETO ALTERNATIVO'.
 
 04- Considerações gerais:
-Até então, a interface gráfica não está funcional e serve apenas como esboço do que ela virá a ser. Dito isso, assim que as
-classes 'Model' forem realmente consolidadas, aí sim iniciarei a organizar as classes relativas ao 'View' e ao 'Controller'.
-Nessa primeira etapa, tive bastante contato com o programa SceneBuilder no processo de construção das janelas, e um contato 
-mais superficial com a linguagem de estilização CSS, utilizando-a apenas para funções mais simples, como alterarações na cor 
-e no design de backgrounds, bordas e fontes de texto.
+Apesar das dificuldades, relacionadas principalmente com o acesso e manipulação do banco de dados, acredito que eu tenha conseguido contribuir em vários aspectos do projeto. Meu principal recurso para lidar com essas dificuldades foi justamente pesquisar sobre as documentações relacionadas ao SQLite e ao ORMLite, para entender melhor sobre como as operações de CRUD aconteciam no decorrer do código. Sinto que poderia ter contribuído mais, mas infelizmente não consegui administrar meu tempo da forma mais eficiente.
+
+05- Commits:
+Seguem meus principais commits e, de forma resumida, o que foi feito em cada um deles:
+
+12e0ebf e 80ec4f7- implementação de uma classe Database, atualização das classes Usuario, criação das subclasses Administrador e Cliente, criação da interface Autenticavel e criação do UsuarioRepository;
+
+55d613a - comentário a cerca do atributo "private String email;" da classe abstrata Usuário;
+
+990b0e5, c098d30, b1dbf90, 4b3f737 - atualização e implementação de arquivos fxml, relativos à interface gráfica do programa. Upload das imagens de demonstração;
+
+6b84f9e - arquivo fxml da tela de simulação de pagamento;
+
+5e0c453- implementação da classe abstrata Aparelho e de suas subclasses MaquinaDeLavar e Secadora, bem como a interface Reservável; implementação da classe AparelhoRepository;
+
+2d6d801- revisão de algumas classes e implementação da classe Caixa refatorada e da classe MetodoDePagamento;
+
+7f3ed42- atualização/revisão de algumas classes; refactoring dos métodos loadFromId e loadAll das classes Repository;
+
+5f73056- complementação da classe Agenda;
+
+7da69e7- refactoring do projeto como um todo para funcionamento temporário para a apresentação;
