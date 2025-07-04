@@ -3,5 +3,5 @@
 - 131ba5f9e119d0a4b57fe07b43141f3337857589: alteração feita no Controller que possibilitou a organização do procedimento de fazer e cancelar reservas.
 - 10a8269e9ea5355560713848115f781890769317: a organização correspondente feita no Model.
 - O protótipo da Agenda em Código Fonte/Agenda/Arquivos.
-3) Além da minha parte atribuída, não foi muita coisa. Na verdade, devo muita gratidão ao meu grupo por ter deverás me ajudado, especialmente ao Daniel. Em suma, foquei em adaptar e integrar minha parte ao que já havia sido feito pelos outros.
+3) Além da minha parte atribuída, não foi muita coisa. Na verdade, devo muita gratidão ao meu grupo por ter deverás me ajudado, especialmente ao Daniel embora tivessimos muitos problema com nossa comunicação. Em suma, foquei em adaptar e integrar minha parte ao que já havia sido feito pelos outros.
 4) Aprendi que, ao trabalhar em equipe, deixar ideias mirabolantes de lado — ainda que tenham grande potencial — pode ser a escolha certa, especialmente se isso facilitar o entendimento do grupo no primeiro momento.
