@@ -1,14 +1,17 @@
 @startuml
 
-actor Usuario
+actor Cliente
 
-Usuario -> PainelDoUsuario: mostrarReservas()
-PainelDoUsuario -> ReservaRepository: obterReservasPorUsuario(idUsuario)
-ReservaRepository -> DatabaseManager: consultarDatabase(idUsuario)
-DatabaseManager --> ReservaRepository: listaReservas
-ReservaRepository --> PainelDoUsuario: listaReservas
-PainelDoUsuario -> MinhasReservas: exibirReservas(listaReservas)
-MinhasReservas --> PainelDoUsuario: reservasExibidas
-PainelDoUsuario --> Usuario: Reservas exibidas com sucesso
+participant "ReservaRepository" as ResRepo
+participant "DatabaseManager" as DBMgr
+
+Cliente -> ResRepo: loadAll()
+activate ResRepo
+ResRepo -> DBMgr: getReservaDao()
+activate DBMgr
+DBMgr --> ResRepo: Dao<Reserva, Integer>
+deactivate DBMgr
+ResRepo --> Cliente: List<Reserva>
+deactivate ResRepo
 
 @enduml
