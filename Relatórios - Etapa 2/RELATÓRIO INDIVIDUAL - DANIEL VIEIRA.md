@@ -19,3 +19,5 @@ Inicialmente, foi designada à mim a responsabilidade com relação ao frontend 
 52518e8- implementação do restante das classes Controller, implementação de um DatabaseManager para instanciação resumida dos DAOS e refactoring do sistema de reservas para funcionamento temporário para a apresentação;
 
 532a987- update de algumas classes e refinamento da interface gráfica;
+
+3914eea- implementação do botão 'Voltar' na tela de cadastro de reservas;
