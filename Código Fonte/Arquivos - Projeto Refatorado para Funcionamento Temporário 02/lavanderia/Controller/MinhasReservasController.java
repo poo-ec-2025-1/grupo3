@@ -8,6 +8,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.stage.Stage;
+import lavanderia.Model.Agenda;
+import lavanderia.Model.Database;
 import lavanderia.Model.Reserva;
 import lavanderia.Model.ReservaRepository;
 import lavanderia.Model.Usuario;
@@ -86,9 +88,9 @@ public class MinhasReservasController {
         Reserva reservaSelecionada = reservasListView.getSelectionModel().getSelectedItem();
         if (reservaSelecionada != null) {
             try {
-                DatabaseManager.init();
-                ReservaRepository reservaRepo = new ReservaRepository();
-                reservaRepo.delete(reservaSelecionada);
+                Database database = new Database("lavanderia.db");
+                Agenda agenda = new Agenda(database);
+                agenda.deletarReserva(reservaSelecionada);
                 reservasListView.getItems().remove(reservaSelecionada);
                 System.out.println("Reserva cancelada: " + reservaSelecionada);
             } catch(SQLException e) {

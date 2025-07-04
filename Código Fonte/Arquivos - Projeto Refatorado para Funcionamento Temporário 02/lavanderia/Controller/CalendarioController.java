@@ -9,6 +9,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
+import lavanderia.Model.Agenda;
 import lavanderia.Model.HorariosFixos;
 import lavanderia.Model.IntervaloHorario;
 import lavanderia.Model.Database;
@@ -43,7 +44,7 @@ public class CalendarioController {
     private List<IntervaloHorario> listaDeHorarios;
     private ObservableList<IntervaloHorario> listaDeHorariosObservavel;
     private List<Aparelho> listaDeAparelhos;
-    private ObservableList<Aparelho> listaDeAparelhosObservavel;
+    private ObservableList<Aparelho> listaDeAparelhosObservavel = FXCollections.observableArrayList();
     
     @FXML
     private DatePicker dataDatePicker;
@@ -66,12 +67,11 @@ public class CalendarioController {
         mostrarUsuario();
     }
    
-    private List<Aparelho> carregarDadosAparelho() {
+    private List<Aparelho> carregarDadosAparelho(LocalTime inicio, LocalTime fim, LocalDate dia) {
         try{
-            DatabaseManager.init();
-            aparelhoRepo = new AparelhoRepository();
-            List<Aparelho> todosAparelhos = aparelhoRepo.loadAll();
-            return todosAparelhos;
+            Database database = new Database("lavanderia.db");
+            Agenda agenda = new Agenda(database);
+            return agenda.agregarMaquinas(inicio, fim, dia);
         } catch (SQLException e) {
             System.err.println("Erro ao carregar Aparelhos.");
             return null;
@@ -98,10 +98,6 @@ public class CalendarioController {
         listaDeHorarios = horarios.getIntervalos();
         listaDeHorariosObservavel = FXCollections.observableArrayList(listaDeHorarios);
         horarioComboBox.setItems(listaDeHorariosObservavel);
-        
-        listaDeAparelhos = carregarDadosAparelho();
-        listaDeAparelhosObservavel = FXCollections.observableArrayList(listaDeAparelhos);
-        maquinaComboBox.setItems(listaDeAparelhosObservavel);
     }
     
     private void exibirAlerta(String titulo, String mensagem) {
@@ -115,6 +111,43 @@ public class CalendarioController {
     @FXML
     private void initialize() {
         
+        //Listener para o horário
+        horarioComboBox.valueProperty().addListener((observable, valorAntigo, valorNovo) -> {
+            if (valorNovo != null) {
+                System.out.println("Horário selecionado: " + valorNovo);
+                
+                String[] partes = valorNovo.toString().split(" - ");
+                LocalTime inicio = LocalTime.parse(partes[0]);
+                LocalTime fim = LocalTime.parse(partes[1]);
+                
+                LocalDate dataAtual = dataDatePicker.getValue();
+                
+                listaDeAparelhos = carregarDadosAparelho(inicio, fim, dataAtual);
+                listaDeAparelhosObservavel = FXCollections.observableArrayList(listaDeAparelhos);
+                maquinaComboBox.setItems(listaDeAparelhosObservavel);
+            }
+        });
+        
+        //Listener para o dia
+        dataDatePicker.valueProperty().addListener((observable, valorAntigo, valorNovo) -> {
+            if (valorNovo != null) {
+                System.out.println("Dia selecionado: " + valorNovo);
+                
+                IntervaloHorario intervaloHorarioSelecionado = horarioComboBox.getValue();
+                if (intervaloHorarioSelecionado != null) 
+                {
+                    System.out.println("Dia selecionado: " + valorNovo + " // Horário: " + intervaloHorarioSelecionado);
+                    String[] partes = intervaloHorarioSelecionado.toString().split(" - ");
+                    LocalTime inicioAtual = LocalTime.parse(partes[0]);
+                    LocalTime fimAtual    = LocalTime.parse(partes[1]);
+    
+                    // Carrega a lista de aparelhos com data e intervalo válidos
+                    listaDeAparelhos = carregarDadosAparelho(inicioAtual, fimAtual, valorNovo);
+                    listaDeAparelhosObservavel = FXCollections.observableArrayList(listaDeAparelhos);
+                    maquinaComboBox.setItems(listaDeAparelhosObservavel);
+                }
+            }
+        });
     }
 
     @FXML
@@ -123,6 +156,9 @@ public class CalendarioController {
         dataDatePicker.setValue(null);
         horarioComboBox.getSelectionModel().clearSelection();
         maquinaComboBox.getSelectionModel().clearSelection();
+        listaDeAparelhos.clear();
+                listaDeAparelhosObservavel = FXCollections.observableArrayList(listaDeAparelhos);
+                maquinaComboBox.setItems(listaDeAparelhosObservavel);
         valorTotalLabel.setText("");
     }
 
@@ -157,19 +193,17 @@ public class CalendarioController {
         }
         
         try{
+            Database database = new Database("lavanderia.db");
+            Agenda agenda = new Agenda(database);
             DatabaseManager.init();
             UsuarioRepository usuarioRepo = new UsuarioRepository();
             usuarioDao = usuarioRepo.getDao();
             Usuario usuarioLogado = usuarioDao.queryBuilder()
                                             .where()
                                             .eq("matricula", matriculaUsuarioLogado)
-                                            .queryForFirst();
-            ReservaRepository reservaRepo = new ReservaRepository();
-            reservaDao = reservaRepo.getDao();
-            Reserva reserva = new Reserva(usuarioLogado, maquinaSelecionada, dataSelecionada, inicio, fim);
-            reserva.setUsuario(usuarioLogado);
-                            
-            reservaRepo.create(reserva);
+                                            .queryForFirst();;
+                                            
+            agenda.fazerReserva(usuarioLogado, maquinaSelecionada, dataSelecionada, inicio, fim);
                             
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/lavanderia/view/telaMinhasReservas.fxml"));
             Scene scene = new Scene(fxmlLoader.load());
