@@ -113,23 +113,23 @@ public class Intervalo
     
     // MÉTODOS GETTERS - Retornam os valores dos atributos
     
-    public LocalDateTime getInicio() {
+    public LocalDateTime getInicioIntervalo() {
         return inicio;
     }
     
-    public LocalDateTime getFim() {
+    public LocalDateTime getFimIntervalo() {
         return fim;
     }
     
-    public LocalDate getDia() {
+    public LocalDate getDiaIntervalo() {
         return dia;
     }
     
-    public LocalTime gethoraInicio() {
+    public LocalTime getHoraInicioIntervalo() {
         return horaInicio;
     }
     
-    public LocalTime gethoraFim() {
+    public LocalTime getHoraFimIntervalo() {
         return horaFim;
     }
 }

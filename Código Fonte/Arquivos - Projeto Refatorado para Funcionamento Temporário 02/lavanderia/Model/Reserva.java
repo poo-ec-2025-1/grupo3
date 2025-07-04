@@ -9,7 +9,7 @@ import com.j256.ormlite.field.DataType;
 
 public class Reserva {
 
-    public final static String formatoDate = "dd/MM/yyyy";
+    public final static String formatoDate = "yyyy-MM-dd";
     public final static String formatoTime = "HH:mm";
     
     @DatabaseField(generatedId = true, dataType=DataType.INTEGER)
