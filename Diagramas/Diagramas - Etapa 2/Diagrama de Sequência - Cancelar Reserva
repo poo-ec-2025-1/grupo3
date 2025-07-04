@@ -1,16 +1,23 @@
 @startuml
 
-actor Usuario
+actor Cliente
 
-Usuario -> PainelDoUsuario: cancelarReserva(idReserva)
-PainelDoUsuario -> Reserva: cancelar(idReserva)
-Reserva -> ReservaRepository: atualizarStatus(idReserva, "cancelada")
-ReservaRepository -> DatabaseManager: atualizarDatabase()
-DatabaseManager --> ReservaRepository: sucesso
-ReservaRepository --> Reserva: statusAtualizado
-Reserva -> Agenda: liberarIntervalo(idReserva)
-Agenda --> Reserva: intervaloLiberado
-Reserva --> PainelDoUsuario: reservaCancelada
-PainelDoUsuario --> Usuario: Reserva cancelada com sucesso
+participant "ReservaRepository" as ResRepo
+participant "DatabaseManager" as DBMgr
+participant "Reserva" as Reserva
+
+Cliente -> ResRepo: deletePorId(reservaId)
+activate ResRepo
+ResRepo -> DBMgr: getReservaDao()
+activate DBMgr
+DBMgr --> ResRepo: Dao<Reserva, Integer>
+deactivate DBMgr
+ResRepo -> Reserva: loadFromId(reservaId)
+activate Reserva
+Reserva --> ResRepo: Reserva
+deactivate Reserva
+ResRepo -> ResRepo: delete(Reserva)
+ResRepo --> Cliente: sucesso
+deactivate ResRepo
 
 @enduml
