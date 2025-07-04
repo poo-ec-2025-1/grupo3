@@ -1,14 +1,35 @@
 @startuml
 
-actor Usuario
+actor Cliente
 
-Usuario -> PainelDoUsuario: adicionarSaldo(valor)
-PainelDoUsuario -> Caixa: processarPagamento(valor)
-Caixa --> PainelDoUsuario: pagamentoConfirmado
-PainelDoUsuario -> UsuarioRepository: atualizarSaldo(usuario, valor)
-UsuarioRepository -> DatabaseManager: atualizarDatabase()
-DatabaseManager --> UsuarioRepository: sucesso
-UsuarioRepository --> PainelDoUsuario: saldoAtualizado
-PainelDoUsuario --> Usuario: Saldo adicionado com sucesso
+participant "Caixa" as Caixa
+participant "UsuarioRepository" as UsrRepo
+participant "DatabaseManager" as DBMgr
+participant "Usuario" as User
+
+Cliente -> Caixa: adicionarSaldo(usuarioId, valor)
+activate Caixa
+Caixa -> UsrRepo: loadFromId(usuarioId)
+activate UsrRepo
+UsrRepo -> DBMgr: getUsuarioDao()
+activate DBMgr
+DBMgr --> UsrRepo: Dao<Usuario, Integer>
+deactivate DBMgr
+UsrRepo --> Caixa: Usuario
+deactivate UsrRepo
+Caixa -> User: depositar(valor)
+activate User
+User --> Caixa: saldo atualizado
+deactivate User
+Caixa -> UsrRepo: update(Usuario)
+activate UsrRepo
+UsrRepo -> DBMgr: getUsuarioDao()
+activate DBMgr
+DBMgr --> UsrRepo: Dao<Usuario, Integer>
+deactivate DBMgr
+UsrRepo --> Caixa: sucesso
+deactivate UsrRepo
+Caixa --> Cliente: "Depósito feito com sucesso!"
+deactivate Caixa
 
 @enduml
