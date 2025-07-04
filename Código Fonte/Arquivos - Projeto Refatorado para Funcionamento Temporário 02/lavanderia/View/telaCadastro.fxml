@@ -29,7 +29,7 @@
                   <Font size="13.0" />
                </font>
             </TextField>
-            <Label fx:id="matriculaLabel" layoutX="50.0" layoutY="120.0" text="MatrÃ­cula:">
+            <Label fx:id="matriculaLabel" layoutX="50.0" layoutY="120.0" text="Matrícula:">
                <font>
                   <Font size="16.0" />
                </font>
@@ -57,7 +57,7 @@
                </font>
             </Button>
             <Line endX="188.0" layoutX="160.0" layoutY="250.0" startX="-158.0" />
-            <Label layoutX="19.0" layoutY="262.0" text="JÃ¡ possui um cadastro?">
+            <Label layoutX="19.0" layoutY="262.0" text="Já possui um cadastro?">
                <font>
                   <Font size="16.0" />
                </font>
