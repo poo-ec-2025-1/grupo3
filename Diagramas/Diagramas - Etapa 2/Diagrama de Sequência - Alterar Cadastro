@@ -1,12 +1,22 @@
 @startuml
 
-actor Usuario
+actor Cliente
 
-Usuario -> PainelDoUsuario: alterarCadastro(novoLogin, novoEmail)
-PainelDoUsuario -> UsuarioRepository: atualizarDados(usuario, novoLogin, novoEmail)
-UsuarioRepository -> DatabaseManager: atualizarDatabase()
-DatabaseManager --> UsuarioRepository: sucesso
-UsuarioRepository --> PainelDoUsuario: dadosAtualizados
-PainelDoUsuario --> Usuario: Cadastro alterado com sucesso
+participant "Usuario" as User
+participant "UsuarioRepository" as UsrRepo
+participant "DatabaseManager" as DBMgr
+
+Cliente -> User: setNomeCompleto(novoNome) / setSenha(novaSenha)
+activate User
+User -> UsrRepo: update(Usuario)
+activate UsrRepo
+UsrRepo -> DBMgr: getUsuarioDao()
+activate DBMgr
+DBMgr --> UsrRepo: Dao<Usuario, Integer>
+deactivate DBMgr
+UsrRepo --> User: sucesso
+deactivate UsrRepo
+User --> Cliente: cadastro atualizado
+deactivate User
 
 @enduml
