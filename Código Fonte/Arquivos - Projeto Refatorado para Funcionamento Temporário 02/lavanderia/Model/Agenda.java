@@ -29,7 +29,7 @@ public class Agenda
     private IntervaloDeUsoRepository R_Intervalo;
     
     
-    private static double tempoDeFuncionamentoSemana[] = {4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0};
+    private static double tempoDeFuncionamentoSemana[] = {24.0, 24.0, 24.0, 24.0, 24.0, 24.0, 24.0};
     static final String[] diasSemana = {"segunda", "terça", "quarta", "quinta", "sexta", "sábado", "domingo"};
     
     
