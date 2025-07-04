@@ -78,242 +78,327 @@ Cada tarefa foi associada a um prazo específico, definido em conjunto para gara
 ### Diagrama de classes 
 Diagrama de Classes Completo
 
-![Diagrama de Classe](Imagens/Etapa%202/Diagrama_Classes_Atualizado.png)
+![Diagrama de Classe](Imagens/Etapa%202/Diagrama_Classes_Final.png)
 
 ---------------
 Diagrama separado em partes para facilitar a vizualização
 
-![Diagrama de Classe](Imagens/Etapa%202/Diagrama_Classes_Atualizado_Parte1.png)
-![Diagrama de Classe](Imagens/Etapa%202/Diagrama_Classes_Atualizado_Parte2.png)
+![Diagrama de Classe](Imagens/Etapa%202/Diagrama_Classes_Final_P1.png)
+![Diagrama de Classe](Imagens/Etapa%202/Diagrama_Classes_Final_P2.png)
 
 ```java
 @startuml
-' Configurações para layout vertical e melhor legibilidade
+
 skinparam monochrome true
 skinparam classAttributeIconSize 0
-skinparam linetype ortho
-left to right direction
+skinparam nodesep 10
+skinparam ranksep 10
+top to bottom direction
 
-' Pacote para Interfaces
-package "Interfaces" {
-  interface Autenticavel {
-    + autenticar(senha: String): boolean
-  }
+' Classes
+class DatabaseManager {
+  - DATABASE_URL: String
+  - connectionSource: ConnectionSource
+  - usuarioDao: Dao<Usuario, Integer>
+  - aparelhoDao: Dao<Aparelho, Integer>
+  - reservaDao: Dao<Reserva, Integer>
+  + init(): void
+  + getUsuarioDao(): Dao<Usuario, Integer>
+  + getAparelhoDao(): Dao<Aparelho, Integer>
+  + getReservaDao(): Dao<Reserva, Integer>
+  + close(): void
 }
 
-' Pacote para Entidades/Domínio
-package "Dominio" {
-  class Usuario {
-    - id: int
-    - nome: String
-    - saldo: double
-    - email: String
-    - login: String
-    + autenticar(senha: String): boolean
-    + atualizarDados(novoLogin: String, novoEmail: String): boolean
-    + encerrarSessao(): void
-    + getId(): int
-    + getNome(): String
-  }
-  class Cliente {
-    - preferencias: String
-    + selecionarHorario(data: Date, aparelho: Aparelho): void
-    + getPreferencias(): String
-  }
-  class Administrador {
-    - permissoes: String[]
-    + gerenciarUsuarios(): void
-    + getPermissoes(): String[]
-  }
-  class Aparelho {
-    - id: int
-    - tipo: String
-    - status: String
-    + verificarDisponibilidade(): boolean
-    + getId(): int
-    + getTipo(): String
-  }
-  class MaquinaDeLavar {
-    - capacidade: double
-    - ciclos: int
-    + lavar(): void
-    + getCapacidade(): double
-  }
-  class Secadora {
-    - temperaturaMaxima: int
-    - duracao: int
-    + secar(): void
-    + getTemperaturaMaxima(): int
-  }
-  class Reserva {
-    - id: int
-    - data: Date
-    - status: String
-    - aparelhoId: int
-    - usuarioId: int
-    + calcularValorTotal(aparelho: Aparelho): double
-    + cancelar(): boolean
-    + criarReserva(usuario: Usuario, aparelho: Aparelho, data: Date): boolean
-    + getStatus(): String
-  }
-  class Intervalo {
-    - inicio: Date
-    - fim: Date
-    + isDisponivel(): boolean
-    + getInicio(): Date
-    + getFim(): Date
-  }
-  class IntervaloDeUso {
-    - ocupado: boolean
-    - aparelho: Aparelho
-    - intervalo: Intervalo
-    + verificarDisponibilidade(data: Date): boolean
-    + reservar(): void
-    + liberar(): void
-  }
-  class DiaDaReserva {
-    - data: Date
-    - reservas: List<Reserva>
-    + adicionarReserva(reserva: Reserva): void
-    + getReservas(): List<Reserva>
-  }
-  class IntervaloHorario {
-    - horaInicio: Time
-    - horaFim: Time
-    + isDentroHorario(data: Date): boolean
-  }
-  class HorariosFixos {
-    - horarios: List<IntervaloHorario>
-    + obterHorariosLivres(): List<IntervaloHorario>
-    + adicionarHorario(horario: IntervaloHorario): void
-  }
-
-  Usuario <|-- Cliente
-  Usuario <|-- Administrador
-  Aparelho <|-- MaquinaDeLavar
-  Aparelho <|-- Secadora
-  IntervaloDeUso --> Aparelho
-  IntervaloDeUso --> Intervalo
-  HorariosFixos --> IntervaloHorario
-  Reserva --> Usuario
-  Reserva --> IntervaloDeUso
-  Cliente ..|> Autenticavel
-  Administrador ..|> Autenticavel
+class Aparelho {
+  - id: int
+  - modelo: String
+  - capacidadeKg: int
+  - descricao: String
+  - disponivel: boolean
+  - custo: double
+  + disponibilizarMaquina(): void
+  + indisponibilizarMaquina(): void
+  + getId(): int
+  + setId(id: int): void
+  + getModelo(): String
+  + setModelo(modelo: String): void
+  + getDescricao(): String
+  + setDescricao(descricao: String): void
+  + getCapacidadeKg(): int
+  + setCapacidadeKg(capacidadeKg: int): void
+  + getDisponivel(): boolean
+  + setDisponivel(disponivel: boolean): void
+  + getCusto(): double
+  + setCusto(custo: double): void
+  + toString(): String
 }
 
-' Pacote para Repositórios
-package "Repositorios" {
-  class UsuarioRepository {
-    + salvarUsuario(usuario: Usuario): boolean
-    + verificarCredenciais(login: String, senha: String): Usuario
-    + atualizarSaldo(usuario: Usuario, valor: double): boolean
-    + atualizarDados(usuario: Usuario, novoLogin: String, novoEmail: String): boolean
-    + findById(id: int): Usuario
-  }
-  class ReservaRepository {
-    + salvarReserva(reserva: Reserva): boolean
-    + obterReservasPorUsuario(idUsuario: int): List<Reserva>
-    + atualizarStatus(idReserva: int, status: String): boolean
-    + findById(id: int): Reserva
-  }
-  class AparelhoRepository {
-    + obterAparelhosDisponiveis(): List<Aparelho>
-    + findById(id: int): Aparelho
-    + salvarAparelho(aparelho: Aparelho): boolean
-  }
-  class DiaDaReservaRepository {
-    + salvarDiaDaReserva(dia: DiaDaReserva): boolean
-    + findByData(data: Date): DiaDaReserva
-  }
-  class IntervaloDeUsoRepository {
-    + salvarIntervalo(uso: IntervaloDeUso): boolean
-    + findByAparelho(aparelhoId: int): IntervaloDeUso
-  }
-
-  UsuarioRepository --> Dominio::Usuario
-  ReservaRepository --> Dominio::Reserva
-  AparelhoRepository --> Dominio::Aparelho
-  DiaDaReservaRepository --> Dominio::DiaDaReserva
-  IntervaloDeUsoRepository --> Dominio::IntervaloDeUso
+class Cliente {
+  + login(matricula: int, senha: String): boolean
 }
 
-' Pacote para Gerenciamento
-package "Gerenciamento" {
-  class Database {
-    - conexao: Connection
-    + conectar(): Connection
-    + desconectar(): void
-  }
-  class DatabaseManager {
-    + atualizarDatabase(objeto: Object): boolean
-    + consultarDatabase(id: int): Object
-    + salvarDados(objeto: Object): boolean
-  }
-  class Agenda {
-    + selecionarAparelhoEData(aparelho: Aparelho, data: Date): boolean
-    + verificarDisponibilidade(data: Date): boolean
-    + liberarIntervalo(idReserva: int): boolean
-    + calcularPesoRoupas(): double
-  }
-  class Caixa {
-    + processarPagamento(valor: double): boolean
-    + verificarSaldo(usuario: Usuario): double
-  }
-
-  Agenda --> Dominio::Aparelho
-  Agenda --> Repositorios::ReservaRepository
-  Agenda --> Dominio::Reserva
-  Agenda --> Repositorios::DiaDaReservaRepository
-  Agenda --> Dominio::DiaDaReserva
-  Agenda --> Dominio::Intervalo
-  Agenda --> Dominio::IntervaloDeUso
-  Agenda --> Repositorios::IntervaloDeUsoRepository
-  Agenda --> Dominio::IntervaloHorario
-  Agenda --> Repositorios::UsuarioRepository
-  Caixa --> Dominio::Aparelho
-  Caixa --> Repositorios::AparelhoRepository
-  Caixa --> Dominio::Usuario
-  Caixa --> Gerenciamento::Database
-  Caixa --> Interfaces::Autenticavel
-
-  DatabaseManager --> Dominio::Aparelho
-  DatabaseManager --> Dominio::Usuario
-  DatabaseManager --> Dominio::IntervaloDeUso
-  DatabaseManager --> Dominio::DiaDaReserva
-  DatabaseManager --> Repositorios::DiaDaReservaRepository
-
-  Repositorios::UsuarioRepository --> Gerenciamento::Database
-  Repositorios::UsuarioRepository --> Gerenciamento::DatabaseManager
-  Repositorios::ReservaRepository --> Gerenciamento::Database
-  Repositorios::ReservaRepository --> Gerenciamento::DatabaseManager
-  Repositorios::AparelhoRepository --> Gerenciamento::Database
-  Repositorios::AparelhoRepository --> Gerenciamento::DatabaseManager
-  Repositorios::IntervaloDeUsoRepository --> Gerenciamento::Database
-  Repositorios::IntervaloDeUsoRepository --> Gerenciamento::DatabaseManager
-  Repositorios::DiaDaReservaRepository --> Gerenciamento::Database
-  Repositorios::DiaDaReservaRepository --> Gerenciamento::DatabaseManager
+class Caixa {
+  - usuarioDao: Dao<Usuario, Integer>
+  - aparelhoDao: Dao<Aparelho, Integer>
+  - mensagemDeAviso: String
+  + adicionarSaldo(usuarioId: int, valor: double): boolean
+  + debitarSaldo(usuarioId: int, aparelhoId: int): boolean
 }
 
-' Pacote para Testes
-package "Testes" {
-  class CrudTest {
-    + testarCrud(): void
-    + testarReserva(): void
-    + testarUsuario(): void
-  }
-
-  CrudTest --> Repositorios::IntervaloDeUsoRepository
-  CrudTest --> Dominio::IntervaloDeUso
-  CrudTest --> Repositorios::DiaDaReservaRepository
-  CrudTest --> Dominio::DiaDaReserva
-  CrudTest --> Dominio::Reserva
-  CrudTest --> Repositorios::ReservaRepository
-  CrudTest --> Gerenciamento::Database
-  CrudTest --> Dominio::Aparelho
-  CrudTest --> Repositorios::AparelhoRepository
-  CrudTest --> Dominio::Usuario
-  CrudTest --> Repositorios::UsuarioRepository
+class Administrador {
+  + login(matricula: int, senha: String): boolean
 }
+
+interface Autenticavel {
+  + login(matricula: int, senha: String): boolean
+}
+
+class InstanciarMaquinas {
+  + instanciar(): void
+}
+
+class AparelhoRepository {
+  - dao: Dao<Aparelho, Integer>
+  + getDao(): Dao<Aparelho, Integer>
+  + create(aparelho: Aparelho): Aparelho
+  + update(aparelho: Aparelho): void
+  + delete(aparelho: Aparelho): void
+  + deletePorId(id: int): void
+  + loadFromId(id: int): Aparelho
+  + loadAll(): List<Aparelho>
+}
+
+interface Reservavel {
+  + reservar(): boolean
+  + liberar(): void
+  + estaReservado(): boolean
+}
+
+class UsuarioRepository {
+  - dao: Dao<Usuario, Integer>
+  + getDao(): Dao<Usuario, Integer>
+  + create(usuario: Usuario): Usuario
+  + update(usuario: Usuario): void
+  + delete(usuario: Usuario): void
+  + deletePorId(id: int): void
+  + buscarPorMatriculaESenha(matricula: int, senha: String): Usuario
+  + loadFromId(id: int): Usuario
+  + loadAll(): List<Usuario>
+}
+
+class ReservaRepository {
+  - dao: Dao<Reserva, Integer>
+  + getDao(): Dao<Reserva, Integer>
+  + create(reserva: Reserva): Reserva
+  + update(reserva: Reserva): void
+  + delete(reserva: Reserva): void
+  + deletePorId(id: int): void
+  + loadFromId(id: int): Reserva
+  + loadAll(): List<Reserva>
+}
+
+class Reserva {
+  - id: int
+  - usuario: Usuario
+  - aparelho: Aparelho
+  - dataReserva: String
+  - horaInicio: String
+  - horaFim: String
+  - dadosReserva: String
+  - status: String
+  + formatadorData(aparelho: Aparelho, dataReserva: LocalDate, horaInicio: LocalTime, horaFim: LocalTime): String
+  + getId(): int
+  + setId(id: int): void
+  + getUsuario(): Usuario
+  + setUsuario(usuario: Usuario): void
+  + getAparelho(): Aparelho
+  + setAparelho(aparelho: Aparelho): void
+  + getDataReserva(): String
+  + setDataReserva(dataReserva: LocalDate): void
+  + getHoraInicio(): String
+  + setHoraInicio(horaInicio: LocalTime): void
+  + getHoraFim(): String
+  + setHoraFim(horaFim: LocalTime): void
+  + getDadosReserva(): String
+  + setDadosReserva(dadosReserva: String): void
+  + getStatus(): String
+  + setStatus(status: String): void
+  + toString(): String
+}
+
+class Usuario {
+  - id: int
+  - nomeCompleto: String
+  - matricula: int
+  - senha: String
+  - saldo: double
+  + login(matricula: int, senha: String): boolean
+  + mostrarDados(): String
+  + depositar(valor: double): void
+  + debitar(valor: double): void
+  + getId(): int
+  + setId(id: int): void
+  + getNomeCompleto(): String
+  + setNomeCompleto(nome: String): void
+  + getMatricula(): int
+  + setMatricula(matricula: int): void
+  + getStringMatricula(): String
+  + setSenha(senha: String): void
+  + getSenha(): String
+  + getSaldo(): double
+}
+
+class Secadora {
+  + Secadora(\n  modelo: String,\n  capacidadeKg: int,\n  descricao: String,\n  disponivel: boolean,\n  custo: double\n): void
+}
+
+class MaquinaDeLavar {
+  + MaquinaDeLavar(\n  modelo: String,\n  capacidadeKg: int,\n  descricao: String,\n  disponivel: boolean,\n  custo: double\n): void
+}
+
+class DiaComReserva {
+  - id: int
+  - aparelho: Aparelho
+  - ano: int
+  - diaDaSemana: int
+  - diaDoAno: int
+  - tempoDeFuncionamento: double
+  - tempoDisponivel: double
+  - data: String
+  + indisponibilzarTempo(tempoIndisponivel: double): boolean
+  + getId(): int
+  + getData(): LocalDate
+  + getAparelho(): Aparelho
+  + getAno(): int
+  + getDiaDaSemana(): int
+  + getDiaDoAno(): int
+  + getTempoDeFuncionamento(): double
+  + getTempoDisponivel(): double
+  + setTempoDisponivel(tempoDisponivel: double): void
+}
+
+class IntervaloDeUso {
+  - id: int
+  - dia: String
+  - inicio: String
+  - fim: String
+  - aparelho: Aparelho
+  + getAparelho(): Aparelho
+  + getId(): int
+  + getDia(): String
+  + getInicio(): String
+  + getFim(): String
+}
+
+class Intervalo {
+  - inicio: LocalDateTime
+  - fim: LocalDateTime
+  - dia: LocalDate
+  - horaInicio: LocalTime
+  - horaFim: LocalTime
+  + getInicioIntervalo(): LocalDateTime
+  + getFimIntervalo(): LocalDateTime
+  + getDiaIntervalo(): LocalDate
+  + getHoraInicioIntervalo(): LocalTime
+  + getHoraFimIntervalo(): LocalTime
+}
+
+class DiaComReservaRepository {
+  - dao: Dao<DiaComReserva, Integer>
+  + create(dia: DiaComReserva): DiaComReserva
+  + loadAll(): List<DiaComReserva>
+  + update(dia: DiaComReserva): boolean
+  + delete(dia: DiaComReserva): boolean
+  + loadFromId(id: int): DiaComReserva
+}
+
+class IntervaloDeUsoRepository {
+  - dao: Dao<IntervaloDeUso, Integer>
+  + create(intervalo: IntervaloDeUso): IntervaloDeUso
+  + loadAll(): List<IntervaloDeUso>
+  + update(intervalo: IntervaloDeUso): boolean
+  + delete(intervalo: IntervaloDeUso): boolean
+  + loadFromId(id: int): IntervaloDeUso
+}
+
+class Agenda {
+  - R_Aparelho: AparelhoRepository
+  - R_Usuario: UsuarioRepository
+  - R_Reserva: ReservaRepository
+  - R_Dia: DiaComReservaRepository
+  - R_Intervalo: IntervaloDeUsoRepository
+  - tempoDeFuncionamentoSemana: double[]
+  + fazerReserva(user: Usuario, aparelho: Aparelho, dia: LocalDate, inicio: LocalTime, fim: LocalTime): Reserva
+  + agregarMaquinas(inicio: LocalTime, fim: LocalTime, dia: LocalDate): List<Aparelho>
+  + getTempoDeFuncionamentoSemana(): double[]
+}
+
+class Database {
+  - databaseName: String
+  - connection: JdbcConnectionSource
+  + getConnection(): JdbcConnectionSource
+  + close(): void
+}
+
+class HorariosFixos {
+  - intervalosPadrao: List<IntervaloHorario>
+  + getIntervalos(): List<IntervaloHorario>
+}
+
+class IntervaloHorario {
+  - horaInicio: LocalTime
+  - horaFim: LocalTime
+  - FORMATTER: DateTimeFormatter
+  + getHoraInicio(): LocalTime
+  + getHoraFim(): LocalTime
+  + toString(): String
+}
+
+class MetodoDePagamento {
+  - listaMetodos: List<String>
+  + getMetodoDePagamento(): List<String>
+}
+
+' Posicionamento manual
+Reserva -[hidden]down- Database
+Database -[hidden]down- HorariosFixos
+HorariosFixos -[hidden]down- IntervaloHorario
+IntervaloHorario -[hidden]down- MetodoDePagamento
+
+' Relacionamentos
+together {
+  Cliente --|> Usuario
+  Administrador --|> Usuario
+  Secadora --|> Aparelho
+  MaquinaDeLavar --|> Aparelho
+  IntervaloDeUso --|> Intervalo
+}
+Cliente ..|> Autenticavel
+Administrador ..|> Autenticavel
+Aparelho ..|> Reservavel
+Reserva --> Usuario
+Reserva --> Aparelho
+DiaComReserva --> Aparelho
+IntervaloDeUso --> Aparelho
+Caixa --> AparelhoRepository
+Caixa --> UsuarioRepository
+AparelhoRepository --> DatabaseManager
+UsuarioRepository --> DatabaseManager
+ReservaRepository --> DatabaseManager
+DiaComReservaRepository --> DatabaseManager
+IntervaloDeUsoRepository --> DatabaseManager
+InstanciarMaquinas --> AparelhoRepository
+Agenda --> AparelhoRepository
+Agenda --> UsuarioRepository
+Agenda --> ReservaRepository
+Agenda --> DiaComReservaRepository
+Agenda --> IntervaloDeUsoRepository
+ReservaRepository --> Database
+HorariosFixos --> IntervaloHorario
+Agenda --> HorariosFixos
+MetodoDePagamento --> Caixa
+
+@enduml
 @enduml
 ````
 ---------------
