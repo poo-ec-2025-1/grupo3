@@ -16,6 +16,7 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.DataType;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.sql.SQLException;
 
 @DatabaseTable(tableName = "dia com reserva")
 public class DiaComReserva {
@@ -63,7 +64,7 @@ public class DiaComReserva {
     public DiaComReserva(LocalDate data, double tempoPadrao)
     {
         this(data);
-        if (tempoDeFuncionamento < 0 || tempoDeFuncionamento > 24)
+        if (tempoPadrao < 0 || tempoPadrao > 24)
             throw new IllegalArgumentException("Tempo de funcionamento deve estar entre 0 e 24 horas.");
 
         this.tempoDeFuncionamento = tempoPadrao;
@@ -89,18 +90,33 @@ public class DiaComReserva {
         this.tempoDisponivel = tempoPadrao;
     }
 
-    public boolean indisponibilzarTempo(double tempoIndisponivel)
+    public boolean indisponibilzarTempo(double tempoIndisponivel) throws SQLException
     {
         
         if (tempoIndisponivel < 0)
             throw new IllegalArgumentException("Tempo indisponível deve ser positivo.");
         
         if (tempoIndisponivel > tempoDisponivel)
-            throw new IllegalArgumentException("O tempo solicitado vai além do disponível.");
+            throw new SQLException("O tempo solicitado vai além do disponível.");
         
         double temp = tempoDisponivel;
         temp -= tempoIndisponivel;
         if(temp < 0)
+            return false;
+            
+        setTempoDisponivel(temp);
+        return true;
+    }
+    
+    public boolean disponibilizarTempo(double disponibilidade) throws SQLException
+    {
+        
+        if (disponibilidade < 0)
+            throw new IllegalArgumentException("Tempo solicitado deve ser positivo.");
+        
+        double temp = tempoDisponivel;
+        temp += disponibilidade;
+        if(temp >= tempoDeFuncionamento)
             return false;
             
         setTempoDisponivel(temp);

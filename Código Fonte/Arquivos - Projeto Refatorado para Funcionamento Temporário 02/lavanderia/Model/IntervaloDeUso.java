@@ -44,7 +44,12 @@ public class IntervaloDeUso extends Intervalo
     IntervaloDeUso(LocalTime inicio, LocalTime fim)
     {
         super(inicio, fim);
-        
+        if (inicio == null) {
+            throw new IllegalArgumentException("Horário de início não pode ser nulo.");
+        }
+        if (fim == null) {
+            throw new IllegalArgumentException("Horário de fim não pode ser nulo.");
+        }
         DateTimeFormatter formatadorDeHora = DateTimeFormatter.ofPattern(Intervalo.formatoTime);
         this.inicio = inicio.format(formatadorDeHora);
         this.fim = fim.format(formatadorDeHora);
@@ -53,7 +58,15 @@ public class IntervaloDeUso extends Intervalo
     IntervaloDeUso(LocalTime inicio, LocalTime fim, LocalDate dia)
     {
         super(inicio, fim, dia);
-                
+        if (inicio == null) {
+            throw new IllegalArgumentException("Horário de início não pode ser nulo.");
+        }
+        if (fim == null) {
+            throw new IllegalArgumentException("Horário de fim não pode ser nulo.");
+        }
+        if (dia == null) {
+            throw new IllegalArgumentException("Data não pode ser nula.");
+        }
         DateTimeFormatter formatadorDeData = DateTimeFormatter.ofPattern(Intervalo.formatoDate);
         DateTimeFormatter formatadorDeHora = DateTimeFormatter.ofPattern(Intervalo.formatoTime);
         this.dia = dia.format(formatadorDeData);
@@ -90,6 +103,33 @@ public class IntervaloDeUso extends Intervalo
     
     public String getFim() {
         return fim;
+    }
+    
+    @Override
+    public LocalDate getDiaIntervalo() {
+        if (dia != null) {
+            DateTimeFormatter formatadorDeData = DateTimeFormatter.ofPattern(Intervalo.formatoDate);
+            return LocalDate.parse(dia, formatadorDeData);
+        }
+        return super.getDiaIntervalo();
+    }
+    
+    @Override
+    public LocalTime getHoraInicioIntervalo() {
+        if (inicio != null) {
+            DateTimeFormatter formatadorDeHora = DateTimeFormatter.ofPattern(Intervalo.formatoTime);
+            return LocalTime.parse(inicio, formatadorDeHora);
+        }
+        return super.getHoraInicioIntervalo();
+    }
+    
+    @Override
+    public LocalTime getHoraFimIntervalo() {
+        if (fim != null) {
+            DateTimeFormatter formatadorDeHora = DateTimeFormatter.ofPattern(Intervalo.formatoTime);
+            return LocalTime.parse(fim, formatadorDeHora);
+        }
+        return super.getHoraFimIntervalo();
     }
 
 }
