@@ -36,8 +36,10 @@ Minha contribuição principal relativa à essa etapa foram os seguintes commits
 * Apoiei na montagem conjunta do projeto final e em outras etapas anteriores; 
 * Orientei aos meus colegas sobre o uso das funcionalidades do GitHub, incluindo criação de branches, resolução de conflitos e organização de commits.
  
-04 - Considerações Finais: O desenvolvimento do projeto tem ocorrido de forma satisfatória até esta primeira etapa, com o grupo demonstrando coesão,
+04 - Considerações Finais: O desenvolvimento do projeto ocorreu de forma satisfatória até esta etapa final, com o grupo demonstrando coesão,
 colaboração e comprometimento com os prazos. A comunicação entre os membros tem sido clara e constante, o que tem facilitado a superação de dificuldades e 
 o andamento das tarefas. O backend está sendo estruturado com organização e clareza, enquanto o frontend tem evoluído de forma objetiva, atendendo aos requisitos propostos.
 Ao longo do processo, aprendi a importância da organização desde o início, além de aprimorar habilidades de liderança, comunicação e documentação técnica. Como trabalho futuro, 
-pretendo contribuir ainda mais com práticas de testes automatizados e integração contínua para elevar a qualidade do projeto.
+pretendo contribuir ainda mais com práticas de testes automatizados e integração contínua para elevar a qualidade do projeto. 
+Além do mais, aprendi muito sobre todas as áreas propostas, por sempre estar testando, verificando e organizando a documentação no geral, mesmo com o prazo corrido, certamente 
+foi um aprendizado que me ajudará no futuro como programador.
