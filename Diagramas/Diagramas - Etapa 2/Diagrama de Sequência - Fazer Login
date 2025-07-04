@@ -1,16 +1,22 @@
 @startuml
 
-actor Usuario
+actor Cliente
 
-Usuario -> PainelDeLogin: fazerLogin(credenciais)
-PainelDeLogin -> Autenticavel: autenticar(credenciais)
-Autenticavel -> UsuarioRepository: verificarCredenciais(credenciais)
-UsuarioRepository -> DatabaseManager: consultarDatabase()
-DatabaseManager --> UsuarioRepository: dadosUsuario
-UsuarioRepository --> Autenticavel: autenticado = true
-Autenticavel --> PainelDeLogin: loginSucesso
-PainelDeLogin -> PainelDoUsuario: abrirPainel()
-PainelDoUsuario --> PainelDeLogin: painelAberto
-PainelDeLogin --> Usuario: Login realizado com sucesso
+participant "Usuario" as User
+participant "UsuarioRepository" as UsrRepo
+participant "DatabaseManager" as DBMgr
+
+Cliente -> User: login(matricula, senha)
+activate User
+User -> UsrRepo: buscarPorMatriculaESenha(matricula, senha)
+activate UsrRepo
+UsrRepo -> DBMgr: getUsuarioDao()
+activate DBMgr
+DBMgr --> UsrRepo: Dao<Usuario, Integer>
+deactivate DBMgr
+UsrRepo --> User: Usuario (se encontrado)
+deactivate UsrRepo
+User --> Cliente: true (autenticado) / false (falha)
+deactivate User
 
 @enduml
